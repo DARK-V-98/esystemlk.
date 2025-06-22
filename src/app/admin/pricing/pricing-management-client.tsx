@@ -140,7 +140,7 @@ export default function PricingManagementClient() {
         setIsEditDialogOpen(true);
     };
 
-    const onEditSubmit = (values: z.infer<typeof editFormSchema>>) => {
+    const onEditSubmit = (values: z.infer<typeof editFormSchema>) => {
         if (!currentItem) return;
 
         startTransition(async () => {
