@@ -16,14 +16,6 @@ const projects = [
     tech: ["Next.js", "TypeScript", "Tailwind CSS", "Node.js", "PostgreSQL"]
   },
   {
-    title: "ConnectSphere Mobile",
-    category: "Mobile App",
-    image: "https://placehold.co/600x400.png",
-    hint: "social media",
-    description: "A social networking app for iOS and Android, featuring real-time chat, push notifications, and a media-rich feed.",
-    tech: ["React Native", "Firebase", "GraphQL", "TypeScript"]
-  },
-  {
     title: "Quantum Analytics",
     category: "Cloud Solution",
     image: "https://placehold.co/600x400.png",
@@ -40,14 +32,6 @@ const projects = [
     tech: ["Gatsby", "Contentful", "GraphQL", "Styled Components"]
   },
   {
-    title: "FitTrack Fitness App",
-    category: "Mobile App",
-    image: "https://placehold.co/600x400.png",
-    hint: "fitness tracker",
-    description: "A mobile fitness tracker that monitors workouts, nutrition, and progress with personalized plans and social features.",
-    tech: ["Swift", "Kotlin", "Google Fit API", "CoreData"]
-  },
-  {
     title: "SecureVault",
     category: "Cloud Solution",
     image: "https://placehold.co/600x400.png",
@@ -57,7 +41,7 @@ const projects = [
   }
 ];
 
-const categories = ["All", "Web App", "Mobile App", "Cloud Solution"];
+const categories = ["All", "Web App", "Cloud Solution"];
 
 export default function PortfolioClient() {
   const [filter, setFilter] = useState("All");

@@ -1,16 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { CodeXml, Smartphone, CloudCog, ShieldCheck, Layers, Bot } from 'lucide-react';
+import { CodeXml, CloudCog, ShieldCheck, Layers, Bot } from 'lucide-react';
 
 const services = [
   {
     icon: <CodeXml className="w-12 h-12 text-primary" />,
     title: "Custom Web Development",
     description: "We build bespoke, high-performance websites and web applications from the ground up, ensuring they are perfectly tailored to your business objectives and brand identity. Our solutions are responsive, scalable, and optimized for search engines."
-  },
-  {
-    icon: <Smartphone className="w-12 h-12 text-primary" />,
-    title: "Mobile Application Development",
-    description: "Engage your customers on the go with our native and cross-platform mobile apps. We design and develop intuitive, feature-rich applications for both iOS and Android, focusing on user experience and seamless performance."
   },
   {
     icon: <CloudCog className="w-12 h-12 text-primary" />,

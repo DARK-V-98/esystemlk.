@@ -6,7 +6,7 @@ import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
   title: 'ESystemLk - Your Trusted Tech Partner',
-  description: 'ESystemLk offers cutting-edge web development, mobile apps, and cloud solutions to elevate your business.',
+  description: 'ESystemLk offers cutting-edge web development and cloud solutions to elevate your business.',
 };
 
 export default function RootLayout({

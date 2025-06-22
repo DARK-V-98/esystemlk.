@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CodeXml, Layers, Smartphone, CloudCog, ShieldCheck, ArrowRight } from "lucide-react";
+import { CodeXml, CloudCog, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { StarRating } from "@/components/StarRating";
@@ -11,11 +11,6 @@ const services = [
     icon: <CodeXml className="w-10 h-10 text-primary" />,
     title: "Web Development",
     description: "Creating responsive, high-performance websites tailored to your business needs."
-  },
-  {
-    icon: <Smartphone className="w-10 h-10 text-primary" />,
-    title: "Mobile Apps",
-    description: "Developing intuitive and engaging mobile applications for iOS and Android platforms."
   },
   {
     icon: <CloudCog className="w-10 h-10 text-primary" />,
@@ -30,12 +25,6 @@ const portfolio = [
     category: "Web App",
     image: "https://placehold.co/600x400.png",
     hint: "online store"
-  },
-  {
-    title: "Task Management App",
-    category: "Mobile App",
-    image: "https://placehold.co/600x400.png",
-    hint: "productivity tool"
   },
   {
     title: "Data Analytics Dashboard",
@@ -71,7 +60,7 @@ export default function Home() {
             Innovative Tech Solutions for a Digital World
           </h1>
           <p className="max-w-[700px] mx-auto text-muted-foreground md:text-xl mt-6">
-            ESystemLk is your trusted partner in building robust web platforms, intuitive mobile apps, and scalable cloud infrastructures that drive growth and efficiency.
+            ESystemLk is your trusted partner in building robust web platforms and scalable cloud infrastructures that drive growth and efficiency.
           </p>
           <div className="mt-8 flex justify-center gap-4">
             <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
@@ -90,7 +79,7 @@ export default function Home() {
             <h2 className="font-headline text-3xl md:text-4xl font-bold">Our Core Services</h2>
             <p className="text-muted-foreground md:text-lg mt-2">We deliver excellence across the tech spectrum.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
             {services.map((service) => (
               <Card key={service.title} className="text-center p-8 rounded-2xl shadow-lg transition-transform duration-300 hover:-translate-y-2">
                 <div className="flex justify-center mb-4">{service.icon}</div>
@@ -108,7 +97,7 @@ export default function Home() {
             <h2 className="font-headline text-3xl md:text-4xl font-bold">Featured Projects</h2>
             <p className="text-muted-foreground md:text-lg mt-2">A glimpse into our craftsmanship and innovation.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
             {portfolio.map((project) => (
               <Card key={project.title} className="overflow-hidden rounded-2xl shadow-lg transition-transform duration-300 hover:scale-105">
                 <Image src={project.image} alt={project.title} width={600} height={400} className="w-full object-cover" data-ai-hint={project.hint} />
