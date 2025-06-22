@@ -1,37 +1,148 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { CodeXml, DatabaseZap, LayoutDashboard, Truck, CreditCard, Server } from 'lucide-react';
 
-const services = [
-  {
-    icon: <CodeXml className="w-12 h-12 text-primary" />,
-    title: "Custom Web Development",
-    description: "We build bespoke, high-performance websites and web applications from the ground up, ensuring they are perfectly tailored to your business objectives and brand identity."
-  },
-  {
-    icon: <DatabaseZap className="w-12 h-12 text-primary" />,
-    title: "Firebase & Backend Solutions",
-    description: "Leverage the power of Firebase and modern backends for robust, scalable server-side solutions, database design, and API development for your applications."
-  },
-  {
-    icon: <LayoutDashboard className="w-12 h-12 text-primary" />,
-    title: "Admin Panels & Dashboards",
-    description: "Manage your business effectively with custom-built admin panels and data dashboards. We create intuitive interfaces to monitor and control your operations with ease."
-  },
-  {
-    icon: <Truck className="w-12 h-12 text-primary" />,
-    title: "Courier/Logistics Systems",
-    description: "Streamline your delivery operations with our specialized courier and logistics software. We develop systems for tracking, dispatch, and management to enhance efficiency."
-  },
-  {
-    icon: <CreditCard className="w-12 h-12 text-primary" />,
-    title: "Payment Integration (PayHere/IPG)",
-    description: "Seamlessly integrate local and international payment gateways like PayHere and IPG, providing your customers with secure and convenient payment options."
-  },
-  {
-    icon: <Server className="w-12 h-12 text-primary" />,
-    title: "Hosting & Maintenance",
-    description: "Ensure your application is always online and performing at its best with our reliable hosting and ongoing maintenance services. We handle the technical details for you."
-  }
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+    ShoppingCart,
+    Building,
+    HeartPulse,
+    Scissors,
+    Palette,
+    BookOpen,
+    Users,
+    Hotel,
+    Landmark,
+    Blocks,
+    CheckCircle2
+} from "lucide-react";
+
+const serviceCategories = [
+    {
+        icon: <ShoppingCart className="w-8 h-8 text-primary" />,
+        title: "E-Commerce & Online Sales",
+        items: [
+            "Clothing & Fashion Stores",
+            "Grocery Delivery",
+            "Electronics & Gadgets",
+            "Handmade/Craft Shops",
+            "Digital Products (ebooks, music, courses)",
+            "Wholesale B2B Shops",
+            "Dropshipping Stores",
+            "Marketplace Platforms (like OLX, Daraz)",
+        ],
+    },
+    {
+        icon: <Building className="w-8 h-8 text-primary" />,
+        title: "Business & Corporate",
+        items: [
+            "Company Profile Websites",
+            "Service-Based Businesses (plumbing, cleaning, carpentry)",
+            "Legal & Law Firm Websites",
+            "Accounting/Finance Firms",
+            "Construction & Real Estate Agencies",
+            "Logistics & Courier Services",
+            "IT Companies & Tech Startups",
+            "Event Management Agencies",
+            "HR & Recruitment Firms",
+        ],
+    },
+    {
+        icon: <HeartPulse className="w-8 h-8 text-primary" />,
+        title: "Healthcare & Wellness",
+        items: [
+            "Pharmacies & Online Medicine Ordering",
+            "Private Clinics / Doctors / Dentists",
+            "Physiotherapy & Rehab Centers",
+            "Caregiver & Elderly Care Services",
+            "Health Blogs / Medical Education",
+            "Appointment Booking Systems",
+        ],
+    },
+    {
+        icon: <Scissors className="w-8 h-8 text-primary" />,
+        title: "Beauty, Fashion & Lifestyle",
+        items: [
+            "Salons & Barber Shops",
+            "Makeup Artists & Stylists",
+            "Nail, Spa, and Skincare Studios",
+            "Fitness Trainers / Gyms / Zumba",
+            "Tattoo Studios",
+            "Fashion Portfolios",
+        ],
+    },
+    {
+        icon: <Palette className="w-8 h-8 text-primary" />,
+        title: "Creative & Personal Branding",
+        items: [
+            "Personal Portfolios (Photographers, Artists, Writers)",
+            "Resume/CV Websites",
+            "Digital Creators / Influencers",
+            "YouTubers / Streamer Landing Pages",
+            "Freelancers / Consultants",
+            "Actor/Model Portfolios",
+        ],
+    },
+    {
+        icon: <BookOpen className="w-8 h-8 text-primary" />,
+        title: "Education & Learning",
+        items: [
+            "Online Course Platforms (LMS)",
+            "Tuition Classes / Educational Institutes",
+            "Driving Schools",
+            "Preschool & Montessori Websites",
+            "Language Learning Portals",
+            "E-learning Blogs / Notes Repositories",
+        ],
+    },
+    {
+        icon: <Users className="w-8 h-8 text-primary" />,
+        title: "Cultural, Religious & Social",
+        items: [
+            "Nonprofits / Charities / NGOs",
+            "Temples, Churches, and Mosques",
+            "Community Groups",
+            "Donation Platforms",
+            "Blood Donation Campaigns",
+        ],
+    },
+    {
+        icon: <Hotel className="w-8 h-8 text-primary" />,
+        title: "Hospitality & Travel",
+        items: [
+            "Hotels / Resorts / Villas",
+            "Travel Agencies & Tour Booking",
+            "Taxi & Cab Booking",
+            "Airbnb-style Rental Listings",
+            "Restaurants with Online Ordering",
+        ],
+    },
+    {
+        icon: <Landmark className="w-8 h-8 text-primary" />,
+        title: "Government & Official Use",
+        items: [
+            "Local Government Websites",
+            "Election Duty Management Systems",
+            "School/College Admin Panels",
+            "Certificate/License Application Portals",
+            "Public Feedback/Complaint Systems",
+        ],
+    },
+    {
+        icon: <Blocks className="w-8 h-8 text-primary" />,
+        title: "Advanced/Custom Applications",
+        items: [
+            "Parcel Tracking Dashboards",
+            "Booking and Reservation Systems",
+            "CRM Systems for Businesses",
+            "Inventory Management Systems",
+            "Invoice & Billing Systems",
+            "Job Portals",
+            "Directory Listings (e.g., wedding vendors, doctors)",
+        ],
+    },
 ];
 
 export default function ServicesPage() {
@@ -39,25 +150,38 @@ export default function ServicesPage() {
     <>
       <section className="w-full py-20 md:py-28">
         <div className="container mx-auto px-4 md:px-6 text-center bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl py-12">
-          <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">Our Services</h1>
+          <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">What We Build</h1>
           <p className="max-w-[700px] mx-auto text-muted-foreground md:text-xl mt-4">
-            We provide a comprehensive suite of technology services to fuel your success.
+            We specialize in creating tailored web solutions across a wide range of industries. Explore our capabilities below.
           </p>
         </div>
       </section>
 
       <section className="w-full pb-20 md:pb-28">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {services.map((service) => (
-              <Card key={service.title} className="transition-all duration-300 hover:shadow-xl hover:-translate-y-2 bg-black/30 backdrop-blur-lg border border-white/10 hover:border-white/30 rounded-2xl shadow-lg group">
-                <CardContent className="p-8">
-                  <div className="mb-6 transition-transform duration-300 group-hover:scale-110 w-fit">{service.icon}</div>
-                  <h3 className="font-headline text-2xl font-semibold mb-3">{service.title}</h3>
-                  <p className="text-muted-foreground">{service.description}</p>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl p-4 md:p-8">
+            <Accordion type="single" collapsible className="w-full">
+              {serviceCategories.map((category, index) => (
+                <AccordionItem value={`item-${index}`} key={category.title} className="border-b-white/10 last:border-b-0">
+                  <AccordionTrigger className="hover:no-underline text-left p-4">
+                    <div className="flex items-center gap-4">
+                        {category.icon}
+                        <span className="font-headline text-xl font-semibold">{category.title}</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-4 pl-16 pt-4">
+                        {category.items.map(item => (
+                            <li key={item} className="flex items-start gap-2 text-muted-foreground">
+                                <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-1" />
+                                <span>{item}</span>
+                            </li>
+                        ))}
+                    </ul>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
           </div>
         </div>
       </section>

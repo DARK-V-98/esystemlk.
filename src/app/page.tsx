@@ -1,29 +1,29 @@
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CloudCog, CodeXml, PenTool, ShieldCheck } from "lucide-react";
+import { ArrowRight, CodeXml, CreditCard, Paintbrush, ServerCog } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
 const services = [
   {
     icon: <CodeXml className="w-10 h-10 text-primary" />,
-    title: "Web Development",
-    description: "Bespoke, high-performance websites and applications tailored to your business objectives."
+    title: "Full-Stack Web Development",
+    description: "End-to-end development of high-performance websites and applications, from database to UI."
   },
   {
-    icon: <CloudCog className="w-10 h-10 text-primary" />,
-    title: "Cloud & DevOps",
-    description: "Scalable cloud infrastructure, migration, and CI/CD pipelines for streamlined development."
+    icon: <Paintbrush className="w-10 h-10 text-primary" />,
+    title: "Front-End Development",
+    description: "Creating beautiful, responsive, and intuitive user interfaces that provide an exceptional user experience."
   },
   {
-    icon: <PenTool className="w-10 h-10 text-primary" />,
-    title: "UI/UX Design",
-    description: "Visually stunning and user-friendly interfaces that enhance user satisfaction and drive engagement."
+    icon: <CreditCard className="w-10 h-10 text-primary" />,
+    title: "Payment Integrations",
+    description: "Securely integrate popular payment gateways to enable seamless transactions on your platform."
   },
   {
-    icon: <ShieldCheck className="w-10 h-10 text-primary" />,
-    title: "IT Security",
-    description: "Comprehensive security audits and strategic consulting to fortify your systems against threats."
+    icon: <ServerCog className="w-10 h-10 text-primary" />,
+    title: "Hosting & Maintenance",
+    description: "Reliable hosting solutions and ongoing maintenance to ensure your application is always secure and online."
   }
 ];
 
