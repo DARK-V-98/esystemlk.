@@ -365,7 +365,7 @@ export default function PricingManagementClient() {
                             Initialize the database with default data or add new top-level categories.
                         </CardDescription>
                     </CardHeader>
-                    <CardContent className="flex gap-4">
+                    <CardContent className="flex flex-col sm:flex-row gap-4">
                         <Button onClick={handleUpload} disabled={isPending}>
                             {isPending ? 'Uploading...' : 'Initialize/Upload Pricing Data'}
                         </Button>
@@ -413,11 +413,11 @@ export default function PricingManagementClient() {
                                         <Accordion type="single" collapsible className="w-full">
                                             {category.services.map((service, index) => (
                                                 <AccordionItem key={index} value={`item-${index}`}>
-                                                    <div className="flex items-center w-full">
-                                                        <AccordionTrigger className="flex-1 hover:no-underline pr-4">
-                                                            <span className="font-semibold text-lg text-left text-primary/90">{service.name}</span>
+                                                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full">
+                                                        <AccordionTrigger className="flex-1 hover:no-underline pr-4 w-full text-left">
+                                                            <span className="font-semibold text-lg text-primary/90">{service.name}</span>
                                                         </AccordionTrigger>
-                                                        <div className="flex items-center gap-2">
+                                                        <div className="flex items-center gap-2 self-end sm:self-auto">
                                                             <Switch checked={service.enabled} onCheckedChange={(checked) => handleStatusChange('service', category.id, checked, service.name)} disabled={isPending} />
                                                             <AlertDialogTrigger asChild>
                                                                 <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setItemToDelete({ type: 'service', categoryId: category.id, serviceName: service.name })} disabled={isPending}>

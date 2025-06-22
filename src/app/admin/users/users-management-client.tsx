@@ -172,7 +172,7 @@ export default function UsersManagementClient() {
                             onValueChange={(value: UserRole) => handleRoleChange(user.uid, value)}
                             disabled={isPending || user.uid === currentUser?.uid}
                             >
-                            <SelectTrigger className="w-[180px]">
+                            <SelectTrigger className="w-full sm:w-[180px]">
                                 <SelectValue placeholder="Select a role" />
                             </SelectTrigger>
                             <SelectContent>
