@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useTransition } from 'react';
@@ -114,16 +115,16 @@ export default function PricingManagementClient() {
                                     <Accordion type="single" collapsible className="w-full">
                                         {category.services.map((service, index) => (
                                             <AccordionItem key={index} value={`item-${index}`}>
-                                                <AccordionTrigger className="hover:no-underline">
-                                                    <div className="flex items-center justify-between w-full">
-                                                        <span className="font-semibold text-lg text-primary/90">{service.name}</span>
-                                                        <div className="flex items-center gap-2 mr-4">
-                                                            <Switch checked={service.enabled} disabled />
-                                                             <Button variant="ghost" size="icon" className="h-8 w-8" disabled><Icons.Trash2 className="w-4 h-4" /></Button>
-                                                            <Button variant="ghost" size="icon" className="h-8 w-8" disabled><Icons.FileEdit className="w-4 h-4" /></Button>
-                                                        </div>
+                                                <div className="flex items-center w-full">
+                                                    <AccordionTrigger className="flex-1 hover:no-underline pr-4">
+                                                        <span className="font-semibold text-lg text-left text-primary/90">{service.name}</span>
+                                                    </AccordionTrigger>
+                                                    <div className="flex items-center gap-2">
+                                                        <Switch checked={service.enabled} disabled />
+                                                        <Button variant="ghost" size="icon" className="h-8 w-8" disabled><Icons.Trash2 className="w-4 h-4" /></Button>
+                                                        <Button variant="ghost" size="icon" className="h-8 w-8" disabled><Icons.FileEdit className="w-4 h-4" /></Button>
                                                     </div>
-                                                </AccordionTrigger>
+                                                </div>
                                                 <AccordionContent className="pl-4 border-l-2 border-primary/20 ml-2">
                                                     <div className="space-y-3">
                                                          <h4 className="font-semibold mt-2">Tiers</h4>
