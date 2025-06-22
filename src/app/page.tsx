@@ -1,192 +1,136 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ArrowRight, Award, CloudCog, CodeXml, Quote, Rocket, Users } from "lucide-react";
+import { ArrowRight, CloudCog, CodeXml, PenTool, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
-const features = [
-  {
-    icon: <Rocket className="w-10 h-10 text-primary" />,
-    title: "Future-Forward",
-    description: "We embrace cutting-edge technologies to deliver solutions that are not just current, but ahead of the curve."
-  },
-  {
-    icon: <Award className="w-10 h-10 text-primary" />,
-    title: "Unmatched Quality",
-    description: "Our commitment to excellence ensures pixel-perfect, robust, and reliable digital products every time."
-  },
-  {
-    icon: <Users className="w-10 h-10 text-primary" />,
-    title: "Collaborative Spirit",
-    description: "We believe in true partnership, working closely with you to turn your vision into a tangible success."
-  }
-];
-
 const services = [
   {
-    icon: <CodeXml className="w-8 h-8 text-primary" />,
+    icon: <CodeXml className="w-8 h-8 text-foreground" />,
     title: "Web Development",
-    description: "Creating responsive, high-performance websites tailored to your business needs."
+    description: "Bespoke, high-performance websites and applications tailored to your business objectives."
   },
   {
-    icon: <CloudCog className="w-8 h-8 text-primary" />,
-    title: "Cloud Solutions",
-    description: "Leveraging cloud infrastructure for scalable, secure, and efficient business operations."
+    icon: <CloudCog className="w-8 h-8 text-foreground" />,
+    title: "Cloud & DevOps",
+    description: "Scalable cloud infrastructure, migration, and CI/CD pipelines for streamlined development."
+  },
+  {
+    icon: <PenTool className="w-8 h-8 text-foreground" />,
+    title: "UI/UX Design",
+    description: "Visually stunning and user-friendly interfaces that enhance user satisfaction and drive engagement."
+  },
+  {
+    icon: <ShieldCheck className="w-8 h-8 text-foreground" />,
+    title: "IT Security",
+    description: "Comprehensive security audits and strategic consulting to fortify your systems against threats."
   }
 ];
-
-const highlightedProject = {
-    title: "E-commerce Platform",
-    category: "Web App",
-    image: "https://placehold.co/600x450.png",
-    hint: "online store",
-    description: "We engineered a high-performance, scalable e-commerce solution that delivered a seamless shopping experience and boosted client sales by 40%."
-};
 
 const testimonials = [
   {
-    name: "John Doe",
-    title: "CEO, Innovate Inc.",
-    review: "ESystemLk delivered a game-changing product for us. Their expertise and dedication are unmatched. Highly recommended for any tech needs.",
-    avatar: "https://placehold.co/100x100.png",
+    name: "Alex Rivera",
+    title: "CEO, Innovate Co.",
+    review: "ESystemLk's work is clean, precise, and always on point. They transformed our digital presence with their minimalist and powerful design philosophy. A true partner in excellence.",
   },
   {
-    name: "Jane Smith",
-    title: "Founder, StartupX",
-    review: "Working with the ESystemLk team was a fantastic experience. They understood our vision and brought it to life with precision and creativity.",
-    avatar: "https://placehold.co/100x100.png",
+    name: "Samantha Chen",
+    title: "Founder, Future-Forward",
+    review: "The clarity and focus they brought to our project were remarkable. Their black and white aesthetic is not just a style; it's a statement of confidence and quality.",
   }
 ];
 
 export default function Home() {
   return (
-    <div className="flex flex-col bg-background">
-      <section className="relative w-full min-h-[80vh] flex items-center bg-gradient-to-br from-secondary/30 via-background to-background">
-        <div className="absolute inset-0 opacity-20 blur-3xl" aria-hidden="true">
-            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/50 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
-            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/50 rounded-full translate-x-1/2 translate-y-1/2"></div>
+    <div className="flex flex-col bg-background text-foreground">
+      {/* Hero Section */}
+      <section className="w-full h-[90vh] min-h-[600px] flex items-center justify-center bg-foreground text-background">
+        <div className="container mx-auto px-4 md:px-6 text-center z-10">
+          <h1 className="font-headline text-5xl md:text-7xl font-bold tracking-tighter uppercase">
+            Clarity in Code.
+          </h1>
+          <h2 className="font-headline text-5xl md:text-7xl font-bold tracking-tighter uppercase text-muted-foreground/80">
+            Power in Design.
+          </h2>
+          <p className="max-w-2xl text-muted-foreground mx-auto md:text-xl mt-6">
+            We build focused, high-impact digital solutions. No noise, just results.
+          </p>
+          <div className="mt-10">
+            <Button asChild size="lg" variant="outline" className="rounded-none text-lg px-8 py-6 bg-transparent border-background text-background hover:bg-background hover:text-foreground">
+              <Link href="/contact">Start a Project</Link>
+            </Button>
+          </div>
         </div>
-        <div className="container mx-auto px-4 md:px-6 z-10">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <div>
-                    <h1 className="font-headline text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-foreground">
-                        Crafting <span className="text-primary">Digital Excellence</span> for Tomorrow
-                    </h1>
-                    <p className="max-w-2xl text-muted-foreground md:text-xl mt-6">
-                        We build exceptional web platforms and robust cloud solutions that empower your business to thrive in a digital-first world.
-                    </p>
-                    <div className="mt-10 flex flex-col sm:flex-row gap-4">
-                        <Button asChild size="lg" className="rounded-full text-lg px-8 py-6">
-                            <Link href="/contact">Start a Project</Link>
-                        </Button>
-                        <Button asChild size="lg" variant="outline" className="rounded-full text-lg px-8 py-6">
-                            <Link href="/portfolio">Explore Our Work</Link>
-                        </Button>
+      </section>
+
+      {/* Featured Project Section */}
+      <section className="w-full py-20 md:py-28 border-b">
+        <div className="container mx-auto px-4 md:px-6">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+                <div className="flex flex-col justify-center">
+                    <p className="text-sm uppercase tracking-widest text-muted-foreground mb-3">Featured Work</p>
+                    <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Project Alpha</h2>
+                    <p className="text-muted-foreground text-lg mb-6">A case study in minimalist e-commerce design, focusing on user flow and conversion. We stripped back the unnecessary to create a fast, intuitive, and effective online store.</p>
+                    <div className="flex flex-wrap gap-2 mb-8">
+                        {["Next.js", "TypeScript", "Vercel", "Stripe"].map(t => (
+                            <span key={t} className="text-sm border px-3 py-1">
+                            {t}
+                            </span>
+                        ))}
                     </div>
+                    <Button asChild size="lg" variant="link" className="text-foreground text-lg px-0 justify-start w-fit">
+                        <Link href="/portfolio">View Full Portfolio <ArrowRight className="ml-2" /></Link>
+                    </Button>
                 </div>
-                <div className="hidden lg:flex justify-center items-center">
+                <div className="bg-secondary p-4 border">
                     <Image
-                        src="https://placehold.co/600x600.png"
-                        alt="Abstract digital art"
-                        width={600}
+                        src="https://placehold.co/800x600.png"
+                        alt="Project Alpha"
+                        width={800}
                         height={600}
-                        className="rounded-full shadow-2xl"
-                        data-ai-hint="abstract technology"
+                        className="w-full"
+                        data-ai-hint="minimalist website"
                     />
                 </div>
             </div>
         </div>
       </section>
 
-      <section id="features" className="w-full py-20 md:py-28">
+      {/* Services Section */}
+      <section id="services" className="w-full py-20 md:py-28">
         <div className="container mx-auto px-4 md:px-6">
-            <div className="text-center mb-16">
-                <h2 className="font-headline text-4xl md:text-5xl font-bold">Why Partner with ESystemLk?</h2>
-                <p className="text-muted-foreground md:text-xl mt-4 max-w-3xl mx-auto">We're more than just developers; we're your strategic partner in digital innovation and growth.</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {features.map((feature) => (
-                    <div key={feature.title} className="text-center p-6">
-                        <div className="flex justify-center items-center mb-6 w-20 h-20 rounded-full bg-primary/10 mx-auto">
-                            {feature.icon}
-                        </div>
-                        <h3 className="font-headline text-2xl font-semibold mb-3">{feature.title}</h3>
-                        <p className="text-muted-foreground">{feature.description}</p>
-                    </div>
-                ))}
-            </div>
-        </div>
-      </section>
-      
-      <section id="services" className="w-full py-20 md:py-28 bg-secondary/50">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center mb-16">
-            <h2 className="font-headline text-4xl md:text-5xl font-bold">Our Core Expertise</h2>
-            <p className="text-muted-foreground md:text-xl mt-4">We deliver excellence across the modern tech spectrum.</p>
+          <div className="text-center mb-16 max-w-2xl mx-auto">
+            <h2 className="font-headline text-4xl md:text-5xl font-bold">Core Disciplines</h2>
+            <p className="text-muted-foreground md:text-xl mt-4">We deliver excellence through a focused set of services, ensuring quality and mastery in every project.</p>
           </div>
-          <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border">
             {services.map((service) => (
-              <Card key={service.title} className="bg-background p-8 rounded-2xl shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 flex-shrink-0 flex items-center justify-center rounded-lg bg-primary/10">{service.icon}</div>
-                  <div>
-                    <h3 className="font-headline text-xl font-semibold mb-2">{service.title}</h3>
-                    <p className="text-muted-foreground">{service.description}</p>
-                  </div>
-                </div>
-              </Card>
+              <div key={service.title} className="bg-background p-8">
+                <div className="mb-4">{service.icon}</div>
+                <h3 className="font-headline text-2xl font-semibold mb-2">{service.title}</h3>
+                <p className="text-muted-foreground">{service.description}</p>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="portfolio" className="w-full py-20 md:py-28">
-        <div className="container mx-auto px-4 md:px-6">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-                <div className="order-2 lg:order-1">
-                    <p className="text-primary font-semibold text-lg mb-2">Featured Project</p>
-                    <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">{highlightedProject.title}</h2>
-                    <p className="text-muted-foreground text-lg mb-6">{highlightedProject.description}</p>
-                    <Button asChild size="lg" variant="link" className="text-primary text-lg px-0">
-                        <Link href="/portfolio">View Full Portfolio <ArrowRight className="ml-2" /></Link>
-                    </Button>
-                </div>
-                <div className="order-1 lg:order-2">
-                    <Image
-                        src={highlightedProject.image}
-                        alt={highlightedProject.title}
-                        width={600}
-                        height={450}
-                        className="rounded-2xl shadow-2xl"
-                        data-ai-hint={highlightedProject.hint}
-                    />
-                </div>
-            </div>
-        </div>
-      </section>
-
-      <section id="testimonials" className="w-full py-20 md:py-28 bg-secondary/50">
+      {/* Testimonials Section */}
+      <section id="testimonials" className="w-full py-20 md:py-28 bg-foreground text-background">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-16">
-            <h2 className="font-headline text-4xl md:text-5xl font-bold">Trusted by Industry Leaders</h2>
-            <p className="text-muted-foreground md:text-xl mt-4">We thrive on the success and satisfaction of our partners.</p>
+            <h2 className="font-headline text-4xl md:text-5xl font-bold">From Our Partners</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             {testimonials.map((testimonial) => (
-              <Card key={testimonial.name} className="bg-background border-0 shadow-lg">
+              <Card key={testimonial.name} className="bg-transparent border-muted-foreground/30 rounded-none">
                 <CardContent className="p-8">
-                  <Quote className="w-10 h-10 text-primary mb-4" />
-                  <blockquote className="text-lg text-foreground/80 mb-6">
+                  <blockquote className="text-lg text-background/80 mb-6 border-l-2 border-background pl-6 italic">
                     "{testimonial.review}"
                   </blockquote>
                   <div className="flex items-center">
-                    <Avatar className="h-12 w-12 mr-4">
-                      <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
-                      <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
-                    </Avatar>
                     <div>
-                      <p className="font-semibold text-foreground">{testimonial.name}</p>
+                      <p className="font-semibold text-background">{testimonial.name}</p>
                       <p className="text-sm text-muted-foreground">{testimonial.title}</p>
                     </div>
                   </div>
@@ -197,16 +141,17 @@ export default function Home() {
         </div>
       </section>
 
+      {/* CTA Section */}
       <section className="w-full py-20 md:py-28">
         <div className="container mx-auto px-4 md:px-6">
-            <div className="bg-primary text-primary-foreground rounded-2xl shadow-xl p-10 md:p-16 text-center">
-                <h2 className="font-headline text-3xl md:text-4xl font-bold">Have an Idea? Let's Build It.</h2>
-                <p className="max-w-2xl mx-auto mt-4 text-primary-foreground/80 text-lg">
-                    Your next big project starts with a conversation. Let's connect and explore how we can bring your vision to life.
+            <div className="bg-background border p-10 md:p-16 text-center">
+                <h2 className="font-headline text-3xl md:text-4xl font-bold">Define Your Digital Presence.</h2>
+                <p className="max-w-2xl mx-auto mt-4 text-muted-foreground text-lg">
+                    Ready to build something with clarity and purpose? Let's talk.
                 </p>
                 <div className="mt-8">
-                    <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 rounded-full text-lg px-10 py-6">
-                        <Link href="/contact">Get a Free Consultation</Link>
+                    <Button asChild size="lg" className="bg-foreground text-background hover:bg-foreground/80 rounded-none text-lg px-10 py-6">
+                        <Link href="/contact">Get In Touch</Link>
                     </Button>
                 </div>
             </div>
