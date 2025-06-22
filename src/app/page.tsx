@@ -49,33 +49,25 @@ export default function Home() {
     <div className="flex flex-col text-foreground">
       {/* Hero Section */}
       <section 
-        className="w-full h-screen min-h-[700px] flex items-center justify-center relative overflow-hidden"
+        className="w-full min-h-screen flex items-center justify-center py-20"
       >
-        <div className="absolute inset-0 z-[-1]">
-          <Image
-            src="/hero.svg"
-            alt="Animated SVG Background"
-            fill
-            objectFit="cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-black/20" />
-        </div>
         <div className="container mx-auto px-4 md:px-6 text-center">
-          <h1 className="font-headline text-5xl md:text-8xl font-bold tracking-tighter uppercase drop-shadow-lg">
-            Clarity in Code.
-          </h1>
-          <h2 className="font-headline text-4xl md:text-6xl font-bold tracking-tighter uppercase text-white/70 mt-2 drop-shadow-md">
-            Power in Design.
-          </h2>
-          <p className="max-w-3xl text-white/90 mx-auto md:text-xl mt-8 leading-relaxed">
-            We are a digital agency that builds focused, high-impact digital solutions. No noise, just pure performance and elegant design that drives results.
-          </p>
-          <div className="mt-10">
-            <Button asChild size="lg" className="rounded-full text-lg px-10 py-7 bg-white text-black hover:bg-white/90 hover:shadow-lg hover:shadow-white/20 transition-all duration-300">
-              <Link href="/contact">Start a Project</Link>
-            </Button>
-          </div>
+            <div className="bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl py-16 md:py-24 px-8">
+                <h1 className="font-headline text-5xl md:text-8xl font-bold tracking-tighter uppercase drop-shadow-lg">
+                    Clarity in Code.
+                </h1>
+                <h2 className="font-headline text-4xl md:text-6xl font-bold tracking-tighter uppercase text-white/70 mt-2 drop-shadow-md">
+                    Power in Design.
+                </h2>
+                <p className="max-w-3xl text-white/90 mx-auto md:text-xl mt-8 leading-relaxed">
+                    We are a digital agency that builds focused, high-impact digital solutions. No noise, just pure performance and elegant design that drives results.
+                </p>
+                <div className="mt-10">
+                    <Button asChild size="lg" className="rounded-full text-lg px-10 py-7 bg-white text-black hover:bg-white/90 hover:shadow-lg hover:shadow-white/20 transition-all duration-300">
+                    <Link href="/contact">Start a Project</Link>
+                    </Button>
+                </div>
+            </div>
         </div>
       </section>
 
