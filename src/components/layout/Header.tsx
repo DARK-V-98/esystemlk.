@@ -35,7 +35,7 @@ export function Header() {
   return (
     <header className={cn(
       "sticky top-0 z-50 w-full transition-all duration-300",
-      isScrolled ? "bg-background/80 backdrop-blur-sm shadow-md" : "bg-background"
+      isScrolled ? "bg-black/50 backdrop-blur-lg border-b border-white/10" : "bg-transparent"
     )}>
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex h-20 items-center justify-between">
@@ -74,7 +74,7 @@ export function Header() {
       </div>
       
       {isOpen && (
-        <div className="md:hidden bg-background border-t">
+        <div className="md:hidden bg-black/80 backdrop-blur-lg border-t border-white/10">
           <nav className="flex flex-col items-center gap-4 p-6">
             {navLinks.map((link) => (
               <Link
@@ -82,7 +82,7 @@ export function Header() {
                 href={link.href}
                 className={cn(
                   "text-lg font-medium transition-colors hover:text-primary w-full text-center py-2 rounded-md",
-                  pathname === link.href ? "text-primary bg-secondary" : "text-foreground"
+                  pathname === link.href ? "text-primary" : "text-foreground"
                 )}
               >
                 {link.label}

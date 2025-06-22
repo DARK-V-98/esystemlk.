@@ -44,10 +44,10 @@ const values = [
 export default function AboutPage() {
   return (
     <>
-      <section className="w-full py-20 md:py-28 bg-primary text-primary-foreground">
-        <div className="container mx-auto px-4 md:px-6 text-center">
+      <section className="w-full py-20 md:py-28">
+        <div className="container mx-auto px-4 md:px-6 text-center bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl py-12">
           <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">About ESystemLk</h1>
-          <p className="max-w-[700px] mx-auto text-primary-foreground/80 md:text-xl mt-4">
+          <p className="max-w-[700px] mx-auto text-white/80 md:text-xl mt-4">
             We are a team of passionate developers, designers, and strategists dedicated to building the future of technology.
           </p>
         </div>
@@ -55,7 +55,7 @@ export default function AboutPage() {
 
       <section className="py-20 md:py-24">
         <div className="container mx-auto px-4 md:px-6">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="grid md:grid-cols-2 gap-12 items-center p-8 md:p-12 rounded-3xl bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl">
                 <div className="order-2 md:order-1">
                     <h2 className="font-headline text-3xl font-bold mb-4">Our Mission</h2>
                     <p className="text-muted-foreground mb-4">
@@ -79,7 +79,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="py-20 md:py-24 bg-secondary/50">
+      <section className="py-20 md:py-24">
         <div className="container mx-auto px-4 md:px-6">
             <div className="text-center mb-12">
                 <h2 className="font-headline text-3xl md:text-4xl font-bold">Our Core Values</h2>
@@ -87,7 +87,7 @@ export default function AboutPage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {values.map(value => (
-                    <Card key={value.title} className="text-center p-6 rounded-2xl shadow-md bg-background">
+                    <Card key={value.title} className="text-center p-6 rounded-2xl shadow-lg bg-black/30 backdrop-blur-lg border border-white/10">
                        <h3 className="font-headline text-xl font-semibold mb-2">{value.title}</h3>
                        <p className="text-muted-foreground text-sm">{value.description}</p>
                     </Card>
@@ -104,7 +104,7 @@ export default function AboutPage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {teamMembers.map((member) => (
-              <Card key={member.name} className="text-center rounded-2xl shadow-lg p-6 transition-transform duration-300 hover:-translate-y-2">
+              <Card key={member.name} className="text-center p-6 transition-transform duration-300 hover:-translate-y-2 bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
                 <CardContent className="p-0">
                   <Avatar className="w-28 h-28 mx-auto mb-4 border-4 border-primary">
                     <AvatarImage src={member.avatar} alt={member.name} data-ai-hint={member.hint} />

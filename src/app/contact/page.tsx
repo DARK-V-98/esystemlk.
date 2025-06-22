@@ -5,8 +5,8 @@ import { Mail, MessageCircle, MapPin } from "lucide-react";
 export default function ContactPage() {
   return (
     <>
-      <section className="w-full py-20 md:py-28 bg-background">
-        <div className="container mx-auto px-4 md:px-6 text-center">
+      <section className="w-full py-20 md:py-28">
+        <div className="container mx-auto px-4 md:px-6 text-center bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl py-12">
           <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">Get in Touch</h1>
           <p className="max-w-[700px] mx-auto text-muted-foreground md:text-xl mt-4">
             We'd love to hear from you. Whether you have a question about our services or want to start a project, our team is ready to answer all your questions.
@@ -23,7 +23,7 @@ export default function ContactPage() {
                 </div>
                 <div className="space-y-8">
                     <h2 className="font-headline text-3xl font-bold">Contact Information</h2>
-                    <Card className="rounded-2xl shadow-md">
+                    <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-md">
                         <CardContent className="p-6">
                             <a href="mailto:contact@esystemlk.com" className="flex items-center gap-4 group">
                                 <Mail className="w-8 h-8 text-primary" />
@@ -34,7 +34,7 @@ export default function ContactPage() {
                             </a>
                         </CardContent>
                     </Card>
-                     <Card className="rounded-2xl shadow-md">
+                     <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-md">
                         <CardContent className="p-6">
                             <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group">
                                 <MessageCircle className="w-8 h-8 text-primary" />
@@ -45,7 +45,7 @@ export default function ContactPage() {
                             </a>
                         </CardContent>
                     </Card>
-                     <Card className="rounded-2xl shadow-md">
+                     <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-md">
                         <CardContent className="p-6">
                             <div className="flex items-center gap-4">
                                 <MapPin className="w-8 h-8 text-primary" />

@@ -58,7 +58,7 @@ export function ContactForm() {
   }
 
   return (
-    <Card className="rounded-2xl shadow-lg">
+    <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
         <CardContent className="p-8">
             <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -69,7 +69,7 @@ export function ContactForm() {
                     <FormItem>
                     <FormLabel>Full Name</FormLabel>
                     <FormControl>
-                        <Input placeholder="John Doe" {...field} className="rounded-lg"/>
+                        <Input placeholder="John Doe" {...field} className="rounded-lg bg-black/20 border-white/20"/>
                     </FormControl>
                     <FormMessage />
                     </FormItem>
@@ -82,7 +82,7 @@ export function ContactForm() {
                     <FormItem>
                     <FormLabel>Email Address</FormLabel>
                     <FormControl>
-                        <Input placeholder="you@example.com" {...field} className="rounded-lg"/>
+                        <Input placeholder="you@example.com" {...field} className="rounded-lg bg-black/20 border-white/20"/>
                     </FormControl>
                     <FormMessage />
                     </FormItem>
@@ -95,7 +95,7 @@ export function ContactForm() {
                     <FormItem>
                     <FormLabel>Subject</FormLabel>
                     <FormControl>
-                        <Input placeholder="Regarding a project..." {...field} className="rounded-lg"/>
+                        <Input placeholder="Regarding a project..." {...field} className="rounded-lg bg-black/20 border-white/20"/>
                     </FormControl>
                     <FormMessage />
                     </FormItem>
@@ -110,7 +110,7 @@ export function ContactForm() {
                     <FormControl>
                         <Textarea
                             placeholder="Tell us about your project or inquiry..."
-                            className="resize-none rounded-lg"
+                            className="resize-none rounded-lg bg-black/20 border-white/20"
                             rows={6}
                             {...field}
                         />

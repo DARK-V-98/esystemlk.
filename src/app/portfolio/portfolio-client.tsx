@@ -59,7 +59,10 @@ export default function PortfolioClient() {
             key={category}
             variant={filter === category ? "default" : "outline"}
             onClick={() => setFilter(category)}
-            className="rounded-full"
+            className={cn(
+                "rounded-full",
+                filter === category ? "bg-primary text-primary-foreground" : "bg-black/20 text-white border-white/20 hover:bg-white/20"
+            )}
           >
             {category}
           </Button>
@@ -68,7 +71,7 @@ export default function PortfolioClient() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredProjects.map((project, index) => (
-          <Card key={index} className="rounded-2xl shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
+          <Card key={index} className="overflow-hidden group transition-all duration-300 hover:shadow-xl hover:-translate-y-2 bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
             <div className="overflow-hidden">
                 <Image
                 src={project.image}
@@ -85,7 +88,7 @@ export default function PortfolioClient() {
               <p className="text-muted-foreground text-sm mb-4">{project.description}</p>
               <div className="flex flex-wrap gap-2">
                 {project.tech.map(t => (
-                  <span key={t} className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded-full">
+                  <span key={t} className="text-xs bg-white/10 text-white px-2 py-1 rounded-full">
                     {t}
                   </span>
                 ))}

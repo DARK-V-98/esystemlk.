@@ -15,11 +15,11 @@ export function StarRating({ rating, className, starClassName }: StarRatingProps
   return (
     <div className={cn('flex items-center gap-0.5', className)}>
       {[...Array(fullStars)].map((_, i) => (
-        <Star key={`full-${i}`} className={cn('w-5 h-5 text-accent fill-accent', starClassName)} />
+        <Star key={`full-${i}`} className={cn('w-5 h-5 text-foreground fill-foreground', starClassName)} />
       ))}
-      {halfStar && <StarHalf className={cn('w-5 h-5 text-accent fill-accent', starClassName)} />}
+      {halfStar && <StarHalf className={cn('w-5 h-5 text-foreground fill-foreground', starClassName)} />}
       {[...Array(emptyStars)].map((_, i) => (
-        <Star key={`empty-${i}`} className={cn('w-5 h-5 text-accent/30 fill-accent/30', starClassName)} />
+        <Star key={`empty-${i}`} className={cn('w-5 h-5 text-foreground/30 fill-foreground/30', starClassName)} />
       ))}
     </div>
   );

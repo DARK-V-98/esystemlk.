@@ -32,8 +32,8 @@ const services = [
 export default function ServicesPage() {
   return (
     <>
-      <section className="w-full py-20 md:py-28 bg-background">
-        <div className="container mx-auto px-4 md:px-6 text-center">
+      <section className="w-full py-20 md:py-28">
+        <div className="container mx-auto px-4 md:px-6 text-center bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl py-12">
           <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">Our Services</h1>
           <p className="max-w-[700px] mx-auto text-muted-foreground md:text-xl mt-4">
             We provide a comprehensive suite of technology services to fuel your success.
@@ -45,7 +45,7 @@ export default function ServicesPage() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service) => (
-              <Card key={service.title} className="rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
+              <Card key={service.title} className="transition-all duration-300 hover:shadow-xl hover:-translate-y-2 bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
                 <CardContent className="p-8">
                   <div className="mb-6">{service.icon}</div>
                   <h3 className="font-headline text-2xl font-semibold mb-3">{service.title}</h3>
