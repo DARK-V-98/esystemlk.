@@ -44,9 +44,6 @@ export function Footer({ pageSettings }: { pageSettings: PageVisibility }) {
               <a href="https://wa.me/94765711396" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
                 <MessageCircle className="h-6 w-6" />
               </a>
-              <a href="#" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
-                <Linkedin className="h-6 w-6" />
-              </a>
             </div>
           </div>
         </div>

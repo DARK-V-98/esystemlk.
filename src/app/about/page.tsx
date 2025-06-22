@@ -115,7 +115,6 @@ export default function AboutPage() {
                   <p className="text-muted-foreground text-sm mt-2 mb-4">{member.bio}</p>
                   <div className="flex justify-center gap-4">
                     <a href="#" className="text-muted-foreground hover:text-primary"><Twitter className="w-5 h-5" /></a>
-                    <a href="#" className="text-muted-foreground hover:text-primary"><Linkedin className="w-5 h-5" /></a>
                   </div>
                 </CardContent>
               </Card>
