@@ -3,6 +3,7 @@
 import { useAuth } from "@/hooks/use-auth";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Link from "next/link";
+import { Mail } from "lucide-react";
 
 export default function AdminPage() {
   const { user } = useAuth();
@@ -23,15 +24,18 @@ export default function AdminPage() {
             <p className="text-muted-foreground">Manage user roles and permissions.</p>
           </CardContent>
         </Card>
-        <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
-          <CardHeader>
-            <CardTitle>Content Management</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground">Update services, portfolio, and blog.</p>
-          </CardContent>
-        </Card>
-         <Link href="/admin/pricing" className="block hover:scale-105 transition-transform duration-300">
+        <Link href="/admin/messages" className="block hover:scale-105 transition-transform duration-300">
+            <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg h-full hover:border-primary transition-colors">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>View Messages</CardTitle>
+                <Mail className="w-6 h-6 text-primary" />
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">Read and manage messages from the contact form.</p>
+              </CardContent>
+            </Card>
+        </Link>
+        <Link href="/admin/pricing" className="block hover:scale-105 transition-transform duration-300">
             <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg h-full hover:border-primary transition-colors">
               <CardHeader>
                 <CardTitle>Pricing Management</CardTitle>
