@@ -8,26 +8,35 @@ import Link from "next/link";
 import { Info, PlusCircle } from "lucide-react";
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { cn } from '@/lib/utils';
+import * as Icons from 'lucide-react';
+
 
 // Define types for the props
 type Tier = { name: string; price: string };
 type Addon = { name: string; price: string };
 type Service = { name: string; tiers: Tier[]; addons?: Addon[] };
 type PricingCategory = {
-    icon: React.ReactNode;
+    id: string;
+    icon: keyof typeof Icons;
     category: string;
     services: Service[];
 };
 type CommonAddons = {
-    icon: React.ReactNode;
+    icon: keyof typeof Icons;
     category: string;
     items: { name: string; price: string }[];
 };
 
 type PricingClientProps = {
     pricingData: PricingCategory[];
-    commonAddons: CommonAddons;
+    commonAddons: CommonAddons | null;
+};
+
+// Generic Icon component
+const Icon = ({ name, className }: { name: keyof typeof Icons; className?: string }) => {
+    const LucideIcon = Icons[name] as React.ElementType;
+    if (!LucideIcon) return <Icons.Package className={className} />;
+    return <LucideIcon className={className} />;
 };
 
 export default function PricingClient({ pricingData, commonAddons }: PricingClientProps) {
@@ -120,11 +129,11 @@ export default function PricingClient({ pricingData, commonAddons }: PricingClie
             </Card>
 
             {filteredPricingData.length > 0 ? (
-                filteredPricingData.map((categoryData, index) => (
-                    <Card key={index} className="bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl overflow-hidden">
+                filteredPricingData.map((categoryData) => (
+                    <Card key={categoryData.id} className="bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl overflow-hidden">
                         <CardHeader className="p-8 md:p-12">
                             <div className="flex items-start md:items-center gap-6 flex-col md:flex-row">
-                                {categoryData.icon}
+                                <Icon name={categoryData.icon} className="w-10 h-10 text-primary" />
                                 <CardTitle className="font-headline text-3xl font-bold">{categoryData.category}</CardTitle>
                             </div>
                         </CardHeader>
@@ -168,24 +177,26 @@ export default function PricingClient({ pricingData, commonAddons }: PricingClie
                 </div>
             )}
 
-            <Card className="bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl overflow-hidden">
-                <CardHeader className="p-8 md:p-12">
-                    <div className="flex items-start md:items-center gap-6 flex-col md:flex-row">
-                        {commonAddons.icon}
-                        <CardTitle className="font-headline text-3xl font-bold">{commonAddons.category}</CardTitle>
-                    </div>
-                </CardHeader>
-                <CardContent className="px-8 md:px-12 pb-8 md:pb-12 pt-0">
-                     <ul className="space-y-3">
-                        {commonAddons.items.map((item, iIndex) => (
-                           <li key={iIndex} className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 text-muted-foreground border-b border-white/10 pb-3">
-                               <span>{item.name}</span>
-                               <span className="font-semibold text-foreground text-right">{item.price}</span>
-                           </li>
-                        ))}
-                    </ul>
-                </CardContent>
-            </Card>
+            {commonAddons && (
+                 <Card className="bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl overflow-hidden">
+                    <CardHeader className="p-8 md:p-12">
+                        <div className="flex items-start md:items-center gap-6 flex-col md:flex-row">
+                            <Icon name={commonAddons.icon} className="w-10 h-10 text-primary" />
+                            <CardTitle className="font-headline text-3xl font-bold">{commonAddons.category}</CardTitle>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="px-8 md:px-12 pb-8 md:pb-12 pt-0">
+                         <ul className="space-y-3">
+                            {commonAddons.items.map((item, iIndex) => (
+                               <li key={iIndex} className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 text-muted-foreground border-b border-white/10 pb-3">
+                                   <span>{item.name}</span>
+                                   <span className="font-semibold text-foreground text-right">{item.price}</span>
+                               </li>
+                            ))}
+                        </ul>
+                    </CardContent>
+                </Card>
+            )}
         </div>
     );
 }

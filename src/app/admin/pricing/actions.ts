@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '@/lib/firebase';
-import { writeBatch, doc, collection } from 'firebase/firestore';
+import { writeBatch, doc, collection, updateDoc, deleteDoc, getDoc } from 'firebase/firestore';
 
 const pricingData = [
   {
@@ -203,5 +203,63 @@ export async function uploadPricingData() {
         const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
         console.error("Error uploading pricing data: ", errorMessage);
         return { success: false, message: `Failed to upload pricing data: ${errorMessage}` };
+    }
+}
+
+export async function updatePricingDocStatus(docId: string, enabled: boolean) {
+    const docRef = doc(db, 'pricing', docId);
+    try {
+        await updateDoc(docRef, { enabled });
+        return { success: true, message: `Successfully ${enabled ? 'enabled' : 'disabled'} document.` };
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+        return { success: false, message: `Failed to update status: ${errorMessage}` };
+    }
+}
+
+export async function deletePricingDoc(docId: string) {
+    const docRef = doc(db, 'pricing', docId);
+    try {
+        await deleteDoc(docRef);
+        return { success: true, message: 'Successfully deleted document.' };
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+        return { success: false, message: `Failed to delete document: ${errorMessage}` };
+    }
+}
+
+export async function updateServiceStatus(categoryId: string, serviceName: string, enabled: boolean) {
+    const categoryRef = doc(db, 'pricing', categoryId);
+    try {
+        const categorySnap = await getDoc(categoryRef);
+        if (!categorySnap.exists()) {
+            throw new Error("Category not found");
+        }
+        const categoryData = categorySnap.data();
+        const updatedServices = categoryData.services.map((service: any) => 
+            service.name === serviceName ? { ...service, enabled } : service
+        );
+        await updateDoc(categoryRef, { services: updatedServices });
+        return { success: true, message: `Successfully updated service status.` };
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+        return { success: false, message: `Failed to update service status: ${errorMessage}` };
+    }
+}
+
+export async function deleteServiceFromCategory(categoryId: string, serviceName: string) {
+    const categoryRef = doc(db, 'pricing', categoryId);
+    try {
+        const categorySnap = await getDoc(categoryRef);
+        if (!categorySnap.exists()) {
+            throw new Error("Category not found");
+        }
+        const categoryData = categorySnap.data();
+        const updatedServices = categoryData.services.filter((service: any) => service.name !== serviceName);
+        await updateDoc(categoryRef, { services: updatedServices });
+        return { success: true, message: 'Successfully deleted service.' };
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+        return { success: false, message: `Failed to delete service: ${errorMessage}` };
     }
 }

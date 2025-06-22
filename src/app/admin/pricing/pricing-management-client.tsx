@@ -5,13 +5,14 @@ import React, { useState, useEffect, useTransition } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
-import { uploadPricingData } from './actions';
+import { updatePricingDocStatus, uploadPricingData, deletePricingDoc, updateServiceStatus, deleteServiceFromCategory } from './actions';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import * as Icons from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 
 // Define types for better readability
 type Tier = { name: string; price: string };
@@ -44,6 +45,7 @@ export default function PricingManagementClient() {
     const [isLoading, setIsLoading] = useState(true);
     const [isPending, startTransition] = useTransition();
     const { toast } = useToast();
+    const [itemToDelete, setItemToDelete] = useState<{ type: 'category' | 'service'; categoryId: string; serviceName?: string } | null>(null);
 
     useEffect(() => {
         const q = query(collection(db, 'pricing'), orderBy('order'));
@@ -70,6 +72,42 @@ export default function PricingManagementClient() {
         });
     };
     
+    const handleStatusChange = (type: 'category' | 'service', id: string, status: boolean, serviceName?: string) => {
+        startTransition(async () => {
+            let result;
+            if (type === 'category') {
+                result = await updatePricingDocStatus(id, status);
+            } else if (type === 'service' && serviceName) {
+                result = await updateServiceStatus(id, serviceName, status);
+            }
+            toast({
+                title: result?.success ? 'Success' : 'Error',
+                description: result?.message,
+                variant: result?.success ? 'default' : 'destructive',
+            });
+        });
+    };
+    
+    const handleDelete = () => {
+        if (!itemToDelete) return;
+        
+        startTransition(async () => {
+            let result;
+            if (itemToDelete.type === 'category') {
+                result = await deletePricingDoc(itemToDelete.categoryId);
+            } else if (itemToDelete.type === 'service' && itemToDelete.serviceName) {
+                result = await deleteServiceFromCategory(itemToDelete.categoryId, itemToDelete.serviceName);
+            }
+            toast({
+                title: result?.success ? 'Success' : 'Error',
+                description: result?.message,
+                variant: result?.success ? 'default' : 'destructive',
+            });
+            setItemToDelete(null);
+        });
+    };
+
+
     const renderSkeleton = () => (
         <div className="space-y-4">
             <Skeleton className="h-24 w-full" />
@@ -81,6 +119,22 @@ export default function PricingManagementClient() {
 
     return (
         <div className="space-y-8">
+            <AlertDialog open={!!itemToDelete} onOpenChange={(open) => !open && setItemToDelete(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This action cannot be undone. This will permanently delete the selected item from the database.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleDelete} disabled={isPending}>
+                            {isPending ? 'Deleting...' : 'Continue'}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
             <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
                 <CardHeader>
                     <CardTitle>Database Management</CardTitle>
@@ -105,8 +159,12 @@ export default function PricingManagementClient() {
                                     <CardTitle className="text-2xl font-headline">{category.category}</CardTitle>
                                 </div>
                                 <div className="flex items-center gap-4">
-                                    <Switch checked={category.enabled} disabled />
-                                    <Button variant="ghost" size="sm" disabled><Icons.Trash2 className="w-4 h-4" /></Button>
+                                    <Switch checked={category.enabled} onCheckedChange={(checked) => handleStatusChange('category', category.id, checked)} disabled={isPending} />
+                                     <AlertDialogTrigger asChild>
+                                        <Button variant="ghost" size="sm" onClick={() => setItemToDelete({ type: 'category', categoryId: category.id })} disabled={isPending}>
+                                            <Icons.Trash2 className="w-4 h-4" />
+                                        </Button>
+                                    </AlertDialogTrigger>
                                     <Button variant="ghost" size="sm" disabled><Icons.FileEdit className="w-4 h-4" /></Button>
                                 </div>
                             </CardHeader>
@@ -120,8 +178,12 @@ export default function PricingManagementClient() {
                                                         <span className="font-semibold text-lg text-left text-primary/90">{service.name}</span>
                                                     </AccordionTrigger>
                                                     <div className="flex items-center gap-2">
-                                                        <Switch checked={service.enabled} disabled />
-                                                        <Button variant="ghost" size="icon" className="h-8 w-8" disabled><Icons.Trash2 className="w-4 h-4" /></Button>
+                                                        <Switch checked={service.enabled} onCheckedChange={(checked) => handleStatusChange('service', category.id, checked, service.name)} disabled={isPending} />
+                                                         <AlertDialogTrigger asChild>
+                                                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setItemToDelete({ type: 'service', categoryId: category.id, serviceName: service.name })} disabled={isPending}>
+                                                                <Icons.Trash2 className="w-4 h-4" />
+                                                            </Button>
+                                                        </AlertDialogTrigger>
                                                         <Button variant="ghost" size="icon" className="h-8 w-8" disabled><Icons.FileEdit className="w-4 h-4" /></Button>
                                                     </div>
                                                 </div>
