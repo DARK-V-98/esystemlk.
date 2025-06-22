@@ -73,7 +73,7 @@
     @apply border-border;
   }
   body {
-    @apply text-foreground;
+    @apply bg-background text-foreground;
   }
   .background-video {
     @apply fixed right-0 bottom-0 min-w-full min-h-full -z-10 object-cover;
