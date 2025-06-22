@@ -36,9 +36,12 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={cn("scroll-smooth", poppins.variable, dmSans.variable)}>
-      <body className="font-body antialiased bg-background text-foreground">
+      <body className="font-body antialiased text-foreground">
         <AuthProvider>
-          <div className="relative z-0 flex flex-col min-h-screen">
+           <video autoPlay loop muted playsInline className="background-video">
+            <source src="/background.mp4" type="video/mp4" />
+          </video>
+          <div className="relative z-10 flex flex-col min-h-screen bg-black/50">
               <Header pageSettings={pageSettings} />
               <main className="flex-grow">{children}</main>
               <Footer pageSettings={pageSettings} />
