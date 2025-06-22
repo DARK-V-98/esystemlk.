@@ -1,31 +1,36 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { CodeXml, CloudCog, ShieldCheck, Layers, Bot } from 'lucide-react';
+import { CodeXml, DatabaseZap, LayoutDashboard, Truck, CreditCard, Server } from 'lucide-react';
 
 const services = [
   {
     icon: <CodeXml className="w-12 h-12 text-primary" />,
     title: "Custom Web Development",
-    description: "We build bespoke, high-performance websites and web applications from the ground up, ensuring they are perfectly tailored to your business objectives and brand identity. Our solutions are responsive, scalable, and optimized for search engines."
+    description: "We build bespoke, high-performance websites and web applications from the ground up, ensuring they are perfectly tailored to your business objectives and brand identity."
   },
   {
-    icon: <CloudCog className="w-12 h-12 text-primary" />,
-    title: "Cloud & DevOps Solutions",
-    description: "Leverage the power of the cloud with our expert solutions. We provide cloud infrastructure setup, migration, and management services, along with CI/CD pipeline implementation to automate and streamline your development process."
+    icon: <DatabaseZap className="w-12 h-12 text-primary" />,
+    title: "Firebase & Backend Solutions",
+    description: "Leverage the power of Firebase and modern backends for robust, scalable server-side solutions, database design, and API development for your applications."
   },
   {
-    icon: <Layers className="w-12 h-12 text-primary" />,
-    title: "UI/UX Design",
-    description: "First impressions matter. Our UI/UX design team creates visually stunning and user-friendly interfaces that enhance user satisfaction and drive engagement. We focus on creating a seamless journey for your users across all digital touchpoints."
+    icon: <LayoutDashboard className="w-12 h-12 text-primary" />,
+    title: "Admin Panels & Dashboards",
+    description: "Manage your business effectively with custom-built admin panels and data dashboards. We create intuitive interfaces to monitor and control your operations with ease."
   },
   {
-    icon: <ShieldCheck className="w-12 h-12 text-primary" />,
-    title: "IT Security & Consultation",
-    description: "Protect your digital assets with our comprehensive security services. We offer security audits, vulnerability assessments, and strategic consulting to fortify your systems against threats and ensure data integrity."
+    icon: <Truck className="w-12 h-12 text-primary" />,
+    title: "Courier/Logistics Systems",
+    description: "Streamline your delivery operations with our specialized courier and logistics software. We develop systems for tracking, dispatch, and management to enhance efficiency."
   },
   {
-    icon: <Bot className="w-12 h-12 text-primary" />,
-    title: "AI & Machine Learning",
-    description: "Unlock the potential of your data with our AI and ML services. We develop custom models and integrate intelligent solutions to automate processes, derive insights, and create innovative products for a competitive edge."
+    icon: <CreditCard className="w-12 h-12 text-primary" />,
+    title: "Payment Integration (PayHere/IPG)",
+    description: "Seamlessly integrate local and international payment gateways like PayHere and IPG, providing your customers with secure and convenient payment options."
+  },
+  {
+    icon: <Server className="w-12 h-12 text-primary" />,
+    title: "Hosting & Maintenance",
+    description: "Ensure your application is always online and performing at its best with our reliable hosting and ongoing maintenance services. We handle the technical details for you."
   }
 ];
 
