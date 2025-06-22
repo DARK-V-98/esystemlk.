@@ -5,6 +5,7 @@ import { Footer } from '@/components/layout/Footer';
 import { Toaster } from "@/components/ui/toaster";
 import { Poppins, DM_Sans } from 'next/font/google'
 import { cn } from '@/lib/utils';
+import { AuthProvider } from '@/hooks/use-auth';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -33,24 +34,26 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("scroll-smooth", poppins.variable, dmSans.variable)}>
       <body className="font-body antialiased bg-black text-foreground">
-        <div className="fixed inset-0 z-[-2]">
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-cover"
-            >
-              <source src="/bg.mp4" type="video/mp4" />
-            </video>
-            <div className="absolute inset-0 bg-black/60" />
-        </div>
-        <div className="relative z-0 flex flex-col min-h-screen">
-            <Header />
-            <main className="flex-grow">{children}</main>
-            <Footer />
-        </div>
-        <Toaster />
+        <AuthProvider>
+          <div className="fixed inset-0 z-[-2]">
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover"
+              >
+                <source src="/bg.mp4" type="video/mp4" />
+              </video>
+              <div className="absolute inset-0 bg-black/60" />
+          </div>
+          <div className="relative z-0 flex flex-col min-h-screen">
+              <Header />
+              <main className="flex-grow">{children}</main>
+              <Footer />
+          </div>
+          <Toaster />
+        </AuthProvider>
       </body>
     </html>
   );
