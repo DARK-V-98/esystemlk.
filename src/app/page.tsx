@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, CloudCog, CodeXml, PenTool, ShieldCheck } from "lucide-react";
@@ -44,15 +45,19 @@ export default function Home() {
   return (
     <div className="flex flex-col bg-background text-foreground">
       {/* Hero Section */}
-      <section className="w-full h-[90vh] min-h-[600px] flex items-center justify-center bg-foreground text-background">
-        <div className="container mx-auto px-4 md:px-6 text-center z-10">
+      <section 
+        className="relative w-full h-[90vh] min-h-[600px] flex items-center justify-center text-background bg-cover bg-center"
+        style={{ backgroundImage: "url(/hero.svg)" }}
+      >
+        <div className="absolute inset-0 bg-black/60" />
+        <div className="relative z-10 container mx-auto px-4 md:px-6 text-center">
           <h1 className="font-headline text-5xl md:text-7xl font-bold tracking-tighter uppercase">
             Clarity in Code.
           </h1>
-          <h2 className="font-headline text-5xl md:text-7xl font-bold tracking-tighter uppercase text-muted-foreground/80">
+          <h2 className="font-headline text-5xl md:text-7xl font-bold tracking-tighter uppercase text-background/70">
             Power in Design.
           </h2>
-          <p className="max-w-2xl text-muted-foreground mx-auto md:text-xl mt-6">
+          <p className="max-w-2xl text-background/90 mx-auto md:text-xl mt-6">
             We build focused, high-impact digital solutions. No noise, just results.
           </p>
           <div className="mt-10">
