@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -14,7 +14,18 @@ export function PrivateRoute({ children, allowedRoles }: PrivateRouteProps) {
   const { user, loading } = useAuth();
   const router = useRouter();
 
-  if (loading) {
+  useEffect(() => {
+    if (loading) {
+      return;
+    }
+    if (!user) {
+      router.replace('/login');
+    } else if (!allowedRoles.includes(user.role)) {
+      router.replace('/');
+    }
+  }, [user, loading, router, allowedRoles]);
+
+  if (loading || !user) {
     return (
         <div className="container mx-auto py-10 px-4 md:px-6">
             <Skeleton className="h-24 w-full mb-10 rounded-3xl" />
@@ -27,14 +38,7 @@ export function PrivateRoute({ children, allowedRoles }: PrivateRouteProps) {
     );
   }
 
-  if (!user) {
-    router.replace('/login');
-    return null;
-  }
-
   if (!allowedRoles.includes(user.role)) {
-    router.replace('/');
-    // You can optionally show an "Access Denied" message before redirecting
     return (
         <div className="container mx-auto flex items-center justify-center min-h-[calc(100vh-10rem)]">
             <div className="text-center">
