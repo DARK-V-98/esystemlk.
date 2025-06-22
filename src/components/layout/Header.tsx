@@ -10,21 +10,27 @@ import { useAuth } from '@/hooks/use-auth';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '../ui/skeleton';
+import type { PageVisibility } from '@/app/admin/pages/actions';
 
-const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/services', label: 'Services' },
-  { href: '/portfolio', label: 'Portfolio' },
-  { href: '/pricing', label: 'Pricing' },
-  { href: '/about', label: 'About Us' },
-  { href: '/testimonials', label: 'Testimonials' },
+const allNavLinks = [
+  { href: '/', label: 'Home', key: 'showHome' },
+  { href: '/services', label: 'Services', key: 'showServices' },
+  { href: '/portfolio', label: 'Portfolio', key: 'showPortfolio' },
+  { href: '/pricing', label: 'Pricing', key: 'showPricing' },
+  { href: '/about', label: 'About Us', key: 'showAbout' },
+  { href: '/testimonials', label: 'Testimonials', key: 'showTestimonials' },
 ];
 
-export function Header() {
+export function Header({ pageSettings }: { pageSettings: PageVisibility }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
   const { user, loading, signOut } = useAuth();
+
+  const navLinks = allNavLinks.filter(link => {
+    if (link.key === 'showHome') return true;
+    return pageSettings[link.key as keyof PageVisibility] !== false;
+  });
 
   useEffect(() => {
     const handleScroll = () => {

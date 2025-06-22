@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Poppins, DM_Sans } from 'next/font/google'
 import { cn } from '@/lib/utils';
 import { AuthProvider } from '@/hooks/use-auth';
+import { getPageSettings, PageVisibility } from '@/app/admin/pages/actions';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -26,11 +27,13 @@ export const metadata: Metadata = {
   description: 'ESystemLk offers cutting-edge web development and cloud solutions to elevate your business.',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pageSettings = await getPageSettings();
+
   return (
     <html lang="en" className={cn("scroll-smooth", poppins.variable, dmSans.variable)}>
       <body className="font-body antialiased bg-black text-foreground">
@@ -48,9 +51,9 @@ export default function RootLayout({
               <div className="absolute inset-0 bg-black/60" />
           </div>
           <div className="relative z-0 flex flex-col min-h-screen">
-              <Header />
+              <Header pageSettings={pageSettings} />
               <main className="flex-grow">{children}</main>
-              <Footer />
+              <Footer pageSettings={pageSettings} />
           </div>
           <Toaster />
         </AuthProvider>

@@ -41,6 +41,16 @@ export default function AdminPage() {
               </CardContent>
             </Card>
         </Link>
+        <Link href="/admin/pages" className="block hover:scale-105 transition-transform duration-300">
+            <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg h-full hover:border-primary transition-colors">
+              <CardHeader>
+                <CardTitle>Page Management</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">Enable or disable pages and sections on your website.</p>
+              </CardContent>
+            </Card>
+        </Link>
         <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
           <CardHeader>
             <CardTitle>View Analytics</CardTitle>

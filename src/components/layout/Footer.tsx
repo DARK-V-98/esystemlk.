@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { Code2, Github, Twitter, Linkedin } from 'lucide-react';
+import type { PageVisibility } from '@/app/admin/pages/actions';
 
-export function Footer() {
+export function Footer({ pageSettings }: { pageSettings: PageVisibility }) {
   const currentYear = new Date().getFullYear();
 
   return (
@@ -20,10 +21,10 @@ export function Footer() {
           <div>
             <h4 className="font-headline font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
-              <li><Link href="/about" className="text-sm text-muted-foreground hover:text-primary">About Us</Link></li>
-              <li><Link href="/services" className="text-sm text-muted-foreground hover:text-primary">Services</Link></li>
-              <li><Link href="/portfolio" className="text-sm text-muted-foreground hover:text-primary">Portfolio</Link></li>
-              <li><Link href="/pricing" className="text-sm text-muted-foreground hover:text-primary">Pricing</Link></li>
+              {pageSettings?.showAbout && <li><Link href="/about" className="text-sm text-muted-foreground hover:text-primary">About Us</Link></li>}
+              {pageSettings?.showServices && <li><Link href="/services" className="text-sm text-muted-foreground hover:text-primary">Services</Link></li>}
+              {pageSettings?.showPortfolio && <li><Link href="/portfolio" className="text-sm text-muted-foreground hover:text-primary">Portfolio</Link></li>}
+              {pageSettings?.showPricing && <li><Link href="/pricing" className="text-sm text-muted-foreground hover:text-primary">Pricing</Link></li>}
               <li><Link href="/contact" className="text-sm text-muted-foreground hover:text-primary">Contact</Link></li>
             </ul>
           </div>
