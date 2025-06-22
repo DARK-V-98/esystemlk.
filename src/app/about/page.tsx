@@ -104,7 +104,7 @@ export default function AboutPage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {teamMembers.map((member) => (
-              <Card key={member.name} className="text-center p-6 transition-transform duration-300 hover:-translate-y-2 bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
+              <Card key={member.name} className="text-center p-6 transition-all duration-300 hover:-translate-y-2 bg-black/30 backdrop-blur-lg border border-white/10 hover:border-white/30 rounded-2xl shadow-lg">
                 <CardContent className="p-0">
                   <Avatar className="w-28 h-28 mx-auto mb-4 border-4 border-primary">
                     <AvatarImage src={member.avatar} alt={member.name} data-ai-hint={member.hint} />

@@ -45,9 +45,9 @@ export default function ServicesPage() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service) => (
-              <Card key={service.title} className="transition-all duration-300 hover:shadow-xl hover:-translate-y-2 bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
+              <Card key={service.title} className="transition-all duration-300 hover:shadow-xl hover:-translate-y-2 bg-black/30 backdrop-blur-lg border border-white/10 hover:border-white/30 rounded-2xl shadow-lg group">
                 <CardContent className="p-8">
-                  <div className="mb-6">{service.icon}</div>
+                  <div className="mb-6 transition-transform duration-300 group-hover:scale-110 w-fit">{service.icon}</div>
                   <h3 className="font-headline text-2xl font-semibold mb-3">{service.title}</h3>
                   <p className="text-muted-foreground">{service.description}</p>
                 </CardContent>

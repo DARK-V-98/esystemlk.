@@ -69,7 +69,7 @@ export function ContactForm() {
                     <FormItem>
                     <FormLabel>Full Name</FormLabel>
                     <FormControl>
-                        <Input placeholder="John Doe" {...field} className="rounded-lg bg-black/20 border-white/20"/>
+                        <Input placeholder="John Doe" {...field} className="rounded-lg bg-black/30 border-white/10 focus:border-white/50 focus:ring-0 transition-colors"/>
                     </FormControl>
                     <FormMessage />
                     </FormItem>
@@ -82,7 +82,7 @@ export function ContactForm() {
                     <FormItem>
                     <FormLabel>Email Address</FormLabel>
                     <FormControl>
-                        <Input placeholder="you@example.com" {...field} className="rounded-lg bg-black/20 border-white/20"/>
+                        <Input placeholder="you@example.com" {...field} className="rounded-lg bg-black/30 border-white/10 focus:border-white/50 focus:ring-0 transition-colors"/>
                     </FormControl>
                     <FormMessage />
                     </FormItem>
@@ -95,7 +95,7 @@ export function ContactForm() {
                     <FormItem>
                     <FormLabel>Subject</FormLabel>
                     <FormControl>
-                        <Input placeholder="Regarding a project..." {...field} className="rounded-lg bg-black/20 border-white/20"/>
+                        <Input placeholder="Regarding a project..." {...field} className="rounded-lg bg-black/30 border-white/10 focus:border-white/50 focus:ring-0 transition-colors"/>
                     </FormControl>
                     <FormMessage />
                     </FormItem>
@@ -110,7 +110,7 @@ export function ContactForm() {
                     <FormControl>
                         <Textarea
                             placeholder="Tell us about your project or inquiry..."
-                            className="resize-none rounded-lg bg-black/20 border-white/20"
+                            className="resize-none rounded-lg bg-black/30 border-white/10 focus:border-white/50 focus:ring-0 transition-colors"
                             rows={6}
                             {...field}
                         />

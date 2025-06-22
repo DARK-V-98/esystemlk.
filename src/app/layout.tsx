@@ -4,6 +4,22 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Toaster } from "@/components/ui/toaster";
 import Image from 'next/image';
+import { Poppins, DM_Sans } from 'next/font/google'
+import { cn } from '@/lib/utils';
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-poppins',
+  weight: ['400', '600', '700']
+});
+
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-dm-sans',
+  weight: ['400', '500', '700']
+});
 
 export const metadata: Metadata = {
   title: 'ESystemLk - Your Trusted Tech Partner',
@@ -16,13 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
-      </head>
+    <html lang="en" className={cn("scroll-smooth", poppins.variable, dmSans.variable)}>
       <body className="font-body antialiased bg-black text-foreground">
         <div className="fixed inset-0 z-[-2]">
             <Image

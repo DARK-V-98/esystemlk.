@@ -57,11 +57,11 @@ export default function PortfolioClient() {
         {categories.map(category => (
           <Button
             key={category}
-            variant={filter === category ? "default" : "outline"}
+            variant="outline"
             onClick={() => setFilter(category)}
             className={cn(
-                "rounded-full",
-                filter === category ? "bg-primary text-primary-foreground" : "bg-black/20 text-white border-white/20 hover:bg-white/20"
+                "rounded-full border-white/20 hover:bg-white hover:text-black transition-colors",
+                filter === category ? "bg-white text-black" : "bg-black/20 text-white"
             )}
           >
             {category}
@@ -71,7 +71,7 @@ export default function PortfolioClient() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredProjects.map((project, index) => (
-          <Card key={index} className="overflow-hidden group transition-all duration-300 hover:shadow-xl hover:-translate-y-2 bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
+          <Card key={index} className="overflow-hidden group transition-all duration-300 hover:shadow-xl hover:-translate-y-2 bg-black/30 backdrop-blur-lg border border-white/10 hover:border-white/30 rounded-2xl shadow-lg">
             <div className="overflow-hidden">
                 <Image
                 src={project.image}
