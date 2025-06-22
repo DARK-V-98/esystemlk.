@@ -11,10 +11,12 @@ import {
     Landmark,
     Blocks,
     Package,
-    PlusCircle
+    PlusCircle,
+    Info
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import Link from "next/link";
 
 const pricingData = [
   {
@@ -231,6 +233,19 @@ export default function PricingPage() {
 
       <section className="w-full pb-20 md:pb-28">
         <div className="container mx-auto px-4 md:px-6 space-y-12">
+            <Card className="bg-primary/10 backdrop-blur-lg border border-primary/20 shadow-2xl rounded-3xl">
+                <CardContent className="p-8 flex items-center gap-6">
+                    <Info className="w-10 h-10 text-primary shrink-0" />
+                    <div>
+                        <h3 className="font-headline text-xl font-bold mb-2 text-primary">Looking for a Custom or Budget-Friendly Package?</h3>
+                        <p className="text-muted-foreground">
+                            Our pricing is flexible. If you don't see a package that fits, or if you have specific budget requirements, please don't hesitate to reach out. We excel at crafting custom solutions.
+                            <Link href="/contact" className="font-semibold text-primary hover:underline ml-1">Let's discuss your project!</Link>
+                        </p>
+                    </div>
+                </CardContent>
+            </Card>
+
             {pricingData.map((categoryData, index) => (
                 <Card key={index} className="bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl overflow-hidden">
                     <CardHeader className="p-8 md:p-12">

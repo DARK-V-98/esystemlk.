@@ -10,8 +10,8 @@ import {
     Hotel,
     Landmark,
     Blocks,
-    CheckCircle2
 } from "lucide-react";
+import ServicesClient from './services-client';
 
 const serviceCategories = [
     {
@@ -152,24 +152,7 @@ export default function ServicesPage() {
       </section>
 
       <section className="w-full pb-20 md:pb-28">
-        <div className="container mx-auto px-4 md:px-6 space-y-12">
-          {serviceCategories.map((category, index) => (
-            <div key={index} className="bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl p-8 md:p-12">
-                <div className="flex items-center gap-6 mb-8">
-                    {category.icon}
-                    <h2 className="font-headline text-3xl font-bold">{category.title}</h2>
-                </div>
-                <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-4">
-                    {category.items.map(item => (
-                        <li key={item} className="flex items-start gap-3 text-muted-foreground">
-                            <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                            <span>{item}</span>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-          ))}
-        </div>
+        <ServicesClient serviceCategories={serviceCategories} />
       </section>
     </>
   );
