@@ -1,6 +1,6 @@
 import { ContactForm } from "./contact-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mail, MessageCircle, MapPin } from "lucide-react";
+import { Mail, MessageCircle, MapPin, Phone } from "lucide-react";
 
 export default function ContactPage() {
   return (
@@ -36,11 +36,22 @@ export default function ContactPage() {
                     </Card>
                      <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-md">
                         <CardContent className="p-6">
-                            <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group">
+                            <a href="https://wa.me/94765711396" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group">
                                 <MessageCircle className="w-8 h-8 text-primary" />
                                 <div>
                                     <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">WhatsApp</h3>
-                                    <p className="text-muted-foreground">+1 (234) 567-890</p>
+                                    <p className="text-muted-foreground">+94 76 571 1396</p>
+                                </div>
+                            </a>
+                        </CardContent>
+                    </Card>
+                    <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-md">
+                        <CardContent className="p-6">
+                            <a href="tel:+94765711396" className="flex items-center gap-4 group">
+                                <Phone className="w-8 h-8 text-primary" />
+                                <div>
+                                    <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">Phone</h3>
+                                    <p className="text-muted-foreground">+94 76 571 1396</p>
                                 </div>
                             </a>
                         </CardContent>

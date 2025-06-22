@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Code2, Github, Twitter, Linkedin } from 'lucide-react';
+import { Code2, Linkedin, Facebook, MessageCircle } from 'lucide-react';
 import type { PageVisibility } from '@/app/admin/pages/actions';
 
 export function Footer({ pageSettings }: { pageSettings: PageVisibility }) {
@@ -38,11 +38,11 @@ export function Footer({ pageSettings }: { pageSettings: PageVisibility }) {
           <div>
             <h4 className="font-headline font-semibold mb-4">Follow Us</h4>
             <div className="flex space-x-4">
-              <a href="#" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
-                <Twitter className="h-6 w-6" />
+              <a href="https://www.facebook.com/esystemlk" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+                <Facebook className="h-6 w-6" />
               </a>
-              <a href="#" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
-                <Github className="h-6 w-6" />
+              <a href="https://wa.me/94765711396" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+                <MessageCircle className="h-6 w-6" />
               </a>
               <a href="#" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
                 <Linkedin className="h-6 w-6" />
