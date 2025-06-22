@@ -12,7 +12,6 @@ const pageConfig = [
     { key: 'showServices', label: 'Services Page', description: 'Controls the main Services page and homepage section.' },
     { key: 'showPortfolio', label: 'Portfolio Page', description: 'Controls the main Portfolio page and featured work section on homepage.' },
     { key: 'showPricing', label: 'Pricing Page', description: 'Controls the main Pricing page link in navigation.' },
-    { key: 'showAbout', label: 'About Us Page', description: 'Controls the main About Us page link in navigation.' },
     { key: 'showTestimonials', label: 'Testimonials Page', description: 'Controls the main Testimonials page and homepage section.' },
 ] as const;
 

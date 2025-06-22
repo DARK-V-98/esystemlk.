@@ -21,7 +21,6 @@ export function Footer({ pageSettings }: { pageSettings: PageVisibility }) {
           <div>
             <h4 className="font-headline font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
-              {pageSettings?.showAbout && <li><Link href="/about" className="text-sm text-muted-foreground hover:text-primary">About Us</Link></li>}
               {pageSettings?.showServices && <li><Link href="/services" className="text-sm text-muted-foreground hover:text-primary">Services</Link></li>}
               {pageSettings?.showPortfolio && <li><Link href="/portfolio" className="text-sm text-muted-foreground hover:text-primary">Portfolio</Link></li>}
               {pageSettings?.showPricing && <li><Link href="/pricing" className="text-sm text-muted-foreground hover:text-primary">Pricing</Link></li>}

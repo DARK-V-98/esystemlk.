@@ -7,7 +7,6 @@ export type PageVisibility = {
     showPortfolio: boolean;
     showServices: boolean;
     showTestimonials: boolean;
-    showAbout: boolean;
     showPricing: boolean;
 };
 
@@ -15,7 +14,6 @@ const defaultSettings: PageVisibility = {
     showPortfolio: true,
     showServices: true,
     showTestimonials: true,
-    showAbout: true,
     showPricing: true,
 };
 

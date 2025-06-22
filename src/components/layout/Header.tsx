@@ -18,7 +18,6 @@ const allNavLinks = [
   { href: '/services', label: 'Services', key: 'showServices' },
   { href: '/portfolio', label: 'Portfolio', key: 'showPortfolio' },
   { href: '/pricing', label: 'Pricing', key: 'showPricing' },
-  { href: '/about', label: 'About Us', key: 'showAbout' },
   { href: '/testimonials', label: 'Testimonials', key: 'showTestimonials' },
 ];
 
