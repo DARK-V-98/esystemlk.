@@ -2,6 +2,7 @@
 
 import { useAuth } from "@/hooks/use-auth";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import Link from "next/link";
 
 export default function AdminPage() {
   const { user } = useAuth();
@@ -27,9 +28,19 @@ export default function AdminPage() {
             <CardTitle>Content Management</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground">Update services, portfolio, and pricing.</p>
+            <p className="text-muted-foreground">Update services, portfolio, and blog.</p>
           </CardContent>
         </Card>
+         <Link href="/admin/pricing" className="block hover:scale-105 transition-transform duration-300">
+            <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg h-full hover:border-primary transition-colors">
+              <CardHeader>
+                <CardTitle>Pricing Management</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">Update and manage service pricing tiers and add-ons.</p>
+              </CardContent>
+            </Card>
+        </Link>
         <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
           <CardHeader>
             <CardTitle>View Analytics</CardTitle>
