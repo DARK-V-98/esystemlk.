@@ -20,6 +20,7 @@ interface User {
   uid: string;
   email: string | null;
   displayName: string | null;
+  photoURL: string | null;
   role: UserRole;
 }
 
@@ -39,6 +40,7 @@ const formatUser = (user: FirebaseAuthUser, role: UserRole = 'user'): User => {
     uid: user.uid,
     email: user.email,
     displayName: user.displayName,
+    photoURL: user.photoURL,
     role: role,
   };
 };
@@ -58,9 +60,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const userData = userSnap.data();
           setUser(formatUser(firebaseUser, userData.role));
         } else {
-          const newUser: User = formatUser(firebaseUser);
-          await setDoc(userRef, { email: newUser.email, role: 'user', displayName: newUser.displayName });
-          setUser(newUser);
+          const newUser = formatUser(firebaseUser);
+          // For new email signups, displayName can be null. Provide a default.
+          const finalDisplayName = newUser.displayName || newUser.email?.split('@')[0] || 'New User';
+          
+          const finalUser = { ...newUser, displayName: finalDisplayName };
+
+          await setDoc(userRef, { 
+            email: finalUser.email, 
+            role: 'user', 
+            displayName: finalUser.displayName,
+            photoURL: finalUser.photoURL
+          });
+          setUser(finalUser);
         }
       } else {
         setUser(null);
@@ -87,14 +99,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signUpWithEmail = async (email: string, password: string) => {
     setLoading(true);
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const userRef = doc(db, 'users', userCredential.user.uid);
-      const newUser: Omit<User, 'uid'> = {
-        email: userCredential.user.email,
-        displayName: userCredential.user.email?.split('@')[0] || 'New User',
-        role: 'user'
-      };
-      await setDoc(userRef, newUser);
+      await createUserWithEmailAndPassword(auth, email, password);
       router.push('/admin');
     } catch (error) {
       console.error("Error signing up:", error);
