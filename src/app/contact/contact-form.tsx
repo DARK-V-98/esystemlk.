@@ -27,7 +27,7 @@ const formSchema = z.object({
   email: z.string().email({
     message: "Please enter a valid email address.",
   }),
-  phone: z.string().min(10, { message: "Please enter a valid phone number." }).optional().or(z.literal('')),
+  phone: z.string().min(10, { message: "Please enter a valid phone number." }),
   subject: z.string().min(5, {
     message: "Subject must be at least 5 characters.",
   }),
@@ -104,7 +104,7 @@ export function ContactForm() {
                 name="phone"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Phone Number (Optional)</FormLabel>
+                    <FormLabel>Phone Number</FormLabel>
                     <FormControl>
                         <Input placeholder="Your Contact Number" {...field} className="rounded-lg bg-black/30 border-white/10 focus:border-white/50 focus:ring-0 transition-colors"/>
                     </FormControl>

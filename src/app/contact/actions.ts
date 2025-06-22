@@ -7,7 +7,7 @@ import { z } from 'zod';
 const formSchema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
-  phone: z.string().min(10, { message: "Please enter a valid phone number." }).optional().or(z.literal('')),
+  phone: z.string().min(10, { message: "Please enter a valid phone number." }),
   subject: z.string().min(5),
   message: z.string().min(10).max(500),
 });
