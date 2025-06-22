@@ -46,9 +46,15 @@ export default function Home() {
     <div className="flex flex-col bg-background text-foreground">
       {/* Hero Section */}
       <section 
-        className="relative w-full h-[90vh] min-h-[600px] flex items-center justify-center text-background bg-cover bg-center"
-        style={{ backgroundImage: "url(/hero.svg)" }}
+        className="relative w-full h-[90vh] min-h-[600px] flex items-center justify-center text-background overflow-hidden"
       >
+        <Image
+            priority
+            src="/hero.svg"
+            alt="Animated background"
+            fill
+            className="object-cover"
+        />
         <div className="absolute inset-0 bg-black/60" />
         <div className="relative z-10 container mx-auto px-4 md:px-6 text-center">
           <h1 className="font-headline text-5xl md:text-7xl font-bold tracking-tighter uppercase">
