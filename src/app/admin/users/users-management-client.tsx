@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect, useTransition } from 'react';
+import { useState, useEffect, useTransition, useMemo } from 'react';
 import { getUsers, updateUserRole, deleteUser, type ManagedUser, type UserRole } from './actions';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -25,7 +25,8 @@ import { Trash2 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { useAuth } from '@/hooks/use-auth';
-import { Card } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 
 export default function UsersManagementClient() {
   const [users, setUsers] = useState<ManagedUser[]>([]);
@@ -34,6 +35,8 @@ export default function UsersManagementClient() {
   const [userToDelete, setUserToDelete] = useState<ManagedUser | null>(null);
   const { toast } = useToast();
   const { user: currentUser } = useAuth();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [roleFilter, setRoleFilter] = useState<UserRole | 'all'>('all');
 
   useEffect(() => {
     fetchUsers();
@@ -46,6 +49,19 @@ export default function UsersManagementClient() {
       setIsLoading(false);
     });
   }
+
+  const filteredUsers = useMemo(() => {
+    return users.filter(user => {
+        const searchLower = searchTerm.toLowerCase();
+        const matchesSearch = !searchTerm || 
+                              user.displayName?.toLowerCase().includes(searchLower) ||
+                              user.email?.toLowerCase().includes(searchLower);
+
+        const matchesRole = roleFilter === 'all' || user.role === roleFilter;
+
+        return matchesSearch && matchesRole;
+    });
+  }, [users, searchTerm, roleFilter]);
 
   const handleRoleChange = (uid: string, role: UserRole) => {
     startTransition(async () => {
@@ -96,6 +112,35 @@ export default function UsersManagementClient() {
 
   return (
     <AlertDialog>
+      <div className="space-y-8">
+        <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
+            <CardHeader>
+                <CardTitle>Filter Users</CardTitle>
+                <CardDescription>Search by name/email or filter by role.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div className="grid md:grid-cols-2 gap-4">
+                    <Input
+                        placeholder="Search by name or email..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="rounded-lg bg-black/30 border-white/10 focus:border-white/50 focus:ring-0"
+                    />
+                    <Select value={roleFilter} onValueChange={(value) => setRoleFilter(value as UserRole | 'all')}>
+                        <SelectTrigger className="w-full md:w-auto rounded-lg bg-black/30 border-white/10 focus:border-white/50 focus:ring-0">
+                            <SelectValue placeholder="Filter by role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All Roles</SelectItem>
+                            <SelectItem value="admin">Admin</SelectItem>
+                            <SelectItem value="developer">Developer</SelectItem>
+                            <SelectItem value="user">User</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+            </CardContent>
+        </Card>
+
         <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
             <div className="overflow-x-auto">
                 <Table>
@@ -108,12 +153,13 @@ export default function UsersManagementClient() {
                     </TableRow>
                     </TableHeader>
                     <TableBody>
-                    {users.map(user => (
+                    {filteredUsers.length > 0 ? (
+                        filteredUsers.map(user => (
                         <TableRow key={user.uid}>
                         <TableCell>
                             <div className="flex items-center gap-3">
                                 <Avatar>
-                                    <AvatarImage src={user.photoURL ?? ''} alt={user.displayName} />
+                                    <AvatarImage src={user.photoURL ?? ''} alt={user.displayName ?? ''} />
                                     <AvatarFallback>{user.displayName?.charAt(0) || user.email?.charAt(0)}</AvatarFallback>
                                 </Avatar>
                                 <span className="font-medium">{user.displayName}</span>
@@ -149,11 +195,19 @@ export default function UsersManagementClient() {
                             </AlertDialogTrigger>
                         </TableCell>
                         </TableRow>
-                    ))}
+                    ))
+                    ) : (
+                        <TableRow>
+                            <TableCell colSpan={4} className="h-24 text-center">
+                            No users match your criteria.
+                            </TableCell>
+                        </TableRow>
+                    )}
                     </TableBody>
                 </Table>
             </div>
         </Card>
+      </div>
 
         <AlertDialogContent>
             <AlertDialogHeader>
