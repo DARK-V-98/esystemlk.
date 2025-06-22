@@ -1,9 +1,11 @@
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CodeXml, CreditCard, Paintbrush, ServerCog } from "lucide-react";
+import { ArrowRight, CodeXml, CreditCard, Mail, MessageCircle, Paintbrush, Phone, ServerCog, MapPin } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { getPageSettings } from "./admin/pages/actions";
+import { ContactForm } from "./contact/contact-form";
+import { Card, CardContent } from "@/components/ui/card";
 
 const services = [
   {
@@ -155,18 +157,64 @@ export default async function Home() {
         </section>
       )}
 
-      {/* CTA Section */}
-      <section className="w-full py-20 md:py-28">
+      {/* Contact Section */}
+      <section id="contact" className="w-full py-20 md:py-28">
         <div className="container mx-auto px-4 md:px-6">
-            <div className="bg-black/40 backdrop-blur-xl border border-white/10 p-10 md:p-16 text-center rounded-3xl shadow-2xl">
-                <h2 className="font-headline text-3xl md:text-5xl font-bold">Define Your Digital Presence.</h2>
-                <p className="max-w-2xl mx-auto mt-6 text-muted-foreground text-lg">
-                    Ready to build something with clarity and purpose? Let's talk about your next project.
-                </p>
-                <div className="mt-10">
-                    <Button asChild size="lg" className="bg-white text-black hover:bg-white/90 rounded-full text-lg px-10 py-7 hover:shadow-lg hover:shadow-white/20 transition-all duration-300">
-                        <Link href="/contact">Get In Touch</Link>
-                    </Button>
+            <div className="text-center mb-16 max-w-3xl mx-auto">
+              <h2 className="font-headline text-4xl md:text-5xl font-bold">Get In Touch</h2>
+              <p className="text-muted-foreground md:text-xl mt-4">We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
+                <div>
+                    <h3 className="font-headline text-2xl font-bold mb-6">Send us a message</h3>
+                    <ContactForm />
+                </div>
+                <div className="space-y-8">
+                    <h3 className="font-headline text-2xl font-bold">Contact Information</h3>
+                    <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-md">
+                        <CardContent className="p-6">
+                            <a href="mailto:contact@esystemlk.com" className="flex items-center gap-4 group">
+                                <Mail className="w-8 h-8 text-primary" />
+                                <div>
+                                    <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">Email</h3>
+                                    <p className="text-muted-foreground">contact@esystemlk.com</p>
+                                </div>
+                            </a>
+                        </CardContent>
+                    </Card>
+                     <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-md">
+                        <CardContent className="p-6">
+                            <a href="https://wa.me/94765711396" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group">
+                                <MessageCircle className="w-8 h-8 text-primary" />
+                                <div>
+                                    <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">WhatsApp</h3>
+                                    <p className="text-muted-foreground">+94 76 571 1396</p>
+                                </div>
+                            </a>
+                        </CardContent>
+                    </Card>
+                    <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-md">
+                        <CardContent className="p-6">
+                            <a href="tel:+94765711396" className="flex items-center gap-4 group">
+                                <Phone className="w-8 h-8 text-primary" />
+                                <div>
+                                    <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">Phone</h3>
+                                    <p className="text-muted-foreground">+94 76 571 1396</p>
+                                </div>
+                            </a>
+                        </CardContent>
+                    </Card>
+                     <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-md">
+                        <CardContent className="p-6">
+                            <div className="flex items-center gap-4">
+                                <MapPin className="w-8 h-8 text-primary" />
+                                <div>
+                                    <h3 className="font-semibold text-lg">Office</h3>
+                                    <p className="text-muted-foreground">123 Tech Avenue, Silicon Valley, CA 94043</p>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
                 </div>
             </div>
         </div>
