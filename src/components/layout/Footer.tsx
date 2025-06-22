@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { Code2, Linkedin, Facebook, MessageCircle } from 'lucide-react';
+import Image from 'next/image';
+import { Facebook, MessageCircle } from 'lucide-react';
 import type { PageVisibility } from '@/app/admin/pages/actions';
 
 export function Footer({ pageSettings }: { pageSettings: PageVisibility }) {
@@ -10,9 +11,8 @@ export function Footer({ pageSettings }: { pageSettings: PageVisibility }) {
       <div className="container mx-auto px-4 md:px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="flex flex-col items-start">
-            <Link href="/" className="flex items-center gap-2 font-bold text-xl font-headline mb-4">
-              <Code2 className="h-8 w-8 text-primary" />
-              <span>ESystemLk</span>
+            <Link href="/" className="mb-4">
+              <Image src="/logo.png" alt="ESystemLk Logo" width={180} height={40} />
             </Link>
             <p className="text-muted-foreground text-sm">
               Your trusted partner for innovative technology solutions.
