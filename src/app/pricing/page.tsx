@@ -1,4 +1,3 @@
-
 import {
     ShoppingCart,
     Building,
@@ -11,12 +10,8 @@ import {
     Landmark,
     Blocks,
     Package,
-    PlusCircle,
-    Info
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import Link from "next/link";
+import PricingClient from './pricing-client';
 
 const pricingData = [
   {
@@ -232,80 +227,8 @@ export default function PricingPage() {
       </section>
 
       <section className="w-full pb-20 md:pb-28">
-        <div className="container mx-auto px-4 md:px-6 space-y-12">
-            <Card className="bg-primary/10 backdrop-blur-lg border border-primary/20 shadow-2xl rounded-3xl">
-                <CardContent className="p-8 flex items-center gap-6">
-                    <Info className="w-10 h-10 text-primary shrink-0" />
-                    <div>
-                        <h3 className="font-headline text-xl font-bold mb-2 text-primary">Looking for a Custom or Budget-Friendly Package?</h3>
-                        <p className="text-muted-foreground">
-                            Our pricing is flexible. If you don't see a package that fits, or if you have specific budget requirements, please don't hesitate to reach out. We excel at crafting custom solutions.
-                            <Link href="/contact" className="font-semibold text-primary hover:underline ml-1">Let's discuss your project!</Link>
-                        </p>
-                    </div>
-                </CardContent>
-            </Card>
-
-            {pricingData.map((categoryData, index) => (
-                <Card key={index} className="bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl overflow-hidden">
-                    <CardHeader className="p-8 md:p-12">
-                        <div className="flex items-start md:items-center gap-6 flex-col md:flex-row">
-                            {categoryData.icon}
-                            <CardTitle className="font-headline text-3xl font-bold">{categoryData.category}</CardTitle>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="px-8 md:px-12 pb-8 md:pb-12 pt-0">
-                        <div className="space-y-10">
-                            {categoryData.services.map((service, sIndex) => (
-                                <div key={sIndex}>
-                                    <h3 className="font-headline text-xl font-semibold mb-4 text-primary">{service.name}</h3>
-                                    <ul className="space-y-3 mb-4">
-                                        {service.tiers.map((tier, tIndex) => (
-                                            <li key={tIndex} className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 text-muted-foreground border-b border-white/10 pb-3">
-                                                <span>{tier.name}</span>
-                                                <span className="font-semibold text-foreground text-right">{tier.price}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                    {service.addons && service.addons.length > 0 && (
-                                        <>
-                                            <h4 className="text-md font-semibold mt-6 mb-3 flex items-center gap-2 text-primary/80"><PlusCircle className="w-4 h-4" /> Add-ons</h4>
-                                            <ul className="space-y-2">
-                                                {service.addons.map((addon, aIndex) => (
-                                                   <li key={aIndex} className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 text-muted-foreground border-b border-dashed border-white/10 pb-2 text-sm">
-                                                       <span>{addon.name}</span>
-                                                       <span className="font-semibold text-foreground/80 text-right">{addon.price}</span>
-                                                   </li>
-                                                ))}
-                                            </ul>
-                                        </>
-                                    )}
-                                    {sIndex < categoryData.services.length - 1 && <Separator className="mt-10 bg-white/10" />}
-                                </div>
-                            ))}
-                        </div>
-                    </CardContent>
-                </Card>
-            ))}
-
-            <Card className="bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl overflow-hidden">
-                <CardHeader className="p-8 md:p-12">
-                    <div className="flex items-start md:items-center gap-6 flex-col md:flex-row">
-                        {commonAddons.icon}
-                        <CardTitle className="font-headline text-3xl font-bold">{commonAddons.category}</CardTitle>
-                    </div>
-                </CardHeader>
-                <CardContent className="px-8 md:px-12 pb-8 md:pb-12 pt-0">
-                     <ul className="space-y-3">
-                        {commonAddons.items.map((item, iIndex) => (
-                           <li key={iIndex} className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 text-muted-foreground border-b border-white/10 pb-3">
-                               <span>{item.name}</span>
-                               <span className="font-semibold text-foreground text-right">{item.price}</span>
-                           </li>
-                        ))}
-                    </ul>
-                </CardContent>
-            </Card>
+        <div className="container mx-auto px-4 md:px-6">
+          <PricingClient pricingData={pricingData} commonAddons={commonAddons} />
         </div>
       </section>
     </>

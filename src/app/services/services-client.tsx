@@ -2,11 +2,12 @@
 
 import { useState, useMemo } from 'react';
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { CheckCircle2, Info } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 
 type ServiceCategory = {
     icon: React.ReactNode;
@@ -40,7 +41,6 @@ export default function ServicesClient({ serviceCategories }: ServicesClientProp
                     );
 
                     if (filteredItems.length > 0 || category.title.toLowerCase().includes(lowercasedSearchTerm)) {
-                        // If the category title matches, we keep all its items, otherwise we only keep the matching items.
                         const itemsToShow = category.title.toLowerCase().includes(lowercasedSearchTerm) ? category.items : filteredItems;
                         return { ...category, items: itemsToShow };
                     }
@@ -63,21 +63,18 @@ export default function ServicesClient({ serviceCategories }: ServicesClientProp
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="h-12 text-lg rounded-full bg-black/30 border-white/10 focus:border-white/50 focus:ring-0 transition-colors"
                     />
-                     <div className="flex justify-center flex-wrap gap-2">
-                        {categories.map(category => (
-                            <Button
-                                key={category}
-                                variant="outline"
-                                onClick={() => setActiveFilter(category)}
-                                className={cn(
-                                    "rounded-full border-white/20 hover:bg-white hover:text-black transition-colors px-4 py-2 text-sm",
-                                    activeFilter === category ? "bg-white text-black" : "bg-black/20 text-white"
-                                )}
-                            >
-                                {category}
-                            </Button>
-                        ))}
-                    </div>
+                    <Select onValueChange={setActiveFilter} defaultValue={activeFilter}>
+                        <SelectTrigger className="h-12 text-lg rounded-full bg-black/30 border-white/10 focus:border-white/50 focus:ring-0 transition-colors">
+                            <SelectValue placeholder="Filter by category..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {categories.map(category => (
+                                <SelectItem key={category} value={category}>
+                                    {category}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                 </div>
             </div>
             
