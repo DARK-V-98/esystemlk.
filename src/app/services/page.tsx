@@ -1,11 +1,5 @@
 
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import {
     ShoppingCart,
     Building,
     HeartPulse,
@@ -21,7 +15,7 @@ import {
 
 const serviceCategories = [
     {
-        icon: <ShoppingCart className="w-8 h-8 text-primary" />,
+        icon: <ShoppingCart className="w-10 h-10 text-primary" />,
         title: "E-Commerce & Online Sales",
         items: [
             "Clothing & Fashion Stores",
@@ -35,7 +29,7 @@ const serviceCategories = [
         ],
     },
     {
-        icon: <Building className="w-8 h-8 text-primary" />,
+        icon: <Building className="w-10 h-10 text-primary" />,
         title: "Business & Corporate",
         items: [
             "Company Profile Websites",
@@ -50,7 +44,7 @@ const serviceCategories = [
         ],
     },
     {
-        icon: <HeartPulse className="w-8 h-8 text-primary" />,
+        icon: <HeartPulse className="w-10 h-10 text-primary" />,
         title: "Healthcare & Wellness",
         items: [
             "Pharmacies & Online Medicine Ordering",
@@ -62,7 +56,7 @@ const serviceCategories = [
         ],
     },
     {
-        icon: <Scissors className="w-8 h-8 text-primary" />,
+        icon: <Scissors className="w-10 h-10 text-primary" />,
         title: "Beauty, Fashion & Lifestyle",
         items: [
             "Salons & Barber Shops",
@@ -74,7 +68,7 @@ const serviceCategories = [
         ],
     },
     {
-        icon: <Palette className="w-8 h-8 text-primary" />,
+        icon: <Palette className="w-10 h-10 text-primary" />,
         title: "Creative & Personal Branding",
         items: [
             "Personal Portfolios (Photographers, Artists, Writers)",
@@ -86,7 +80,7 @@ const serviceCategories = [
         ],
     },
     {
-        icon: <BookOpen className="w-8 h-8 text-primary" />,
+        icon: <BookOpen className="w-10 h-10 text-primary" />,
         title: "Education & Learning",
         items: [
             "Online Course Platforms (LMS)",
@@ -98,7 +92,7 @@ const serviceCategories = [
         ],
     },
     {
-        icon: <Users className="w-8 h-8 text-primary" />,
+        icon: <Users className="w-10 h-10 text-primary" />,
         title: "Cultural, Religious & Social",
         items: [
             "Nonprofits / Charities / NGOs",
@@ -109,7 +103,7 @@ const serviceCategories = [
         ],
     },
     {
-        icon: <Hotel className="w-8 h-8 text-primary" />,
+        icon: <Hotel className="w-10 h-10 text-primary" />,
         title: "Hospitality & Travel",
         items: [
             "Hotels / Resorts / Villas",
@@ -120,7 +114,7 @@ const serviceCategories = [
         ],
     },
     {
-        icon: <Landmark className="w-8 h-8 text-primary" />,
+        icon: <Landmark className="w-10 h-10 text-primary" />,
         title: "Government & Official Use",
         items: [
             "Local Government Websites",
@@ -131,7 +125,7 @@ const serviceCategories = [
         ],
     },
     {
-        icon: <Blocks className="w-8 h-8 text-primary" />,
+        icon: <Blocks className="w-10 h-10 text-primary" />,
         title: "Advanced/Custom Applications",
         items: [
             "Parcel Tracking Dashboards",
@@ -158,31 +152,23 @@ export default function ServicesPage() {
       </section>
 
       <section className="w-full pb-20 md:pb-28">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl p-4 md:p-8">
-            <Accordion type="single" collapsible className="w-full">
-              {serviceCategories.map((category, index) => (
-                <AccordionItem value={`item-${index}`} key={category.title} className="border-b-white/10 last:border-b-0">
-                  <AccordionTrigger className="hover:no-underline text-left p-4">
-                    <div className="flex items-center gap-4">
-                        {category.icon}
-                        <span className="font-headline text-xl font-semibold">{category.title}</span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-4 pl-16 pt-4">
-                        {category.items.map(item => (
-                            <li key={item} className="flex items-start gap-2 text-muted-foreground">
-                                <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-1" />
-                                <span>{item}</span>
-                            </li>
-                        ))}
-                    </ul>
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </div>
+        <div className="container mx-auto px-4 md:px-6 space-y-12">
+          {serviceCategories.map((category, index) => (
+            <div key={index} className="bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl p-8 md:p-12">
+                <div className="flex items-center gap-6 mb-8">
+                    {category.icon}
+                    <h2 className="font-headline text-3xl font-bold">{category.title}</h2>
+                </div>
+                <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-4">
+                    {category.items.map(item => (
+                        <li key={item} className="flex items-start gap-3 text-muted-foreground">
+                            <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                            <span>{item}</span>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+          ))}
         </div>
       </section>
     </>
