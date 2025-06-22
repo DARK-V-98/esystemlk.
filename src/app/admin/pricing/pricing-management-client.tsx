@@ -5,7 +5,7 @@ import React, { useState, useEffect, useTransition } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
-import { updatePricingDocStatus, uploadPricingData, deletePricingDoc, updateServiceStatus, deleteServiceFromCategory } from './actions';
+import { updatePricingDocStatus, uploadPricingData, deletePricingDoc, updateServiceStatus, deleteServiceFromCategory, updatePricingItem, type PricingItemPath, type PricingItemData } from './actions';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -13,6 +13,12 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import * as Icons from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 
 // Define types for better readability
 type Tier = { name: string; price: string };
@@ -33,6 +39,13 @@ type CommonAddons = {
     enabled: boolean;
 };
 
+const editFormSchema = z.object({
+    name: z.string().optional(),
+    price: z.string().optional(),
+    category: z.string().optional(),
+    icon: z.string().optional(),
+});
+
 // Generic Icon component
 const Icon = ({ name, className }: { name: keyof typeof Icons; className?: string }) => {
     const LucideIcon = Icons[name] as React.ElementType;
@@ -46,6 +59,15 @@ export default function PricingManagementClient() {
     const [isPending, startTransition] = useTransition();
     const { toast } = useToast();
     const [itemToDelete, setItemToDelete] = useState<{ type: 'category' | 'service'; categoryId: string; serviceName?: string } | null>(null);
+
+    // State for edit dialog
+    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+    const [currentItem, setCurrentItem] = useState<{ path: PricingItemPath, data: any } | null>(null);
+
+    const form = useForm<z.infer<typeof editFormSchema>>({
+        resolver: zodResolver(editFormSchema),
+        defaultValues: { name: "", price: "", category: "", icon: "" },
+    });
 
     useEffect(() => {
         const q = query(collection(db, 'pricing'), orderBy('order'));
@@ -107,6 +129,48 @@ export default function PricingManagementClient() {
         });
     };
 
+    const handleEditClick = (path: PricingItemPath, data: any) => {
+        setCurrentItem({ path, data });
+        form.reset({
+            name: data.name,
+            price: data.price,
+            category: data.category,
+            icon: data.icon
+        });
+        setIsEditDialogOpen(true);
+    };
+
+    const onEditSubmit = (values: z.infer<typeof editFormSchema>>) => {
+        if (!currentItem) return;
+
+        startTransition(async () => {
+            const dataToUpdate: PricingItemData = {};
+            const isCategory = !currentItem.path.serviceName && !currentItem.path.isCommonAddon;
+
+            if (isCategory) {
+                dataToUpdate.category = values.category;
+                dataToUpdate.icon = values.icon;
+            } else {
+                dataToUpdate.name = values.name;
+                if (values.price !== undefined) {
+                    dataToUpdate.price = values.price;
+                }
+            }
+
+            const result = await updatePricingItem(currentItem.path, dataToUpdate);
+
+            toast({
+                title: result.success ? 'Success' : 'Error',
+                description: result.message,
+                variant: result.success ? 'default' : 'destructive',
+            });
+
+            if (result.success) {
+                setIsEditDialogOpen(false);
+                setCurrentItem(null);
+            }
+        });
+    };
 
     const renderSkeleton = () => (
         <div className="space-y-4">
@@ -119,6 +183,62 @@ export default function PricingManagementClient() {
 
     return (
         <AlertDialog>
+             <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Edit Item</DialogTitle>
+                        <DialogDescription>
+                            Make changes to the pricing item. Click save when you're done.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onEditSubmit)} className="space-y-4">
+                            {currentItem && (!currentItem.path.serviceName && !currentItem.path.isCommonAddon) ? (
+                                <>
+                                    <FormField control={form.control} name="category" render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Category Name</FormLabel>
+                                            <FormControl><Input {...field} /></FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )} />
+                                    <FormField control={form.control} name="icon" render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Icon Name</FormLabel>
+                                            <FormControl><Input {...field} placeholder="e.g., ShoppingCart" /></FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )} />
+                                </>
+                            ) : (
+                                <>
+                                    <FormField control={form.control} name="name" render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Name</FormLabel>
+                                            <FormControl><Input {...field} /></FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )} />
+                                    {currentItem?.data.price !== undefined && (
+                                        <FormField control={form.control} name="price" render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Price</FormLabel>
+                                                <FormControl><Input {...field} /></FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )} />
+                                    )}
+                                </>
+                            )}
+                            <DialogFooter>
+                                <Button type="submit" disabled={isPending}>{isPending ? 'Saving...' : 'Save Changes'}</Button>
+                            </DialogFooter>
+                        </form>
+                    </Form>
+                </DialogContent>
+            </Dialog>
+
+
             <div className="space-y-8">
                 <AlertDialogContent>
                     <AlertDialogHeader>
@@ -165,7 +285,9 @@ export default function PricingManagementClient() {
                                                 <Icons.Trash2 className="w-4 h-4" />
                                             </Button>
                                         </AlertDialogTrigger>
-                                        <Button variant="ghost" size="sm" disabled><Icons.FileEdit className="w-4 h-4" /></Button>
+                                        <Button variant="ghost" size="sm" onClick={() => handleEditClick({ categoryId: category.id }, category)} disabled={isPending}>
+                                            <Icons.FileEdit className="w-4 h-4" />
+                                        </Button>
                                     </div>
                                 </CardHeader>
                                 <CardContent className="p-6">
@@ -184,7 +306,9 @@ export default function PricingManagementClient() {
                                                                     <Icons.Trash2 className="w-4 h-4" />
                                                                 </Button>
                                                             </AlertDialogTrigger>
-                                                            <Button variant="ghost" size="icon" className="h-8 w-8" disabled><Icons.FileEdit className="w-4 h-4" /></Button>
+                                                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEditClick({ categoryId: category.id, serviceName: service.name }, service)} disabled={isPending}>
+                                                                <Icons.FileEdit className="w-4 h-4" />
+                                                            </Button>
                                                         </div>
                                                     </div>
                                                     <AccordionContent className="pl-4 border-l-2 border-primary/20 ml-2">
@@ -193,7 +317,10 @@ export default function PricingManagementClient() {
                                                             {service.tiers.map((tier, tIndex) => (
                                                                 <div key={tIndex} className="flex justify-between items-center text-sm text-muted-foreground p-2 rounded-md hover:bg-white/5">
                                                                     <span>{tier.name}</span>
-                                                                    <span className="font-mono text-foreground">{tier.price}</span>
+                                                                    <div className="flex items-center gap-1">
+                                                                        <span className="font-mono text-foreground">{tier.price}</span>
+                                                                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleEditClick({ categoryId: category.id, serviceName: service.name, tierName: tier.name }, tier)} disabled={isPending}><Icons.FileEdit className="w-3 h-3" /></Button>
+                                                                    </div>
                                                                 </div>
                                                             ))}
                                                             {service.addons && service.addons.length > 0 && (
@@ -202,7 +329,10 @@ export default function PricingManagementClient() {
                                                                     {service.addons.map((addon, aIndex) => (
                                                                         <div key={aIndex} className="flex justify-between items-center text-sm text-muted-foreground p-2 rounded-md hover:bg-white/5">
                                                                             <span>{addon.name}</span>
-                                                                            <span className="font-mono text-foreground">{addon.price}</span>
+                                                                            <div className="flex items-center gap-1">
+                                                                                <span className="font-mono text-foreground">{addon.price}</span>
+                                                                                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleEditClick({ categoryId: category.id, serviceName: service.name, addonName: addon.name }, addon)} disabled={isPending}><Icons.FileEdit className="w-3 h-3" /></Button>
+                                                                            </div>
                                                                         </div>
                                                                     ))}
                                                                 </>
@@ -217,7 +347,12 @@ export default function PricingManagementClient() {
                                             {category.items.map((item, index) => (
                                                 <div key={index} className="flex justify-between items-center text-sm text-muted-foreground p-2 rounded-md hover:bg-white/5">
                                                     <span>{item.name}</span>
-                                                    <span className="font-mono text-foreground">{item.price}</span>
+                                                    <div className="flex items-center gap-1">
+                                                        <span className="font-mono text-foreground">{item.price}</span>
+                                                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleEditClick({ categoryId: category.id, isCommonAddon: true, itemName: item.name }, item)} disabled={isPending}>
+                                                            <Icons.FileEdit className="w-3 h-3" />
+                                                        </Button>
+                                                    </div>
                                                 </div>
                                             ))}
                                         </div>

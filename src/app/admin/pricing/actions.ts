@@ -1,3 +1,4 @@
+
 'use server';
 
 import { db } from '@/lib/firebase';
@@ -163,6 +164,22 @@ const commonAddons = {
     ]
 };
 
+export type PricingItemPath = {
+    categoryId: string;
+    serviceName?: string;
+    tierName?: string;
+    addonName?: string;
+    isCommonAddon?: boolean;
+    itemName?: string;
+};
+
+export type PricingItemData = {
+    name?: string;
+    price?: string;
+    category?: string;
+    icon?: string;
+};
+
 
 function sanitizeForId(text: string) {  
     return text.toLowerCase().replace(/[^a-z0-9&]+/g, '-').replace(/--+/g, '-').replace(/(^-|-$)/g, '');
@@ -261,5 +278,67 @@ export async function deleteServiceFromCategory(categoryId: string, serviceName:
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
         return { success: false, message: `Failed to delete service: ${errorMessage}` };
+    }
+}
+
+export async function updatePricingItem(path: PricingItemPath, data: PricingItemData) {
+    const docRef = doc(db, 'pricing', path.categoryId);
+    try {
+        const docSnap = await getDoc(docRef);
+        if (!docSnap.exists()) {
+            throw new Error("Document not found");
+        }
+        const docData = docSnap.data();
+
+        let updatePayload: { [key: string]: any } = {};
+
+        // Case 1: Update a common addon item
+        if (path.isCommonAddon && path.itemName) {
+            updatePayload.items = docData.items.map((item: any) =>
+                item.name === path.itemName ? { ...item, name: data.name, price: data.price } : item
+            );
+        }
+        // Case 2: Update a category's top-level fields
+        else if (!path.serviceName) {
+             updatePayload = { category: data.category, icon: data.icon };
+        }
+        // Case 3: Update nested items (service, tier, addon)
+        else {
+            updatePayload.services = docData.services.map((service: any) => {
+                if (service.name !== path.serviceName) {
+                    return service;
+                }
+
+                // Update service name
+                if (!path.tierName && !path.addonName) {
+                    return { ...service, name: data.name ?? service.name };
+                }
+
+                // Update a tier
+                if (path.tierName) {
+                    const updatedTiers = service.tiers.map((tier: any) =>
+                        tier.name === path.tierName ? { ...tier, ...data } : tier
+                    );
+                    return { ...service, tiers: updatedTiers };
+                }
+
+                // Update an addon
+                if (path.addonName) {
+                    const updatedAddons = (service.addons || []).map((addon: any) =>
+                        addon.name === path.addonName ? { ...addon, ...data } : addon
+                    );
+                    return { ...service, addons: updatedAddons };
+                }
+
+                return service;
+            });
+        }
+        
+        await updateDoc(docRef, updatePayload);
+        return { success: true, message: 'Successfully updated item.' };
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+        console.error("Error updating pricing item:", errorMessage);
+        return { success: false, message: `Failed to update item: ${errorMessage}` };
     }
 }
