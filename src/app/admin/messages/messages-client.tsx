@@ -80,12 +80,12 @@ export default function MessagesClient() {
                  {messages.map((msg) => (
                     <AccordionItem key={msg.id} value={msg.id} className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg px-6">
                         <AccordionTrigger className="hover:no-underline">
-                            <div className="flex justify-between w-full items-center">
+                            <div className="flex flex-col sm:flex-row justify-between w-full items-start sm:items-center gap-2">
                                 <div className="text-left">
                                     <p className="font-semibold">{msg.subject}</p>
                                     <p className="text-sm text-muted-foreground">{`From: ${msg.name} (${msg.email})`}</p>
                                 </div>
-                                <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-4 self-end sm:self-center">
                                      {!msg.read && <Badge>New</Badge>}
                                      <span className="text-xs text-muted-foreground">{formatTimestamp(msg.createdAt)}</span>
                                 </div>

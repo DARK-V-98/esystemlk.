@@ -379,31 +379,33 @@ export default function PricingManagementClient() {
                     <div className="space-y-6">
                         {pricingData.map((category) => (
                             <Card key={category.id} className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg overflow-hidden">
-                                <CardHeader className="flex flex-row items-center justify-between bg-black/20 p-6">
-                                    <div className="flex items-center gap-4">
-                                        <Icon name={category.icon} className="w-8 h-8 text-primary" />
-                                        <CardTitle className="text-2xl font-headline">{category.category}</CardTitle>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        {'services' in category && (
-                                            <Button variant="outline" size="sm" onClick={() => handleAddClick({ type: 'service', categoryId: category.id })} disabled={isPending}>
-                                                <Icons.PlusCircle className="mr-2 h-4 w-4" /> Add Service
+                                <CardHeader className="bg-black/20 p-6">
+                                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                                        <div className="flex items-center gap-4">
+                                            <Icon name={category.icon} className="w-8 h-8 text-primary" />
+                                            <CardTitle className="text-2xl font-headline">{category.category}</CardTitle>
+                                        </div>
+                                        <div className="flex items-center gap-2 self-end md:self-center">
+                                            {'services' in category && (
+                                                <Button variant="outline" size="sm" onClick={() => handleAddClick({ type: 'service', categoryId: category.id })} disabled={isPending}>
+                                                    <Icons.PlusCircle className="mr-2 h-4 w-4" /> Add Service
+                                                </Button>
+                                            )}
+                                            {'items' in category && (
+                                                <Button variant="outline" size="sm" onClick={() => handleAddClick({ type: 'commonAddon', categoryId: category.id })} disabled={isPending}>
+                                                    <Icons.PlusCircle className="mr-2 h-4 w-4" /> Add Item
+                                                </Button>
+                                            )}
+                                            <Switch checked={category.enabled} onCheckedChange={(checked) => handleStatusChange('category', category.id, checked)} disabled={isPending} />
+                                            <AlertDialogTrigger asChild>
+                                                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setItemToDelete({ type: 'category', categoryId: category.id })} disabled={isPending}>
+                                                    <Icons.Trash2 className="w-4 h-4" />
+                                                </Button>
+                                            </AlertDialogTrigger>
+                                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEditClick({ categoryId: category.id }, category)} disabled={isPending}>
+                                                <Icons.FileEdit className="w-4 h-4" />
                                             </Button>
-                                        )}
-                                        {'items' in category && (
-                                             <Button variant="outline" size="sm" onClick={() => handleAddClick({ type: 'commonAddon', categoryId: category.id })} disabled={isPending}>
-                                                <Icons.PlusCircle className="mr-2 h-4 w-4" /> Add Item
-                                            </Button>
-                                        )}
-                                        <Switch checked={category.enabled} onCheckedChange={(checked) => handleStatusChange('category', category.id, checked)} disabled={isPending} />
-                                        <AlertDialogTrigger asChild>
-                                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setItemToDelete({ type: 'category', categoryId: category.id })} disabled={isPending}>
-                                                <Icons.Trash2 className="w-4 h-4" />
-                                            </Button>
-                                        </AlertDialogTrigger>
-                                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEditClick({ categoryId: category.id }, category)} disabled={isPending}>
-                                            <Icons.FileEdit className="w-4 h-4" />
-                                        </Button>
+                                        </div>
                                     </div>
                                 </CardHeader>
                                 <CardContent className="p-6">
