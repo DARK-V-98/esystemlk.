@@ -1,6 +1,6 @@
 import { ContactForm } from "./contact-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mail, MessageCircle, MapPin, Phone } from "lucide-react";
+import { Mail, MessageCircle, Phone } from "lucide-react";
 
 export default function ContactPage() {
   return (
@@ -54,17 +54,6 @@ export default function ContactPage() {
                                     <p className="text-muted-foreground">+94 76 571 1396</p>
                                 </div>
                             </a>
-                        </CardContent>
-                    </Card>
-                     <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-md">
-                        <CardContent className="p-6">
-                            <div className="flex items-center gap-4">
-                                <MapPin className="w-8 h-8 text-primary" />
-                                <div>
-                                    <h3 className="font-semibold text-lg">Office</h3>
-                                    <p className="text-muted-foreground">123 Tech Avenue, Silicon Valley, CA 94043</p>
-                                </div>
-                            </div>
                         </CardContent>
                     </Card>
                 </div>

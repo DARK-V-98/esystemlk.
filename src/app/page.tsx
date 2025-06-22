@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CodeXml, CreditCard, Mail, MessageCircle, Paintbrush, Phone, ServerCog, MapPin } from "lucide-react";
+import { ArrowRight, CodeXml, CreditCard, Mail, MessageCircle, Paintbrush, Phone, ServerCog } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { getPageSettings } from "./admin/pages/actions";
@@ -202,17 +202,6 @@ export default async function Home() {
                                     <p className="text-muted-foreground">+94 76 571 1396</p>
                                 </div>
                             </a>
-                        </CardContent>
-                    </Card>
-                     <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-md">
-                        <CardContent className="p-6">
-                            <div className="flex items-center gap-4">
-                                <MapPin className="w-8 h-8 text-primary" />
-                                <div>
-                                    <h3 className="font-semibold text-lg">Office</h3>
-                                    <p className="text-muted-foreground">123 Tech Avenue, Silicon Valley, CA 94043</p>
-                                </div>
-                            </div>
                         </CardContent>
                     </Card>
                 </div>
