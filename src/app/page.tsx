@@ -52,7 +52,7 @@ export default function Home() {
         className="w-full min-h-screen flex items-center justify-center py-20"
       >
         <div className="container mx-auto px-4 md:px-6 text-center">
-            <div className="bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl py-16 md:py-24 px-8">
+            <div className="py-16 md:py-24 px-8">
                 <h1 className="font-headline text-5xl md:text-8xl font-bold tracking-tighter uppercase drop-shadow-lg">
                     Clarity in Code.
                 </h1>
