@@ -5,7 +5,7 @@ import React, { useState, useEffect, useTransition } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
-import { updatePricingDocStatus, uploadPricingData, deletePricingDoc, updateServiceStatus, deleteServiceFromCategory, updatePricingItem, type PricingItemPath, type PricingItemData } from './actions';
+import { updatePricingDocStatus, uploadPricingData, deletePricingDoc, updateServiceStatus, deleteServiceFromCategory, updatePricingItem, addPricingItem, type PricingItemPath, type PricingItemData, type AddItemContext, type AddItemData } from './actions';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -46,6 +46,12 @@ const editFormSchema = z.object({
     icon: z.string().optional(),
 });
 
+const addFormSchema = z.object({
+    name: z.string().min(1, { message: "Name is required." }),
+    price: z.string().optional(),
+    icon: z.string().optional(),
+});
+
 // Generic Icon component
 const Icon = ({ name, className }: { name: keyof typeof Icons; className?: string }) => {
     const LucideIcon = Icons[name] as React.ElementType;
@@ -60,13 +66,20 @@ export default function PricingManagementClient() {
     const { toast } = useToast();
     const [itemToDelete, setItemToDelete] = useState<{ type: 'category' | 'service'; categoryId: string; serviceName?: string } | null>(null);
 
-    // State for edit dialog
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [currentItem, setCurrentItem] = useState<{ path: PricingItemPath, data: any } | null>(null);
+    
+    const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+    const [addItemContext, setAddItemContext] = useState<AddItemContext | null>(null);
 
-    const form = useForm<z.infer<typeof editFormSchema>>({
+    const editForm = useForm<z.infer<typeof editFormSchema>>({
         resolver: zodResolver(editFormSchema),
         defaultValues: { name: "", price: "", category: "", icon: "" },
+    });
+    
+    const addForm = useForm<z.infer<typeof addFormSchema>>({
+        resolver: zodResolver(addFormSchema),
+        defaultValues: { name: "", price: "", icon: "" },
     });
 
     useEffect(() => {
@@ -131,13 +144,19 @@ export default function PricingManagementClient() {
 
     const handleEditClick = (path: PricingItemPath, data: any) => {
         setCurrentItem({ path, data });
-        form.reset({
+        editForm.reset({
             name: data.name,
             price: data.price,
             category: data.category,
             icon: data.icon
         });
         setIsEditDialogOpen(true);
+    };
+    
+    const handleAddClick = (context: AddItemContext) => {
+        setAddItemContext(context);
+        addForm.reset();
+        setIsAddDialogOpen(true);
     };
 
     const onEditSubmit = (values: z.infer<typeof editFormSchema>) => {
@@ -172,6 +191,35 @@ export default function PricingManagementClient() {
         });
     };
 
+    const onAddSubmit = (values: z.infer<typeof addFormSchema>) => {
+        if (!addItemContext) return;
+
+        const priceRequired = ['tier', 'addon', 'commonAddon'].includes(addItemContext.type);
+        if (priceRequired && (!values.price || values.price.trim() === '')) {
+            addForm.setError('price', { type: 'manual', message: 'Price is required for this item type.' });
+            return;
+        }
+
+        startTransition(async () => {
+            const data: AddItemData = { name: values.name! };
+            if (priceRequired) data.price = values.price;
+            if (addItemContext.type === 'category') data.icon = values.icon;
+            
+            const result = await addPricingItem(addItemContext, data);
+            
+            toast({
+                title: result.success ? 'Success' : 'Error',
+                description: result.message,
+                variant: result.success ? 'default' : 'destructive',
+            });
+
+            if (result.success) {
+                setIsAddDialogOpen(false);
+                setAddItemContext(null);
+            }
+        });
+    };
+
     const renderSkeleton = () => (
         <div className="space-y-4">
             <Skeleton className="h-24 w-full" />
@@ -180,6 +228,18 @@ export default function PricingManagementClient() {
             <Skeleton className="h-48 w-full" />
         </div>
     );
+    
+    const getAddDialogTitle = () => {
+        if (!addItemContext) return '';
+        switch (addItemContext.type) {
+            case 'category': return 'Add New Category';
+            case 'service': return 'Add New Service';
+            case 'tier': return 'Add New Tier';
+            case 'addon': return 'Add New Addon';
+            case 'commonAddon': return 'Add New Common Addon';
+            default: return 'Add New Item';
+        }
+    }
 
     return (
         <AlertDialog>
@@ -191,18 +251,18 @@ export default function PricingManagementClient() {
                             Make changes to the pricing item. Click save when you're done.
                         </DialogDescription>
                     </DialogHeader>
-                    <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onEditSubmit)} className="space-y-4">
+                    <Form {...editForm}>
+                        <form onSubmit={editForm.handleSubmit(onEditSubmit)} className="space-y-4">
                             {currentItem && (!currentItem.path.serviceName && !currentItem.path.isCommonAddon) ? (
                                 <>
-                                    <FormField control={form.control} name="category" render={({ field }) => (
+                                    <FormField control={editForm.control} name="category" render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Category Name</FormLabel>
                                             <FormControl><Input {...field} /></FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )} />
-                                    <FormField control={form.control} name="icon" render={({ field }) => (
+                                    <FormField control={editForm.control} name="icon" render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Icon Name</FormLabel>
                                             <FormControl><Input {...field} placeholder="e.g., ShoppingCart" /></FormControl>
@@ -212,7 +272,7 @@ export default function PricingManagementClient() {
                                 </>
                             ) : (
                                 <>
-                                    <FormField control={form.control} name="name" render={({ field }) => (
+                                    <FormField control={editForm.control} name="name" render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Name</FormLabel>
                                             <FormControl><Input {...field} /></FormControl>
@@ -220,7 +280,7 @@ export default function PricingManagementClient() {
                                         </FormItem>
                                     )} />
                                     {currentItem?.data.price !== undefined && (
-                                        <FormField control={form.control} name="price" render={({ field }) => (
+                                        <FormField control={editForm.control} name="price" render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Price</FormLabel>
                                                 <FormControl><Input {...field} /></FormControl>
@@ -232,6 +292,49 @@ export default function PricingManagementClient() {
                             )}
                             <DialogFooter>
                                 <Button type="submit" disabled={isPending}>{isPending ? 'Saving...' : 'Save Changes'}</Button>
+                            </DialogFooter>
+                        </form>
+                    </Form>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>{getAddDialogTitle()}</DialogTitle>
+                        <DialogDescription>
+                            Fill in the details for the new item.
+                        </DialogDescription>
+                    </DialogHeader>
+                     <Form {...addForm}>
+                        <form onSubmit={addForm.handleSubmit(onAddSubmit)} className="space-y-4">
+                            <FormField control={addForm.control} name="name" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Name</FormLabel>
+                                    <FormControl><Input {...field} /></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )} />
+                           {addItemContext?.type === 'category' && (
+                                <FormField control={addForm.control} name="icon" render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Icon Name</FormLabel>
+                                        <FormControl><Input {...field} placeholder="e.g., ShoppingCart" /></FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
+                           )}
+                           {['tier', 'addon', 'commonAddon'].includes(addItemContext?.type || '') && (
+                                <FormField control={addForm.control} name="price" render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Price</FormLabel>
+                                        <FormControl><Input {...field} placeholder="e.g., Rs. 10,000" /></FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
+                           )}
+                           <DialogFooter>
+                                <Button type="submit" disabled={isPending}>{isPending ? 'Adding...' : 'Add Item'}</Button>
                             </DialogFooter>
                         </form>
                     </Form>
@@ -259,12 +362,15 @@ export default function PricingManagementClient() {
                     <CardHeader>
                         <CardTitle>Database Management</CardTitle>
                         <CardDescription>
-                            Use this to perform a one-time upload of the default pricing structure into the database. This will overwrite existing data.
+                            Initialize the database with default data or add new top-level categories.
                         </CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="flex gap-4">
                         <Button onClick={handleUpload} disabled={isPending}>
                             {isPending ? 'Uploading...' : 'Initialize/Upload Pricing Data'}
+                        </Button>
+                        <Button variant="outline" onClick={() => handleAddClick({type: 'category'})} disabled={isPending}>
+                             <Icons.PlusCircle className="mr-2 h-4 w-4" /> Add Category
                         </Button>
                     </CardContent>
                 </Card>
@@ -278,14 +384,24 @@ export default function PricingManagementClient() {
                                         <Icon name={category.icon} className="w-8 h-8 text-primary" />
                                         <CardTitle className="text-2xl font-headline">{category.category}</CardTitle>
                                     </div>
-                                    <div className="flex items-center gap-4">
+                                    <div className="flex items-center gap-2">
+                                        {'services' in category && (
+                                            <Button variant="outline" size="sm" onClick={() => handleAddClick({ type: 'service', categoryId: category.id })} disabled={isPending}>
+                                                <Icons.PlusCircle className="mr-2 h-4 w-4" /> Add Service
+                                            </Button>
+                                        )}
+                                        {'items' in category && (
+                                             <Button variant="outline" size="sm" onClick={() => handleAddClick({ type: 'commonAddon', categoryId: category.id })} disabled={isPending}>
+                                                <Icons.PlusCircle className="mr-2 h-4 w-4" /> Add Item
+                                            </Button>
+                                        )}
                                         <Switch checked={category.enabled} onCheckedChange={(checked) => handleStatusChange('category', category.id, checked)} disabled={isPending} />
                                         <AlertDialogTrigger asChild>
-                                            <Button variant="ghost" size="sm" onClick={() => setItemToDelete({ type: 'category', categoryId: category.id })} disabled={isPending}>
+                                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setItemToDelete({ type: 'category', categoryId: category.id })} disabled={isPending}>
                                                 <Icons.Trash2 className="w-4 h-4" />
                                             </Button>
                                         </AlertDialogTrigger>
-                                        <Button variant="ghost" size="sm" onClick={() => handleEditClick({ categoryId: category.id }, category)} disabled={isPending}>
+                                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEditClick({ categoryId: category.id }, category)} disabled={isPending}>
                                             <Icons.FileEdit className="w-4 h-4" />
                                         </Button>
                                     </div>
@@ -337,6 +453,14 @@ export default function PricingManagementClient() {
                                                                     ))}
                                                                 </>
                                                             )}
+                                                            <div className="flex gap-2 pt-4">
+                                                                <Button size="sm" variant="outline" onClick={() => handleAddClick({type: 'tier', categoryId: category.id, serviceName: service.name})} disabled={isPending}>
+                                                                    <Icons.Plus className="mr-1 h-4 w-4" /> Add Tier
+                                                                </Button>
+                                                                <Button size="sm" variant="outline" onClick={() => handleAddClick({type: 'addon', categoryId: category.id, serviceName: service.name})} disabled={isPending}>
+                                                                     <Icons.Plus className="mr-1 h-4 w-4" /> Add Addon
+                                                                </Button>
+                                                            </div>
                                                         </div>
                                                     </AccordionContent>
                                                 </AccordionItem>

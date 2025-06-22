@@ -2,7 +2,7 @@
 'use server';
 
 import { db } from '@/lib/firebase';
-import { writeBatch, doc, collection, updateDoc, deleteDoc, getDoc } from 'firebase/firestore';
+import { writeBatch, doc, collection, updateDoc, deleteDoc, getDoc, setDoc, getDocs } from 'firebase/firestore';
 
 const pricingData = [
   {
@@ -340,5 +340,98 @@ export async function updatePricingItem(path: PricingItemPath, data: PricingItem
         const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
         console.error("Error updating pricing item:", errorMessage);
         return { success: false, message: `Failed to update item: ${errorMessage}` };
+    }
+}
+
+
+export type AddItemContext = {
+    type: 'category' | 'service' | 'tier' | 'addon' | 'commonAddon';
+    categoryId?: string;
+    serviceName?: string;
+};
+export type AddItemData = {
+    name: string;
+    price?: string;
+    icon?: string;
+};
+
+// New action to add items
+export async function addPricingItem(context: AddItemContext, data: AddItemData) {
+    try {
+        // Add a new Category
+        if (context.type === 'category') {
+            if (!data.name) throw new Error("Category name is required.");
+            const newId = sanitizeForId(data.name);
+            const docRef = doc(db, 'pricing', newId);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                throw new Error('A category with this name already exists.');
+            }
+            const allDocs = await getDocs(collection(db, 'pricing'));
+            const newCategory = {
+                category: data.name,
+                icon: data.icon || 'Package',
+                services: [],
+                enabled: true,
+                order: allDocs.size,
+            };
+            await setDoc(docRef, newCategory);
+            return { success: true, message: 'Successfully added category.' };
+        }
+
+        if (!context.categoryId) throw new Error("Category ID is required.");
+        
+        const docRef = doc(db, 'pricing', context.categoryId);
+        const docSnap = await getDoc(docRef);
+        if (!docSnap.exists()) throw new Error("Category document not found.");
+        
+        const docData = docSnap.data();
+
+        // Add a new Service to a Category
+        if (context.type === 'service') {
+            if (!data.name) throw new Error("Service name is required.");
+            const newService = { name: data.name, tiers: [], addons: [], enabled: true };
+            const updatedServices = [...(docData.services || []), newService];
+            await updateDoc(docRef, { services: updatedServices });
+            return { success: true, message: 'Successfully added service.' };
+        }
+        
+        // Add a new Common Addon
+        if (context.type === 'commonAddon') {
+             if (!data.name || !data.price) throw new Error("Name and price are required for an addon.");
+             const newItem = { name: data.name, price: data.price };
+             const updatedItems = [...(docData.items || []), newItem];
+             await updateDoc(docRef, { items: updatedItems });
+             return { success: true, message: 'Successfully added common addon.' };
+        }
+
+        if (!context.serviceName) throw new Error("Service name is required.");
+        
+        const services = docData.services as any[];
+        const serviceIndex = services.findIndex(s => s.name === context.serviceName);
+        if (serviceIndex === -1) throw new Error("Service not found.");
+
+        if (context.type === 'tier') {
+            if (!data.name || !data.price) throw new Error("Name and price are required for a tier.");
+            const newTier = { name: data.name, price: data.price };
+            services[serviceIndex].tiers = [...(services[serviceIndex].tiers || []), newTier];
+            await updateDoc(docRef, { services });
+            return { success: true, message: 'Successfully added tier.' };
+        }
+
+        if (context.type === 'addon') {
+            if (!data.name || !data.price) throw new Error("Name and price are required for an addon.");
+            const newAddon = { name: data.name, price: data.price };
+            services[serviceIndex].addons = [...(services[serviceIndex].addons || []), newAddon];
+            await updateDoc(docRef, { services });
+            return { success: true, message: 'Successfully added addon.' };
+        }
+
+        throw new Error("Invalid item type specified.");
+
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+        console.error("Error adding pricing item:", errorMessage);
+        return { success: false, message: `Failed to add item: ${errorMessage}` };
     }
 }
