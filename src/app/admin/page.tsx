@@ -1,9 +1,10 @@
+
 "use client";
 
 import { useAuth } from "@/hooks/use-auth";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Link from "next/link";
-import { Mail } from "lucide-react";
+import { Mail, Users, CreditCard, FileText, BarChart2 } from "lucide-react";
 
 export default function AdminPage() {
   const { user } = useAuth();
@@ -16,14 +17,17 @@ export default function AdminPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
-          <CardHeader>
-            <CardTitle>User Management</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground">Manage user roles and permissions.</p>
-          </CardContent>
-        </Card>
+        <Link href="/admin/users" className="block hover:scale-105 transition-transform duration-300">
+            <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg h-full hover:border-primary transition-colors">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>User Management</CardTitle>
+                 <Users className="w-6 h-6 text-primary" />
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">Manage user roles and permissions.</p>
+              </CardContent>
+            </Card>
+        </Link>
         <Link href="/admin/messages" className="block hover:scale-105 transition-transform duration-300">
             <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg h-full hover:border-primary transition-colors">
               <CardHeader className="flex flex-row items-center justify-between">
@@ -37,8 +41,9 @@ export default function AdminPage() {
         </Link>
         <Link href="/admin/pricing" className="block hover:scale-105 transition-transform duration-300">
             <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg h-full hover:border-primary transition-colors">
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Pricing Management</CardTitle>
+                <CreditCard className="w-6 h-6 text-primary" />
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">Update and manage service pricing tiers and add-ons.</p>
@@ -47,8 +52,9 @@ export default function AdminPage() {
         </Link>
         <Link href="/admin/pages" className="block hover:scale-105 transition-transform duration-300">
             <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg h-full hover:border-primary transition-colors">
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Page Management</CardTitle>
+                <FileText className="w-6 h-6 text-primary" />
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">Enable or disable pages and sections on your website.</p>
@@ -56,8 +62,9 @@ export default function AdminPage() {
             </Card>
         </Link>
         <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>View Analytics</CardTitle>
+            <BarChart2 className="w-6 h-6 text-primary" />
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">Check website traffic and user engagement.</p>
