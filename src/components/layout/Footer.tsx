@@ -12,7 +12,7 @@ export function Footer({ pageSettings }: { pageSettings: PageVisibility }) {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="flex flex-col items-start">
             <Link href="/" className="mb-4">
-              <Image src="/logo.png" alt="ESystemLk Logo" width={180} height={40} />
+              <Image src="/logo.png" alt="ESystemLk Logo" width={50} height={50} className="rounded-full" />
             </Link>
             <p className="text-muted-foreground text-sm">
               Your trusted partner for innovative technology solutions.
