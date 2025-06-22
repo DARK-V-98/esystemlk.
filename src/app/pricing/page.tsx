@@ -1,106 +1,296 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check } from "lucide-react";
-import Link from "next/link";
 
-const pricingPlans = [
+import {
+    ShoppingCart,
+    Building,
+    HeartPulse,
+    Scissors,
+    Palette,
+    BookOpen,
+    Users,
+    Hotel,
+    Landmark,
+    Blocks,
+    Package,
+    PlusCircle
+} from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+
+const pricingData = [
   {
-    name: "Basic Website",
-    price: "25,000+",
-    currency: "LKR",
-    description: "Perfect for personal portfolios, blogs, and small business profiles.",
-    features: [
-      "Up to 5 Pages",
-      "Responsive Design",
-      "Contact Form Integration",
-      "Basic SEO Setup",
-      "Social Media Links",
+    icon: <ShoppingCart className="w-10 h-10 text-primary" />,
+    category: "E-Commerce & Online Sales",
+    services: [
+      {
+        name: "Clothing & Fashion Stores",
+        tiers: [
+          { name: "Starter Package (Basic shop – 3 pages)", price: "Rs. 25,000" },
+          { name: "Standard Package (Shop + Cart + Checkout)", price: "Rs. 40,000" },
+          { name: "Premium Marketplace (Multi-vendor)", price: "Rs. 60,000" },
+        ],
+        addons: [
+          { name: "Payment Integration", price: "Rs. 10,000" },
+          { name: "Stock System", price: "Rs. 12,000" },
+          { name: "Review System", price: "Rs. 5,000" },
+        ],
+      },
+      {
+        name: "Grocery Delivery",
+        tiers: [
+          { name: "Basic Grocery Listing Site", price: "Rs. 30,000" },
+          { name: "Online Grocery Store (with delivery)", price: "Rs. 50,000" },
+          { name: "Advanced E-Commerce Grocery Platform", price: "Rs. 75,000" },
+        ],
+        addons: [
+            { name: "Delivery Time Picker", price: "Rs. 7,000" },
+            { name: "Loyalty System", price: "Rs. 10,000" },
+        ]
+      },
+      {
+        name: "Electronics & Gadgets",
+        tiers: [
+            { name: "Product Display Site (3 pages)", price: "Rs. 30,000" },
+            { name: "Cart + Comparison + Ratings Site", price: "Rs. 55,000" },
+            { name: "Advanced Tech Store", price: "Rs. 80,000" },
+        ],
+      },
+      {
+        name: "Handmade / Craft Shops",
+        tiers: [
+            { name: "Starter Craft Shop (2–3 pages)", price: "Rs. 25,000" },
+            { name: "Cart-enabled Site", price: "Rs. 40,000" },
+            { name: "Full Brand Site with Custom Orders", price: "Rs. 60,000" },
+        ],
+      },
+      {
+        name: "Digital Products",
+        tiers: [
+            { name: "Sell eBooks/Files Site", price: "Rs. 20,000" },
+            { name: "Member Access + Cart + Downloads", price: "Rs. 40,000" },
+            { name: "Licensing + Email Delivery System", price: "Rs. 60,000" },
+        ],
+      },
+      {
+        name: "Wholesale B2B Shops",
+        tiers: [
+            { name: "Catalog + Inquiry Form", price: "Rs. 35,000" },
+            { name: "Business Login + Tiered Pricing", price: "Rs. 60,000" },
+            { name: "Full B2B E-Commerce System", price: "Rs. 85,000" },
+        ],
+      },
+      {
+        name: "Dropshipping Stores",
+        tiers: [
+            { name: "Dropship Store Setup (Ready-to-sell)", price: "Rs. 45,000" },
+            { name: "Advanced Sync with Suppliers", price: "Rs. 75,000" },
+        ],
+      },
+      {
+        name: "Marketplace Platforms",
+        tiers: [
+            { name: "Multi-vendor Listings Site", price: "Rs. 60,000" },
+            { name: "Vendor Dashboard + Order Tracking", price: "Rs. 90,000" },
+            { name: "Advanced Marketplace with Subscriptions", price: "Rs. 120,000" },
+        ],
+      },
     ],
-    cta: "Get Started",
-    href: "/contact"
   },
   {
-    name: "Business Pro",
-    price: "75,000+",
-    currency: "LKR",
-    description: "Ideal for growing businesses, e-commerce stores, and startups.",
-    features: [
-      "Everything in Basic Plan",
-      "E-commerce Functionality",
-      "Content Management System (CMS)",
-      "Payment Gateway Integration",
-      "Admin Panel / Dashboard",
-    ],
-    cta: "Choose Plan",
-    href: "/contact",
-    popular: true,
+    icon: <Building className="w-10 h-10 text-primary" />,
+    category: "Business & Corporate",
+    services: [
+        { name: "Company Profile Websites", tiers: [{ name: "Single Page Intro Site", price: "Rs. 15,000" }, { name: "Full Company Site (About, Services, Contact)", price: "Rs. 30,000" }, { name: "Premium Profile + Case Studies + Blog", price: "Rs. 45,000" }]},
+        { name: "Service-Based Businesses", tiers: [{ name: "Booking + Service Detail Site", price: "Rs. 35,000" }, { name: "Advanced Inquiry System + Feedback", price: "Rs. 50,000" }]},
+        { name: "Legal & Law Firms", tiers: [{ name: "Professional Law Profile Site", price: "Rs. 30,000" }, { name: "Services + Team + Case Summaries", price: "Rs. 50,000" }]},
+        { name: "Accounting & Finance Firms", tiers: [{ name: "Profile + Service List + Upload Forms", price: "Rs. 35,000" }, { name: "Client Login + Document Center", price: "Rs. 55,000" }]},
+        { name: "Construction & Real Estate", tiers: [{ name: "Property Showcase Site", price: "Rs. 30,000" }, { name: "Listings + Filters + Inquiry Forms", price: "Rs. 50,000" }, { name: "Premium 3D Property Viewer", price: "Rs. 70,000" }]},
+        { name: "Logistics & Courier Services", tiers: [{ name: "Info + Booking Form Site", price: "Rs. 35,000" }, { name: "Admin Panel + Tracking", price: "Rs. 60,000" }, { name: "Full Parcel Management Portal", price: "Rs. 90,000" }]},
+        { name: "IT Companies & Startups", tiers: [{ name: "Company Profile + Product Showcase", price: "Rs. 35,000" }, { name: "Job Listings + Portfolio", price: "Rs. 50,000" }, { name: "Full Tech Startup Site", price: "Rs. 70,000" }]},
+        { name: "Event Management Agencies", tiers: [{ name: "Event Portfolio Site", price: "Rs. 30,000" }, { name: "Package Listings + Inquiry Forms", price: "Rs. 50,000" }, { name: "Customer Reviews + Booking", price: "Rs. 70,000" }]},
+        { name: "HR & Recruitment Firms", tiers: [{ name: "Job Board + Resume Upload", price: "Rs. 40,000" }, { name: "Application Tracking System", price: "Rs. 60,000" }]},
+    ]
   },
   {
-    name: "Enterprise Solution",
-    price: "Custom",
-    currency: "",
-    description: "Tailor-made solutions for large-scale applications and unique requirements.",
-    features: [
-      "Everything in Business Pro Plan",
-      "Custom Backend & API Development",
-      "Advanced Logistics/Courier Systems",
-      "Scalable Cloud Architecture",
-      "Dedicated Hosting & Maintenance",
-      "Priority Support",
-    ],
-    cta: "Contact Us",
-    href: "/contact"
-  }
+    icon: <HeartPulse className="w-10 h-10 text-primary" />,
+    category: "Healthcare & Wellness",
+    services: [
+        { name: "Pharmacy Websites", tiers: [{ name: "Medicine Display + Contact", price: "Rs. 30,000" }, { name: "Cart + Prescription Upload", price: "Rs. 50,000" }, { name: "Dashboard + Order History", price: "Rs. 75,000" }]},
+        { name: "Private Clinics / Doctors", tiers: [{ name: "Doctor Bio + Contact Site", price: "Rs. 20,000" }, { name: "Appointment Booking Site", price: "Rs. 35,000" }, { name: "Patient Panel + Payment Gateway", price: "Rs. 60,000" }]},
+        { name: "Physiotherapy & Rehab Centers", tiers: [{ name: "Therapy Info Site", price: "Rs. 25,000" }, { name: "Online Appointment Requests", price: "Rs. 40,000" }]},
+        { name: "Caregiver & Elderly Care", tiers: [{ name: "Service Request Form", price: "Rs. 25,000" }, { name: "Schedule Management System", price: "Rs. 40,000" }]},
+        { name: "Medical Education & Blogs", tiers: [{ name: "Health Blog with Content", price: "Rs. 20,000" }, { name: "Educational Videos & PDFs", price: "Rs. 35,000" }]},
+    ]
+  },
+  {
+    icon: <Scissors className="w-10 h-10 text-primary" />,
+    category: "Beauty, Fashion & Lifestyle",
+    services: [
+        { name: "Salons & Barber Shops", tiers: [{ name: "Basic Info + Service Prices", price: "Rs. 25,000" }, { name: "Gallery + Booking System", price: "Rs. 40,000" }, { name: "Premium Salon Site", price: "Rs. 55,000" }]},
+        { name: "Makeup Artists / Stylists", tiers: [{ name: "Personal Portfolio", price: "Rs. 20,000" }, { name: "Booking + Packages", price: "Rs. 35,000" }]},
+        { name: "Nail, Spa, and Skincare Studios", tiers: [{ name: "Info + Price Lists", price: "Rs. 25,000" }, { name: "Online Booking + Memberships", price: "Rs. 45,000" }]},
+        { name: "Fitness Trainers / Gyms", tiers: [{ name: "Trainer Profiles + Plans", price: "Rs. 30,000" }, { name: "Membership + Class Scheduling", price: "Rs. 50,000" }]},
+        { name: "Tattoo Studios", tiers: [{ name: "Artist Portfolio", price: "Rs. 20,000" }, { name: "Appointment Booking", price: "Rs. 35,000" }]},
+        { name: "Fashion Portfolios", tiers: [{ name: "Designer Showcase", price: "Rs. 15,000" }, { name: "Event Booking + Galleries", price: "Rs. 30,000" }]},
+    ]
+  },
+  {
+    icon: <Palette className="w-10 h-10 text-primary" />,
+    category: "Creative & Personal Branding",
+    services: [
+        { name: "Photographers, Artists, Writers", tiers: [{ name: "Portfolio (2 pages)", price: "Rs. 18,000" }, { name: "Blog + Contact + Gallery", price: "Rs. 35,000" }]},
+        { name: "Resume / CV Websites", tiers: [{ name: "One-page CV Website", price: "Rs. 12,000" }, { name: "3-page CV with Contact Form", price: "Rs. 20,000" }]},
+        { name: "Influencers / Creators", tiers: [{ name: "Social Links + Content Showcase", price: "Rs. 25,000" }, { name: "Collaboration Forms + Merch Shop", price: "Rs. 40,000" }]},
+        { name: "YouTubers / Streamers", tiers: [{ name: "Video Embeds + Sponsor Info", price: "Rs. 20,000" }, { name: "Donation Buttons + Merch Store", price: "Rs. 40,000" }]},
+        { name: "Freelancers / Consultants", tiers: [{ name: "Service Showcase", price: "Rs. 20,000" }, { name: "Booking + Blog + Portfolio", price: "Rs. 40,000" }]},
+    ]
+  },
+  {
+    icon: <BookOpen className="w-10 h-10 text-primary" />,
+    category: "Education & Learning",
+    services: [
+        { name: "Online Course Platforms", tiers: [{ name: "Mini Course Platform", price: "Rs. 45,000" }, { name: "Full LMS + Quizzes + Dashboard", price: "Rs. 75,000" }, { name: "Advanced eLearning Portal", price: "Rs. 120,000" }]},
+        { name: "Tuition Classes / Institutes", tiers: [{ name: "Class Schedule + Enrollment Forms", price: "Rs. 30,000" }, { name: "Live Class Integration + Dashboard", price: "Rs. 55,000" }]},
+        { name: "Driving Schools", tiers: [{ name: "Course Details + Booking Forms", price: "Rs. 25,000" }, { name: "Trainer Profiles + Document Uploads", price: "Rs. 40,000" }]},
+        { name: "Preschools & Montessoris", tiers: [{ name: "Info + Enrollment Forms", price: "Rs. 25,000" }, { name: "Curriculum Preview + Parent Portal", price: "Rs. 45,000" }]},
+        { name: "Language Learning Portals", tiers: [{ name: "Courses + Subscription Plans", price: "Rs. 30,000" }, { name: "Practice Tests + Teacher Messaging", price: "Rs. 50,000" }]},
+    ]
+  },
+  {
+    icon: <Users className="w-10 h-10 text-primary" />,
+    category: "Cultural, Religious & Social",
+    services: [
+        { name: "Nonprofits / Charities / NGOs", tiers: [{ name: "Mission + Donation Gateway", price: "Rs. 20,000" }, { name: "Volunteer Forms + Event Listings", price: "Rs. 35,000" }]},
+        { name: "Temples, Churches, Mosques", tiers: [{ name: "Prayer Times + Sermons", price: "Rs. 15,000" }, { name: "Donation Options + Event Photos", price: "Rs. 30,000" }]},
+        { name: "Community Groups", tiers: [{ name: "Membership Signups + Event Calendars", price: "Rs. 15,000" }, { name: "Message Boards", price: "Rs. 25,000" }]},
+        { name: "Donation Campaigns", tiers: [{ name: "Fundraising + Tracking Site", price: "Rs. 20,000" }] },
+    ]
+  },
+  {
+    icon: <Hotel className="w-10 h-10 text-primary" />,
+    category: "Hospitality & Travel",
+    services: [
+        { name: "Hotels / Resorts / Villas", tiers: [{ name: "Room Galleries + Booking Forms", price: "Rs. 35,000" }, { name: "Payment Integration + Reviews", price: "Rs. 60,000" }]},
+        { name: "Travel Agencies", tiers: [{ name: "Tour Packages + Itinerary Downloads", price: "Rs. 30,000" }, { name: "WhatsApp Bookings + Video Galleries", price: "Rs. 50,000" }]},
+        { name: "Taxi & Cab Booking", tiers: [{ name: "Real-time Booking + Distance Pricing", price: "Rs. 40,000" }]},
+        { name: "Rental Listings (Airbnb style)", tiers: [{ name: "Calendar Availability + Pricing Engine", price: "Rs. 40,000" }, { name: "Secure Booking System", price: "Rs. 60,000" }]},
+        { name: "Restaurants with Online Ordering", tiers: [{ name: "Menu Display + Order Basket", price: "Rs. 30,000" }, { name: "Delivery Options + Table Reservations", price: "Rs. 50,000" }]},
+    ]
+  },
+  {
+    icon: <Landmark className="w-10 h-10 text-primary" />,
+    category: "Government & Official Use",
+    services: [
+        { name: "Government Portals", tiers: [{ name: "Info Delivery + Notices", price: "Rs. 20,000" }, { name: "Online Forms + Department Listings", price: "Rs. 40,000" }]},
+        { name: "Election Duty Management", tiers: [{ name: "Admin Panel + Staff Assignments", price: "Rs. 45,000" }, { name: "Location Checkers + Duty Schedules", price: "Rs. 65,000" }]},
+        { name: "School Admin Panels", tiers: [{ name: "Student Logins + Attendance", price: "Rs. 40,000" }, { name: "Results + Teacher Communication", price: "Rs. 60,000" }]},
+        { name: "Certificate Application Portals", tiers: [{ name: "Online Forms + Verification Tracking", price: "Rs. 40,000" }, { name: "Document Uploads", price: "Rs. 60,000" }]},
+        { name: "Complaint/Feedback Systems", tiers: [{ name: "Public Complaint Forms + Ticket Tracking", price: "Rs. 35,000" }]},
+    ]
+  },
+  {
+    icon: <Blocks className="w-10 h-10 text-primary" />,
+    category: "Advanced/Custom Applications",
+    services: [
+        { name: "Parcel Tracking Dashboards", tiers: [{ name: "Admin + Client Views + Real-time Tracking", price: "Rs. 60,000" }, { name: "SMS/Email Alerts", price: "Rs. 75,000" }]},
+        { name: "Booking Systems", tiers: [{ name: "Appointment Scheduling + Rescheduling", price: "Rs. 40,000" }]},
+        { name: "CRMs for Businesses", tiers: [{ name: "Lead Tracking + Invoices + Activity Logs", price: "Rs. 75,000" }]},
+        { name: "Inventory Management", tiers: [{ name: "Stock Tracking + Alerts + Reports", price: "Rs. 60,000" }]},
+        { name: "Invoice & Billing Systems", tiers: [{ name: "Invoice Creation + PDF Downloads", price: "Rs. 50,000" }]},
+        { name: "Job Portals", tiers: [{ name: "Job Posting + Application Filtering", price: "Rs. 60,000" }]},
+        { name: "Directory Listings", tiers: [{ name: "Searchable Listings (Vendors, Schools, etc.)", price: "Rs. 45,000" }]},
+    ]
+  },
 ];
+
+const commonAddons = {
+    icon: <Package className="w-10 h-10 text-primary" />,
+    category: "Common Add-Ons for Any Website",
+    items: [
+        { name: "Payment Gateway Setup", price: "Rs. 10,000" },
+        { name: "Admin Dashboard", price: "Rs. 15,000–30,000" },
+        { name: "Appointment / Booking System", price: "Rs. 10,000" },
+        { name: "Tracking System", price: "Rs. 12,000" },
+        { name: "SMS / Email Alerts", price: "Rs. 8,000" },
+        { name: "Inventory or Stock System", price: "Rs. 12,000" },
+        { name: "Multi-language Support", price: "Rs. 7,000+" },
+        { name: "Google Analytics + SEO Setup", price: "Rs. 3,000" },
+    ]
+};
 
 export default function PricingPage() {
   return (
     <>
       <section className="w-full py-20 md:py-28">
         <div className="container mx-auto px-4 md:px-6 text-center bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl py-12">
-          <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">Flexible Pricing Plans</h1>
+          <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">Our Detailed Pricing</h1>
           <p className="max-w-[700px] mx-auto text-muted-foreground md:text-xl mt-4">
-            Choose a plan that fits your needs. All our plans are transparent, with no hidden fees.
+            Transparent, detailed pricing for every project scale. Find the perfect fit for your needs.
           </p>
         </div>
       </section>
 
       <section className="w-full pb-20 md:pb-28">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
-            {pricingPlans.map((plan) => (
-              <Card key={plan.name} className={`flex flex-col bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg transition-all duration-300 hover:-translate-y-2 ${plan.popular ? 'border-primary/50' : ''}`}>
-                {plan.popular && (
-                  <div className="bg-primary text-primary-foreground text-xs font-bold uppercase tracking-wider text-center py-1 rounded-t-lg">
-                    Most Popular
-                  </div>
-                )}
-                <CardHeader className="p-6">
-                  <CardTitle className="font-headline text-2xl font-bold">{plan.name}</CardTitle>
-                  <CardDescription className="text-muted-foreground">{plan.description}</CardDescription>
-                </CardHeader>
-                <CardContent className="p-6 flex-grow">
-                  <div className="mb-6">
-                    <span className="text-4xl font-bold">{plan.price}</span>
-                    {plan.currency && <span className="text-muted-foreground ml-1">{plan.currency}</span>}
-                  </div>
-                  <ul className="space-y-3">
-                    {plan.features.map((feature) => (
-                      <li key={feature} className="flex items-start gap-3">
-                        <Check className="w-5 h-5 text-primary shrink-0 mt-1" />
-                        <span className="text-muted-foreground">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-                <CardFooter className="p-6 mt-auto">
-                  <Button asChild size="lg" className={`w-full rounded-full ${plan.popular ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'bg-white text-black hover:bg-white/90'}`}>
-                    <Link href={plan.href}>{plan.cta}</Link>
-                  </Button>
-                </CardFooter>
-              </Card>
+        <div className="container mx-auto px-4 md:px-6 space-y-12">
+            {pricingData.map((categoryData, index) => (
+                <Card key={index} className="bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl overflow-hidden">
+                    <CardHeader className="p-8 md:p-12">
+                        <div className="flex items-start md:items-center gap-6 flex-col md:flex-row">
+                            {categoryData.icon}
+                            <CardTitle className="font-headline text-3xl font-bold">{categoryData.category}</CardTitle>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="px-8 md:px-12 pb-8 md:pb-12 pt-0">
+                        <div className="space-y-10">
+                            {categoryData.services.map((service, sIndex) => (
+                                <div key={sIndex}>
+                                    <h3 className="font-headline text-xl font-semibold mb-4 text-primary">{service.name}</h3>
+                                    <ul className="space-y-3 mb-4">
+                                        {service.tiers.map((tier, tIndex) => (
+                                            <li key={tIndex} className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 text-muted-foreground border-b border-white/10 pb-3">
+                                                <span>{tier.name}</span>
+                                                <span className="font-semibold text-foreground text-right">{tier.price}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                    {service.addons && service.addons.length > 0 && (
+                                        <>
+                                            <h4 className="text-md font-semibold mt-6 mb-3 flex items-center gap-2 text-primary/80"><PlusCircle className="w-4 h-4" /> Add-ons</h4>
+                                            <ul className="space-y-2">
+                                                {service.addons.map((addon, aIndex) => (
+                                                   <li key={aIndex} className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 text-muted-foreground border-b border-dashed border-white/10 pb-2 text-sm">
+                                                       <span>{addon.name}</span>
+                                                       <span className="font-semibold text-foreground/80 text-right">{addon.price}</span>
+                                                   </li>
+                                                ))}
+                                            </ul>
+                                        </>
+                                    )}
+                                    {sIndex < categoryData.services.length - 1 && <Separator className="mt-10 bg-white/10" />}
+                                </div>
+                            ))}
+                        </div>
+                    </CardContent>
+                </Card>
             ))}
-          </div>
+
+            <Card className="bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl overflow-hidden">
+                <CardHeader className="p-8 md:p-12">
+                    <div className="flex items-start md:items-center gap-6 flex-col md:flex-row">
+                        {commonAddons.icon}
+                        <CardTitle className="font-headline text-3xl font-bold">{commonAddons.category}</CardTitle>
+                    </div>
+                </CardHeader>
+                <CardContent className="px-8 md:px-12 pb-8 md:pb-12 pt-0">
+                     <ul className="space-y-3">
+                        {commonAddons.items.map((item, iIndex) => (
+                           <li key={iIndex} className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 text-muted-foreground border-b border-white/10 pb-3">
+                               <span>{item.name}</span>
+                               <span className="font-semibold text-foreground text-right">{item.price}</span>
+                           </li>
+                        ))}
+                    </ul>
+                </CardContent>
+            </Card>
         </div>
       </section>
     </>
