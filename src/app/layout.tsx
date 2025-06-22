@@ -39,7 +39,7 @@ export default async function RootLayout({
       <body className="font-body antialiased text-foreground">
         <AuthProvider>
            <video autoPlay loop muted playsInline className="background-video">
-            <source src="/background.mp4" type="video/mp4" />
+            <source src="/bg.mp4" type="video/mp4" />
           </video>
           <div className="relative z-10 flex flex-col min-h-screen bg-black/50">
               <Header pageSettings={pageSettings} />
