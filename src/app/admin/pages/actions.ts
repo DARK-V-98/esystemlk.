@@ -4,14 +4,12 @@ import { db } from '@/lib/firebase';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 
 export type PageVisibility = {
-    showPortfolio: boolean;
     showServices: boolean;
     showTestimonials: boolean;
     showPricing: boolean;
 };
 
 const defaultSettings: PageVisibility = {
-    showPortfolio: true,
     showServices: true,
     showTestimonials: true,
     showPricing: true,

@@ -142,7 +142,7 @@ export default async function Home() {
       </section>
 
       {/* Featured Project Section */}
-      {pageSettings.showPortfolio && featuredProject && (
+      {featuredProject && (
         <section className="w-full py-20 md:py-28">
           <div className="container mx-auto px-4 md:px-6">
               <div className="grid lg:grid-cols-2 gap-16 items-center p-8 md:p-12 rounded-3xl bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl">
