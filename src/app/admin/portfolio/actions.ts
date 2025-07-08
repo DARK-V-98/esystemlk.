@@ -11,7 +11,7 @@ export interface PortfolioItem {
     name: string;
     link: string;
     imageUrl: string;
-    createdAt: Timestamp;
+    createdAt: string; // Changed to string for serialization
 }
 
 const portfolioSchema = z.object({
@@ -27,7 +27,17 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
     if (snapshot.empty) {
         return [];
     }
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as PortfolioItem));
+    return snapshot.docs.map(doc => {
+        const data = doc.data();
+        const createdAtTimestamp = data.createdAt as Timestamp;
+        return {
+            id: doc.id,
+            name: data.name,
+            link: data.link,
+            imageUrl: data.imageUrl,
+            createdAt: createdAtTimestamp.toDate().toISOString(),
+        };
+    });
 }
 
 // Add a new portfolio item
