@@ -10,6 +10,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useAuth } from "@/hooks/use-auth";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
@@ -19,7 +22,8 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
-  const { signInWithEmail, signInWithGoogle, loading } = useAuth();
+  const { user, signInWithEmail, signInWithGoogle, loading } = useAuth();
+  const router = useRouter();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -29,9 +33,31 @@ export default function LoginPage() {
     },
   });
 
+  useEffect(() => {
+    if (!loading && user) {
+      router.replace('/admin');
+    }
+  }, [user, loading, router]);
+
   const onSubmit = (data: LoginFormValues) => {
     signInWithEmail(data.email, data.password);
   };
+
+  if (loading || user) {
+      return (
+          <div className="container mx-auto flex items-center justify-center min-h-[calc(100vh-10rem)] py-12">
+                <Card className="w-full max-w-md bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl p-6">
+                    <Skeleton className="h-8 w-3/4 mx-auto mb-2" />
+                    <Skeleton className="h-4 w-1/2 mx-auto mb-6" />
+                    <div className="space-y-6">
+                        <Skeleton className="h-10 w-full" />
+                        <Skeleton className="h-10 w-full" />
+                        <Skeleton className="h-12 w-full rounded-full" />
+                    </div>
+                </Card>
+          </div>
+      );
+  }
 
   return (
     <div className="container mx-auto flex items-center justify-center min-h-[calc(100vh-10rem)] py-12">
