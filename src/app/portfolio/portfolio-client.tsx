@@ -9,8 +9,9 @@ export interface PortfolioItem {
   id: string;
   name: string;
   link: string;
-  imageUrl: string;
-  hint: string;
+  imageUrl?: string;
+  hint?: string;
+  description?: string;
 }
 
 export default function PortfolioClient({ projects }: { projects: PortfolioItem[] }) {
@@ -27,28 +28,33 @@ export default function PortfolioClient({ projects }: { projects: PortfolioItem[
             <a 
               href={project.link} 
               key={project.id} 
-              target="_blank" 
+              target={project.link.startsWith('/') ? '_self' : '_blank'}
               rel="noopener noreferrer" 
               className="block group"
             >
               <Card className="overflow-hidden h-full flex flex-col transition-all duration-300 hover:shadow-xl hover:-translate-y-2 bg-black/30 backdrop-blur-lg border border-white/10 hover:border-white/30 rounded-2xl shadow-lg">
-                <div className="overflow-hidden relative">
-                    <Image
-                      src={project.imageUrl}
-                      alt={project.name}
-                      width={600}
-                      height={400}
-                      className="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-110"
-                      data-ai-hint={project.hint}
-                    />
-                    <div className="absolute top-3 right-3 bg-black/50 p-2 rounded-full backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <ArrowUpRight className="w-5 h-5 text-white" />
-                    </div>
-                </div>
+                {project.imageUrl && (
+                  <div className="overflow-hidden relative">
+                      <Image
+                        src={project.imageUrl}
+                        alt={project.name}
+                        width={600}
+                        height={400}
+                        className="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-110"
+                        data-ai-hint={project.hint}
+                      />
+                      <div className="absolute top-3 right-3 bg-black/50 p-2 rounded-full backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <ArrowUpRight className="w-5 h-5 text-white" />
+                      </div>
+                  </div>
+                )}
                 <CardContent className="p-6 flex flex-col flex-grow">
                   <h3 className="font-headline text-xl font-semibold mb-2">{project.name}</h3>
+                   {project.description && (
+                    <p className="text-muted-foreground mb-4 flex-grow">{project.description}</p>
+                  )}
                   <p className="text-sm text-primary hover:underline break-all mt-auto">
-                    {project.link.replace(/^https?:\/\//, '')}
+                    {project.link.startsWith('/') ? "View Offering" : project.link.replace(/^https?:\/\//, '')}
                   </p>
                 </CardContent>
               </Card>

@@ -112,16 +112,30 @@ const values = [
 const portfolioItems = [
   {
     id: '1',
-    name: 'Zenith E-commerce Platform',
-    link: 'https://example.com',
-    imageUrl: 'https://placehold.co/800x600.png',
-    hint: 'modern ecommerce',
+    name: 'Fly Cargo Lanka',
+    link: 'https://www.flycargolanka.lk',
+    imageUrl: '/fly.png',
+    hint: 'cargo logistics',
+  },
+  {
+    id: '2',
+    name: 'Aarya Hardware',
+    link: 'https://www.aaryahardware.lk',
+    imageUrl: '/ar.png',
+    hint: 'hardware store',
+  },
+  {
+    id: '3',
+    name: 'Big Costa Construction Pvt Ltd',
+    link: 'https://www.bigcosta.lk',
+    imageUrl: '/bg.png',
+    hint: 'construction company',
   },
 ];
 
 export default async function Home() {
   const pageSettings = await getPageSettings();
-  const featuredProject = portfolioItems.length > 0 ? portfolioItems[0] : null;
+  const featuredProject = portfolioItems.find(p => p.id === '3');
 
   return (
     <div className="flex flex-col text-foreground">
