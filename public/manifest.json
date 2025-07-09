@@ -1,0 +1,21 @@
+{
+  "name": "ESystemLk - Web Development & POS Solutions",
+  "short_name": "ESystemLk",
+  "description": "Expert full-stack web development, e-commerce, and POS solutions in Sri Lanka.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
