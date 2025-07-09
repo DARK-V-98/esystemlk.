@@ -22,7 +22,7 @@ const dmSans = DM_Sans({
   weight: ['400', '500', '700']
 });
 
-const siteUrl = 'https://www.yourdomain.com'; // IMPORTANT: Replace with your actual domain
+const siteUrl = 'https://www.esystemlk.xyz'; // IMPORTANT: Replace with your actual domain
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
