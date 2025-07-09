@@ -1,11 +1,11 @@
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CodeXml, CreditCard, Mail, MessageCircle, Paintbrush, Phone, ServerCog, Compass, Palette, ClipboardCheck, Rocket, LifeBuoy } from "lucide-react";
+import { ArrowRight, CodeXml, CreditCard, Mail, MessageCircle, Paintbrush, Phone, ServerCog, Compass, Palette, ClipboardCheck, Rocket, LifeBuoy, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { getPageSettings } from "./admin/pages/actions";
 import { ContactForm } from "./contact/contact-form";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import FeaturedProjects from "@/components/FeaturedProjects";
 
 const services = [
@@ -166,6 +166,52 @@ export default async function Home() {
 
       {/* Featured Project Section */}
       {imageProjects.length > 0 && <FeaturedProjects items={imageProjects} />}
+
+      {/* POS Solutions Section */}
+      <section id="pos-solutions" className="w-full py-20 md:py-28">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center mb-16 max-w-3xl mx-auto">
+            <h2 className="font-headline text-4xl md:text-5xl font-bold">POS Solutions</h2>
+            <p className="text-muted-foreground md:text-xl mt-4">Powerful and flexible Point of Sale systems tailored for your business, available for rental or lifetime purchase.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            <Link href="/contact" className="block group">
+              <Card className="h-full flex flex-col bg-black/30 backdrop-blur-lg border border-white/10 rounded-3xl shadow-xl transition-all duration-300 hover:border-white/30 hover:-translate-y-2">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-4">
+                    <ShoppingCart className="w-8 h-8 text-primary" />
+                    <span>POS System - Rental</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-col flex-grow">
+                  <p className="text-muted-foreground mb-4">Ideal for new businesses or those who prefer low initial costs. Get started quickly with our flexible rental plan.</p>
+                  <div className="mt-auto pt-4 border-t border-white/10">
+                    <p className="font-semibold text-lg">First Payment: <span className="text-primary">Rs. 5,000</span></p>
+                    <p className="font-semibold text-lg">Monthly Rental: <span className="text-primary">Rs. 3,000</span></p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+            <Link href="/contact" className="block group">
+              <Card className="h-full flex flex-col bg-black/30 backdrop-blur-lg border border-white/10 rounded-3xl shadow-xl transition-all duration-300 hover:border-white/30 hover:-translate-y-2">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-4">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 text-primary"><path d="M6 20h0a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h0"/><path d="M8 12h8"/><path d="M8 16h8"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                    <span>POS System - Lifetime</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-col flex-grow">
+                  <p className="text-muted-foreground mb-4">A one-time investment for a powerful, fully customizable POS solution with various add-ons to perfectly fit your workflow.</p>
+                  <div className="mt-auto pt-4 border-t border-white/10">
+                    <p className="font-semibold text-lg">Starting from <span className="text-primary">Rs. 50,000</span></p>
+                    <p className="text-muted-foreground text-sm">One-time payment</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* Services Section */}
       {pageSettings.showServices && (
