@@ -4,7 +4,7 @@
 import { useAuth } from "@/hooks/use-auth";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Link from "next/link";
-import { Mail, Users, CreditCard, FileText, BarChart2, Briefcase } from "lucide-react";
+import { Mail, Users, CreditCard, FileText, BarChart2 } from "lucide-react";
 
 export default function AdminPage() {
   const { user } = useAuth();
@@ -58,17 +58,6 @@ export default function AdminPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">Enable or disable pages and sections on your website.</p>
-              </CardContent>
-            </Card>
-        </Link>
-         <Link href="/admin/portfolio" className="block hover:scale-105 transition-transform duration-300">
-            <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg h-full hover:border-primary transition-colors">
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Portfolio Management</CardTitle>
-                <Briefcase className="w-6 h-6 text-primary" />
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">Add, update, or remove portfolio projects.</p>
               </CardContent>
             </Card>
         </Link>

@@ -1,9 +1,17 @@
+
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
-import type { PortfolioItem } from "../admin/portfolio/actions";
 import { ArrowUpRight } from 'lucide-react';
+
+export interface PortfolioItem {
+  id: string;
+  name: string;
+  link: string;
+  imageUrl: string;
+  hint: string;
+}
 
 export default function PortfolioClient({ projects }: { projects: PortfolioItem[] }) {
   return (
@@ -31,6 +39,7 @@ export default function PortfolioClient({ projects }: { projects: PortfolioItem[
                       width={600}
                       height={400}
                       className="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-110"
+                      data-ai-hint={project.hint}
                     />
                     <div className="absolute top-3 right-3 bg-black/50 p-2 rounded-full backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <ArrowUpRight className="w-5 h-5 text-white" />

@@ -1,9 +1,54 @@
+
 import PortfolioClient from './portfolio-client';
-import { getPortfolioItems } from '../admin/portfolio/actions';
+import type { PortfolioItem } from './portfolio-client';
+
+const projects: PortfolioItem[] = [
+  {
+    id: '1',
+    name: 'Zenith E-commerce Platform',
+    link: 'https://example.com',
+    imageUrl: 'https://placehold.co/600x400.png',
+    hint: 'modern ecommerce',
+  },
+  {
+    id: '2',
+    name: 'Innovate AI Dashboard',
+    link: 'https://example.com',
+    imageUrl: 'https://placehold.co/600x400.png',
+    hint: 'data dashboard',
+  },
+  {
+    id: '3',
+    name: 'Future-Forward Landing Page',
+    link: 'https://example.com',
+    imageUrl: 'https://placehold.co/600x400.png',
+    hint: 'website design',
+  },
+  {
+    id: '4',
+    name: 'Creative Co. Portfolio',
+    link: 'https://example.com',
+    imageUrl: 'https://placehold.co/600x400.png',
+    hint: 'creative portfolio',
+  },
+  {
+    id: '5',
+    name: 'Global Net Mobile App',
+    link: 'https://example.com',
+    imageUrl: 'https://placehold.co/600x400.png',
+    hint: 'mobile application',
+  },
+  {
+    id: '6',
+    name: 'Fusion Marketing Campaign',
+    link: 'https://example.com',
+    imageUrl: 'https://placehold.co/600x400.png',
+    hint: 'marketing website',
+  },
+];
+
 
 export default async function PortfolioPage() {
-  const projects = await getPortfolioItems();
-
   return (
     <>
       <section className="w-full py-20 md:py-28">

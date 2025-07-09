@@ -6,7 +6,6 @@ import Image from "next/image";
 import { getPageSettings } from "./admin/pages/actions";
 import { ContactForm } from "./contact/contact-form";
 import { Card, CardContent } from "@/components/ui/card";
-import { getPortfolioItems } from "./admin/portfolio/actions";
 
 const services = [
   {
@@ -110,9 +109,18 @@ const values = [
   },
 ];
 
+const portfolioItems = [
+  {
+    id: '1',
+    name: 'Zenith E-commerce Platform',
+    link: 'https://example.com',
+    imageUrl: 'https://placehold.co/800x600.png',
+    hint: 'modern ecommerce',
+  },
+];
+
 export default async function Home() {
   const pageSettings = await getPageSettings();
-  const portfolioItems = await getPortfolioItems();
   const featuredProject = portfolioItems.length > 0 ? portfolioItems[0] : null;
 
   return (
@@ -153,6 +161,7 @@ export default async function Home() {
                           width={800}
                           height={600}
                           className="w-full rounded-lg transition-transform duration-500 group-hover:scale-105"
+                          data-ai-hint={featuredProject.hint}
                       />
                   </a>
                   <div className="flex flex-col justify-center">
