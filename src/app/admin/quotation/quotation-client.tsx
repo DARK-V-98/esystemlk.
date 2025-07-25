@@ -149,8 +149,8 @@ export default function QuotationClient() {
         index + 1,
         item.description,
         item.quantity.toString(),
-        `Rs. ${item.unitPrice.toFixed(2)}`,
-        `Rs. ${(item.quantity * item.unitPrice).toFixed(2)}`
+        `Rs. ${Number(item.unitPrice || 0).toFixed(2)}`,
+        `Rs. ${(Number(item.quantity || 0) * Number(item.unitPrice || 0)).toFixed(2)}`
     ]);
 
     doc.autoTable({
