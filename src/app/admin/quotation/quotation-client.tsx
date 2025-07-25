@@ -32,6 +32,7 @@ interface IQuotationForm {
   date: Date;
   expiryDate: Date;
   items: IQuotationItem[];
+  optionalItems: IQuotationItem[];
   discount: number;
   tax: number;
 }
@@ -55,6 +56,7 @@ export default function QuotationClient() {
       date: new Date(),
       expiryDate: new Date(new Date().setDate(new Date().getDate() + 30)),
       items: [{ description: '', quantity: 1, unitPrice: 0 }],
+      optionalItems: [{ description: '', quantity: 1, unitPrice: 0 }],
       discount: 0,
       tax: 0,
     },
@@ -64,8 +66,14 @@ export default function QuotationClient() {
     control,
     name: 'items',
   });
+  
+  const { fields: optionalFields, append: appendOptional, remove: removeOptional } = useFieldArray({
+    control,
+    name: 'optionalItems',
+  });
 
   const watchedItems = watch('items');
+  const watchedOptionalItems = watch('optionalItems');
   const discount = watch('discount');
   const tax = watch('tax');
 
@@ -75,6 +83,12 @@ export default function QuotationClient() {
   }, [setValue]);
 
   const subtotal = watchedItems.reduce((acc, item) => {
+    const quantity = Number(item.quantity) || 0;
+    const unitPrice = Number(item.unitPrice) || 0;
+    return acc + quantity * unitPrice;
+  }, 0);
+
+  const optionalSubtotal = watchedOptionalItems.reduce((acc, item) => {
     const quantity = Number(item.quantity) || 0;
     const unitPrice = Number(item.unitPrice) || 0;
     return acc + quantity * unitPrice;
@@ -162,10 +176,10 @@ export default function QuotationClient() {
     });
     
     // Pricing Summary
-    const finalY = (doc as any).lastAutoTable.finalY;
+    let finalY = (doc as any).lastAutoTable.finalY;
     doc.setFontSize(12);
     const summaryX = 130;
-    const summaryY = finalY + 15;
+    let summaryY = finalY + 15;
     
     doc.setFont('helvetica', 'bold');
     doc.text('Subtotal:', summaryX, summaryY);
@@ -182,6 +196,38 @@ export default function QuotationClient() {
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
     doc.text(`Rs. ${finalTotal.toFixed(2)}`, 195, summaryY + 24, { align: 'right' });
+
+    finalY = summaryY + 24;
+
+    // Optional Items Table
+    if (formData.optionalItems.length > 0 && formData.optionalItems[0].description) {
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Optional Services / Add-ons', 14, finalY + 15);
+
+        const optionalTableRows = formData.optionalItems.map((item, index) => [
+            index + 1,
+            item.description,
+            item.quantity.toString(),
+            `Rs. ${Number(item.unitPrice || 0).toFixed(2)}`,
+            `Rs. ${(Number(item.quantity || 0) * Number(item.unitPrice || 0)).toFixed(2)}`
+        ]);
+
+        doc.autoTable({
+            head: [tableColumn],
+            body: optionalTableRows,
+            startY: finalY + 20,
+            theme: 'striped',
+            headStyles: { fillColor: [80, 80, 80] } // Gray
+        });
+
+        const optionalFinalY = (doc as any).lastAutoTable.finalY;
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Optional Subtotal:', summaryX, optionalFinalY + 10);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Rs. ${optionalSubtotal.toFixed(2)}`, 195, optionalFinalY + 10, { align: 'right' });
+    }
 
     // Footer
     doc.setFontSize(10);
@@ -279,7 +325,7 @@ export default function QuotationClient() {
             <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
                 <CardHeader>
                     <CardTitle>Products / Services</CardTitle>
-                    <CardDescription>Add the items for this quotation.</CardDescription>
+                    <CardDescription>Add the main items for this quotation.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="overflow-x-auto">
@@ -317,6 +363,49 @@ export default function QuotationClient() {
             </Card>
         </div>
         
+        {/* Optional Items Table */}
+        <div className="mt-8">
+            <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
+                <CardHeader>
+                    <CardTitle>Optional Services / Add-ons</CardTitle>
+                    <CardDescription>Add any optional items for this quotation.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <div className="overflow-x-auto">
+                        <table className="w-full">
+                            <thead>
+                                <tr className="border-b border-white/20">
+                                    <th className="text-left p-2">Description</th>
+                                    <th className="text-left p-2 w-28">Quantity</th>
+                                    <th className="text-left p-2 w-40">Unit Price (Rs)</th>
+                                    <th className="text-left p-2 w-40">Line Total (Rs)</th>
+                                    <th className="w-12 p-2"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {optionalFields.map((item, index) => (
+                                    <tr key={item.id} className="border-b border-white/10">
+                                        <td><Input type="text" placeholder="Optional Item Description" {...register(`optionalItems.${index}.description`)} className="my-1" /></td>
+                                        <td><Input type="number" {...register(`optionalItems.${index}.quantity`)} className="my-1" min="1" /></td>
+                                        <td><Input type="number" step="0.01" {...register(`optionalItems.${index}.unitPrice`)} className="my-1" min="0" /></td>
+                                        <td><Input readOnly value={(Number(watchedOptionalItems[index]?.quantity) || 0) * (Number(watchedOptionalItems[index]?.unitPrice) || 0)} className="my-1 bg-black/20" /></td>
+                                        <td>
+                                            <Button type="button" variant="ghost" size="icon" onClick={() => removeOptional(index)}>
+                                                <Trash2 className="h-4 w-4 text-destructive" />
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                    <Button type="button" variant="outline" onClick={() => appendOptional({ description: '', quantity: 1, unitPrice: 0 })} className="mt-4">
+                        <Plus className="mr-2 h-4 w-4" /> Add Optional Item
+                    </Button>
+                </CardContent>
+            </Card>
+        </div>
+
         {/* Totals Section */}
         <div className="grid md:grid-cols-3 gap-6 mt-8">
             <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg md:col-start-3">
