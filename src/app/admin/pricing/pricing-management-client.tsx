@@ -470,7 +470,7 @@ export default function PricingManagementClient() {
                                         </Accordion>
                                     ) : (
                                         <div className="space-y-3">
-                                            {category.items.map((item, index) => (
+                                            {(category as CommonAddons).items.map((item, index) => (
                                                 <div key={index} className="flex justify-between items-center text-sm text-muted-foreground p-2 rounded-md hover:bg-white/5">
                                                     <span>{item.name}</span>
                                                     <div className="flex items-center gap-1">
