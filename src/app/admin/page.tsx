@@ -4,7 +4,7 @@
 import { useAuth } from "@/hooks/use-auth";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Link from "next/link";
-import { Mail, Users, CreditCard, FileText, BarChart2 } from "lucide-react";
+import { Mail, Users, CreditCard, FileText, BarChart2, FileSignature } from "lucide-react";
 
 export default function AdminPage() {
   const { user } = useAuth();
@@ -36,6 +36,17 @@ export default function AdminPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">Read and manage messages from the contact form.</p>
+              </CardContent>
+            </Card>
+        </Link>
+         <Link href="/admin/quotation" className="block hover:scale-105 transition-transform duration-300">
+            <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg h-full hover:border-primary transition-colors">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>Quotation Generator</CardTitle>
+                <FileSignature className="w-6 h-6 text-primary" />
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">Create and generate professional PDF quotations for clients.</p>
               </CardContent>
             </Card>
         </Link>
