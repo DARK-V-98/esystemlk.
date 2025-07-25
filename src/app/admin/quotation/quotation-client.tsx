@@ -112,15 +112,26 @@ export default function QuotationClient() {
     doc.text('QUOTATION', 14, 60);
 
     // Client Info
+    let yPos = 80;
     doc.setFontSize(11);
     doc.setFont('helvetica', 'bold');
     doc.text('Bill To:', 14, 75);
     doc.setFont('helvetica', 'normal');
-    doc.text(formData.clientName, 14, 80);
-    if(formData.companyName) doc.text(formData.companyName, 14, 85);
-    doc.text(formData.clientAddress, 14, 90);
-    doc.text(formData.phoneNumber, 14, 95);
-    doc.text(formData.emailAddress, 14, 100);
+    doc.text(formData.clientName, 14, yPos);
+    yPos += 5;
+    if(formData.companyName) {
+        doc.text(formData.companyName, 14, yPos);
+        yPos += 5;
+    }
+    if(formData.clientAddress) {
+        doc.text(formData.clientAddress, 14, yPos);
+        yPos += 5;
+    }
+    doc.text(formData.phoneNumber, 14, yPos);
+    yPos += 5;
+    if(formData.emailAddress) {
+        doc.text(formData.emailAddress, 14, yPos);
+    }
 
     // Quotation Info
     doc.setFont('helvetica', 'bold');
@@ -201,8 +212,8 @@ export default function QuotationClient() {
                         <Input placeholder="Client Full Name" {...register('clientName')} required />
                         <Input placeholder="Company Name (Optional)" {...register('companyName')} />
                         <Input placeholder="Phone Number" {...register('phoneNumber')} required />
-                        <Input type="email" placeholder="Email Address" {...register('emailAddress')} required />
-                        <Textarea placeholder="Client Address" {...register('clientAddress')} className="md:col-span-2" required />
+                        <Input type="email" placeholder="Email Address (Optional)" {...register('emailAddress')} />
+                        <Textarea placeholder="Client Address (Optional)" {...register('clientAddress')} className="md:col-span-2" />
                     </CardContent>
                 </Card>
 
