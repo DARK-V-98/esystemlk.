@@ -88,12 +88,6 @@ export default function QuotationClient() {
     return acc + quantity * unitPrice;
   }, 0);
 
-  const optionalSubtotal = watchedOptionalItems.reduce((acc, item) => {
-    const quantity = Number(item.quantity) || 0;
-    const unitPrice = Number(item.unitPrice) || 0;
-    return acc + quantity * unitPrice;
-  }, 0);
-
   const discountAmount = (subtotal * (Number(discount) || 0)) / 100;
   const subtotalAfterDiscount = subtotal - discountAmount;
   const taxAmount = (subtotalAfterDiscount * (Number(tax) || 0)) / 100;
@@ -159,13 +153,17 @@ export default function QuotationClient() {
     
     // Items Table
     const tableColumn = ["#", "Description", "Qty", "Unit Price", "Total"];
-    const tableRows = formData.items.map((item, index) => [
-        index + 1,
-        item.description,
-        item.quantity.toString(),
-        `Rs. ${Number(item.unitPrice || 0).toFixed(2)}`,
-        `Rs. ${(Number(item.quantity || 0) * Number(item.unitPrice || 0)).toFixed(2)}`
-    ]);
+    const tableRows = formData.items.map((item, index) => {
+        const quantity = Number(item.quantity) || 0;
+        const unitPrice = Number(item.unitPrice) || 0;
+        return [
+            index + 1,
+            item.description,
+            quantity.toString(),
+            `Rs. ${unitPrice.toFixed(2)}`,
+            `Rs. ${(quantity * unitPrice).toFixed(2)}`
+        ]
+    });
 
     doc.autoTable({
         head: [tableColumn],
@@ -205,13 +203,17 @@ export default function QuotationClient() {
         doc.setFont('helvetica', 'bold');
         doc.text('Optional Services / Add-ons', 14, finalY + 15);
 
-        const optionalTableRows = formData.optionalItems.map((item, index) => [
-            index + 1,
-            item.description,
-            item.quantity.toString(),
-            `Rs. ${Number(item.unitPrice || 0).toFixed(2)}`,
-            `Rs. ${(Number(item.quantity || 0) * Number(item.unitPrice || 0)).toFixed(2)}`
-        ]);
+        const optionalTableRows = formData.optionalItems.map((item, index) => {
+             const quantity = Number(item.quantity) || 0;
+            const unitPrice = Number(item.unitPrice) || 0;
+            return [
+                index + 1,
+                item.description,
+                quantity.toString(),
+                `Rs. ${unitPrice.toFixed(2)}`,
+                `Rs. ${(quantity * unitPrice).toFixed(2)}`
+            ]
+        });
 
         doc.autoTable({
             head: [tableColumn],
@@ -220,13 +222,6 @@ export default function QuotationClient() {
             theme: 'striped',
             headStyles: { fillColor: [80, 80, 80] } // Gray
         });
-
-        const optionalFinalY = (doc as any).lastAutoTable.finalY;
-        doc.setFontSize(12);
-        doc.setFont('helvetica', 'bold');
-        doc.text('Optional Subtotal:', summaryX, optionalFinalY + 10);
-        doc.setFont('helvetica', 'normal');
-        doc.text(`Rs. ${optionalSubtotal.toFixed(2)}`, 195, optionalFinalY + 10, { align: 'right' });
     }
 
     // Footer
@@ -345,7 +340,7 @@ export default function QuotationClient() {
                                         <td><Input type="text" placeholder="Item Description" {...register(`items.${index}.description`)} className="my-1" required /></td>
                                         <td><Input type="number" {...register(`items.${index}.quantity`)} className="my-1" min="1" required /></td>
                                         <td><Input type="number" step="0.01" {...register(`items.${index}.unitPrice`)} className="my-1" min="0" required /></td>
-                                        <td><Input readOnly value={(Number(watchedItems[index]?.quantity) || 0) * (Number(watchedItems[index]?.unitPrice) || 0)} className="my-1 bg-black/20" /></td>
+                                        <td><Input readOnly value={((Number(watchedItems[index]?.quantity) || 0) * (Number(watchedItems[index]?.unitPrice) || 0)).toFixed(2)} className="my-1 bg-black/20" /></td>
                                         <td>
                                             <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)}>
                                                 <Trash2 className="h-4 w-4 text-destructive" />
@@ -388,7 +383,7 @@ export default function QuotationClient() {
                                         <td><Input type="text" placeholder="Optional Item Description" {...register(`optionalItems.${index}.description`)} className="my-1" /></td>
                                         <td><Input type="number" {...register(`optionalItems.${index}.quantity`)} className="my-1" min="1" /></td>
                                         <td><Input type="number" step="0.01" {...register(`optionalItems.${index}.unitPrice`)} className="my-1" min="0" /></td>
-                                        <td><Input readOnly value={(Number(watchedOptionalItems[index]?.quantity) || 0) * (Number(watchedOptionalItems[index]?.unitPrice) || 0)} className="my-1 bg-black/20" /></td>
+                                        <td><Input readOnly value={((Number(watchedOptionalItems[index]?.quantity) || 0) * (Number(watchedOptionalItems[index]?.unitPrice) || 0)).toFixed(2)} className="my-1 bg-black/20" /></td>
                                         <td>
                                             <Button type="button" variant="ghost" size="icon" onClick={() => removeOptional(index)}>
                                                 <Trash2 className="h-4 w-4 text-destructive" />
