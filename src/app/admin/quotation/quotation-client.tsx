@@ -35,6 +35,7 @@ interface IQuotationForm {
   optionalItems: IQuotationItem[];
   discount: number;
   tax: number;
+  advancePaid: number;
 }
 
 // Extend jsPDF with autoTable
@@ -56,9 +57,10 @@ export default function QuotationClient() {
       date: new Date(),
       expiryDate: new Date(new Date().setDate(new Date().getDate() + 30)),
       items: [{ description: '', quantity: 1, unitPrice: 0 }],
-      optionalItems: [{ description: '', quantity: 1, unitPrice: 0 }],
+      optionalItems: [],
       discount: 0,
       tax: 0,
+      advancePaid: 0,
     },
   });
 
@@ -76,6 +78,7 @@ export default function QuotationClient() {
   const watchedOptionalItems = watch('optionalItems');
   const discount = watch('discount');
   const tax = watch('tax');
+  const advancePaid = watch('advancePaid');
 
   useEffect(() => {
     setIsClient(true);
@@ -92,6 +95,7 @@ export default function QuotationClient() {
   const subtotalAfterDiscount = subtotal - discountAmount;
   const taxAmount = (subtotalAfterDiscount * (Number(tax) || 0)) / 100;
   const finalTotal = subtotalAfterDiscount + taxAmount;
+  const balanceDue = finalTotal - (Number(advancePaid) || 0);
 
   const generatePDF = (mode: 'download' | 'preview') => {
     const doc = new jsPDF();
@@ -175,27 +179,46 @@ export default function QuotationClient() {
     
     // Pricing Summary
     let finalY = (doc as any).lastAutoTable.finalY;
-    doc.setFontSize(12);
     const summaryX = 130;
-    let summaryY = finalY + 15;
+    let summaryY = finalY + 10;
     
+    doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
     doc.text('Subtotal:', summaryX, summaryY);
     doc.text(`Discount (${formData.discount}%):`, summaryX, summaryY + 7);
     doc.text(`Tax (${formData.tax}%):`, summaryX, summaryY + 14);
-    doc.setFontSize(14);
-    doc.text('Total:', summaryX, summaryY + 24);
+    doc.text('Total:', summaryX, summaryY + 21);
+    const advancePaidAmount = Number(formData.advancePaid) || 0;
+    if (advancePaidAmount > 0) {
+        doc.text('Advance Paid:', summaryX, summaryY + 28);
+        doc.setFontSize(14);
+        doc.text('Balance Due:', summaryX, summaryY + 38);
+    } else {
+        doc.setFontSize(14);
+        doc.text('Total Due:', summaryX, summaryY + 28);
+    }
+
 
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(12);
     doc.text(`Rs. ${subtotal.toFixed(2)}`, 195, summaryY, { align: 'right' });
     doc.text(`- Rs. ${discountAmount.toFixed(2)}`, 195, summaryY + 7, { align: 'right' });
     doc.text(`+ Rs. ${taxAmount.toFixed(2)}`, 195, summaryY + 14, { align: 'right' });
-    doc.setFontSize(14);
+    doc.text(`Rs. ${finalTotal.toFixed(2)}`, 195, summaryY + 21, { align: 'right' });
     doc.setFont('helvetica', 'bold');
-    doc.text(`Rs. ${finalTotal.toFixed(2)}`, 195, summaryY + 24, { align: 'right' });
 
-    finalY = summaryY + 24;
+    if (advancePaidAmount > 0) {
+        doc.setFontSize(12);
+        doc.text(`- Rs. ${advancePaidAmount.toFixed(2)}`, 195, summaryY + 28, { align: 'right' });
+        doc.setFontSize(14);
+        doc.text(`Rs. ${balanceDue.toFixed(2)}`, 195, summaryY + 38, { align: 'right' });
+        finalY = summaryY + 38;
+    } else {
+        doc.setFontSize(14);
+        doc.text(`Rs. ${finalTotal.toFixed(2)}`, 195, summaryY + 28, { align: 'right' });
+        finalY = summaryY + 28;
+    }
+
 
     // Optional Items Table
     if (formData.optionalItems.length > 0 && formData.optionalItems[0].description) {
@@ -305,7 +328,11 @@ export default function QuotationClient() {
                         <div className="flex justify-between items-center"><span className="text-muted-foreground">Discount Amount</span><span className="font-semibold">- Rs. {discountAmount.toFixed(2)}</span></div>
                         <div className="flex justify-between items-center"><span className="text-muted-foreground">Tax Amount</span><span className="font-semibold">+ Rs. {taxAmount.toFixed(2)}</span></div>
                         <div className="border-t border-white/20 my-2"></div>
-                        <div className="flex justify-between items-center text-lg"><span className="font-bold">Total</span><span className="font-bold text-primary">Rs. {finalTotal.toFixed(2)}</span></div>
+                        <div className="flex justify-between items-center text-lg"><span className="font-bold">Total</span><span className="font-bold">Rs. {finalTotal.toFixed(2)}</span></div>
+                        <div className="flex justify-between items-center"><span className="text-muted-foreground">Advance Paid</span><span className="font-semibold">- Rs. {(Number(advancePaid) || 0).toFixed(2)}</span></div>
+                        <div className="border-t border-white/20 my-2"></div>
+                        <div className="flex justify-between items-center text-xl"><span className="font-bold">Balance Due</span><span className="font-bold text-primary">Rs. {balanceDue.toFixed(2)}</span></div>
+
                          <div className="pt-4 space-y-2">
                            <Button type="button" variant="outline" className="w-full" onClick={() => generatePDF('preview')}><Eye className="mr-2 h-4 w-4" /> Preview PDF</Button>
                            <Button type="submit" className="w-full"><Download className="mr-2 h-4 w-4" /> Generate & Download PDF</Button>
@@ -363,7 +390,7 @@ export default function QuotationClient() {
             <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
                 <CardHeader>
                     <CardTitle>Optional Services / Add-ons</CardTitle>
-                    <CardDescription>Add any optional items for this quotation.</CardDescription>
+                    <CardDescription>Add any optional items for this quotation. These items do not affect the main total.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="overflow-x-auto">
@@ -404,7 +431,7 @@ export default function QuotationClient() {
         {/* Totals Section */}
         <div className="grid md:grid-cols-3 gap-6 mt-8">
             <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg md:col-start-3">
-                 <CardHeader><CardTitle>Totals</CardTitle></CardHeader>
+                 <CardHeader><CardTitle>Totals & Payment</CardTitle></CardHeader>
                  <CardContent className="space-y-4">
                     <div>
                         <label className="text-sm font-medium">Discount (%)</label>
@@ -414,9 +441,15 @@ export default function QuotationClient() {
                          <label className="text-sm font-medium">Tax (%)</label>
                         <Input type="number" step="0.01" placeholder="e.g. 10" {...register('tax')} min="0" />
                     </div>
+                     <div>
+                         <label className="text-sm font-medium">Advance Paid (Rs)</label>
+                        <Input type="number" step="0.01" placeholder="e.g. 10000" {...register('advancePaid')} min="0" />
+                    </div>
                  </CardContent>
             </Card>
         </div>
     </form>
   );
 }
+
+    
