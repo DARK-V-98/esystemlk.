@@ -15,6 +15,9 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
+
 
 interface IQuotationItem {
   description: string;
@@ -36,6 +39,7 @@ interface IQuotationForm {
   discount: number;
   tax: number;
   advancePaid: number;
+  isFullyPaid: boolean;
 }
 
 // Extend jsPDF with autoTable
@@ -61,6 +65,7 @@ export default function QuotationClient() {
       discount: 0,
       tax: 0,
       advancePaid: 0,
+      isFullyPaid: false,
     },
   });
 
@@ -79,11 +84,7 @@ export default function QuotationClient() {
   const discount = watch('discount');
   const tax = watch('tax');
   const advancePaid = watch('advancePaid');
-
-  useEffect(() => {
-    setIsClient(true);
-    setValue('quotationNumber', `QUO-${Date.now()}`);
-  }, [setValue]);
+  const isFullyPaid = watch('isFullyPaid');
 
   const subtotal = watchedItems.reduce((acc, item) => {
     const quantity = Number(item.quantity) || 0;
@@ -95,7 +96,19 @@ export default function QuotationClient() {
   const subtotalAfterDiscount = subtotal - discountAmount;
   const taxAmount = (subtotalAfterDiscount * (Number(tax) || 0)) / 100;
   const finalTotal = subtotalAfterDiscount + taxAmount;
+
+  useEffect(() => {
+    if (isFullyPaid) {
+        setValue('advancePaid', finalTotal);
+    }
+  }, [isFullyPaid, finalTotal, setValue]);
+
   const balanceDue = finalTotal - (Number(advancePaid) || 0);
+
+  useEffect(() => {
+    setIsClient(true);
+    setValue('quotationNumber', `QUO-${Date.now()}`);
+  }, [setValue]);
 
   const generatePDF = (mode: 'download' | 'preview') => {
     const doc = new jsPDF();
@@ -150,10 +163,19 @@ export default function QuotationClient() {
     doc.text('Quotation #:', 130, 75);
     doc.text('Date:', 130, 80);
     doc.text('Expiry Date:', 130, 85);
+    if(formData.isFullyPaid) {
+        doc.text('Status:', 130, 90);
+    }
     doc.setFont('helvetica', 'normal');
     doc.text(formData.quotationNumber, 160, 75);
     doc.text(format(formData.date, 'PPP'), 160, 80);
     doc.text(format(formData.expiryDate, 'PPP'), 160, 85);
+    if (formData.isFullyPaid) {
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(0, 150, 0); // Green color
+        doc.text('Paid in Full', 160, 90);
+        doc.setTextColor(0, 0, 0); // Reset color
+    }
     
     // Items Table
     const tableColumn = ["#", "Description", "Qty", "Unit Price", "Total"];
@@ -331,7 +353,11 @@ export default function QuotationClient() {
                         <div className="flex justify-between items-center text-lg"><span className="font-bold">Total</span><span className="font-bold">Rs. {finalTotal.toFixed(2)}</span></div>
                         <div className="flex justify-between items-center"><span className="text-muted-foreground">Advance Paid</span><span className="font-semibold">- Rs. {(Number(advancePaid) || 0).toFixed(2)}</span></div>
                         <div className="border-t border-white/20 my-2"></div>
-                        <div className="flex justify-between items-center text-xl"><span className="font-bold">Balance Due</span><span className="font-bold text-primary">Rs. {balanceDue.toFixed(2)}</span></div>
+                        <div className={cn("flex justify-between items-center text-xl", isFullyPaid && "text-green-400")}>
+                           <span className="font-bold">Balance Due</span>
+                           <span className="font-bold">Rs. {balanceDue.toFixed(2)}</span>
+                        </div>
+
 
                          <div className="pt-4 space-y-2">
                            <Button type="button" variant="outline" className="w-full" onClick={() => generatePDF('preview')}><Eye className="mr-2 h-4 w-4" /> Preview PDF</Button>
@@ -365,8 +391,8 @@ export default function QuotationClient() {
                                 {fields.map((item, index) => (
                                     <tr key={item.id} className="border-b border-white/10">
                                         <td><Input type="text" placeholder="Item Description" {...register(`items.${index}.description`)} className="my-1" required /></td>
-                                        <td><Input type="number" {...register(`items.${index}.quantity`)} className="my-1" min="1" required /></td>
-                                        <td><Input type="number" step="0.01" {...register(`items.${index}.unitPrice`)} className="my-1" min="0" required /></td>
+                                        <td><Input type="number" {...register(`items.${index}.quantity`, { valueAsNumber: true })} className="my-1" min="1" required /></td>
+                                        <td><Input type="number" step="0.01" {...register(`items.${index}.unitPrice`, { valueAsNumber: true })} className="my-1" min="0" required /></td>
                                         <td><Input readOnly value={((Number(watchedItems[index]?.quantity) || 0) * (Number(watchedItems[index]?.unitPrice) || 0)).toFixed(2)} className="my-1 bg-black/20" /></td>
                                         <td>
                                             <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)}>
@@ -408,8 +434,8 @@ export default function QuotationClient() {
                                 {optionalFields.map((item, index) => (
                                     <tr key={item.id} className="border-b border-white/10">
                                         <td><Input type="text" placeholder="Optional Item Description" {...register(`optionalItems.${index}.description`)} className="my-1" /></td>
-                                        <td><Input type="number" {...register(`optionalItems.${index}.quantity`)} className="my-1" min="1" /></td>
-                                        <td><Input type="number" step="0.01" {...register(`optionalItems.${index}.unitPrice`)} className="my-1" min="0" /></td>
+                                        <td><Input type="number" {...register(`optionalItems.${index}.quantity`, { valueAsNumber: true })} className="my-1" min="1" /></td>
+                                        <td><Input type="number" step="0.01" {...register(`optionalItems.${index}.unitPrice`, { valueAsNumber: true })} className="my-1" min="0" /></td>
                                         <td><Input readOnly value={((Number(watchedOptionalItems[index]?.quantity) || 0) * (Number(watchedOptionalItems[index]?.unitPrice) || 0)).toFixed(2)} className="my-1 bg-black/20" /></td>
                                         <td>
                                             <Button type="button" variant="ghost" size="icon" onClick={() => removeOptional(index)}>
@@ -434,16 +460,32 @@ export default function QuotationClient() {
                  <CardHeader><CardTitle>Totals & Payment</CardTitle></CardHeader>
                  <CardContent className="space-y-4">
                     <div>
-                        <label className="text-sm font-medium">Discount (%)</label>
-                        <Input type="number" step="0.01" placeholder="e.g. 5" {...register('discount')} min="0" />
+                        <Label className="text-sm font-medium">Discount (%)</Label>
+                        <Input type="number" step="0.01" placeholder="e.g. 5" {...register('discount', { valueAsNumber: true })} min="0" />
                     </div>
                     <div>
-                         <label className="text-sm font-medium">Tax (%)</label>
-                        <Input type="number" step="0.01" placeholder="e.g. 10" {...register('tax')} min="0" />
+                         <Label className="text-sm font-medium">Tax (%)</Label>
+                        <Input type="number" step="0.01" placeholder="e.g. 10" {...register('tax', { valueAsNumber: true })} min="0" />
                     </div>
                      <div>
-                         <label className="text-sm font-medium">Advance Paid (Rs)</label>
-                        <Input type="number" step="0.01" placeholder="e.g. 10000" {...register('advancePaid')} min="0" />
+                         <Label className="text-sm font-medium">Advance Paid (Rs)</Label>
+                        <Input type="number" step="0.01" placeholder="e.g. 10000" {...register('advancePaid', { valueAsNumber: true })} min="0" disabled={isFullyPaid} />
+                    </div>
+                    <div className="flex items-center space-x-2 pt-2">
+                        <Controller
+                            control={control}
+                            name="isFullyPaid"
+                            render={({ field }) => (
+                                <Checkbox
+                                    id="isFullyPaid"
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                />
+                            )}
+                        />
+                        <Label htmlFor="isFullyPaid" className="text-sm font-medium">
+                            Mark as Fully Paid
+                        </Label>
                     </div>
                  </CardContent>
             </Card>
@@ -451,5 +493,7 @@ export default function QuotationClient() {
     </form>
   );
 }
+
+    
 
     
