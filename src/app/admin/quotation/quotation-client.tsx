@@ -126,10 +126,9 @@ export default function QuotationClient() {
     doc.text('eSystemLK', 150, 20);
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
-    doc.text('Your Address, City, Sri Lanka', 150, 26);
-    doc.text('Phone: +94 76 571 1396', 150, 31);
-    doc.text('Website: www.esystemlk.xyz', 150, 36);
-    doc.text('Email: contact@esystemlk.com', 150, 41);
+    doc.text('Phone: +94 76 571 1396', 150, 26);
+    doc.text('Website: www.esystemlk.xyz', 150, 31);
+    doc.text('Email: contact@esystemlk.com', 150, 36);
 
     // Quotation Title
     doc.setFontSize(26);
@@ -493,6 +492,8 @@ export default function QuotationClient() {
     </form>
   );
 }
+
+    
 
     
 
