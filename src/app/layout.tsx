@@ -114,6 +114,10 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={cn("scroll-smooth", poppins.variable, dmSans.variable)}>
+      <head>
+          <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1128178534139221"
+          crossOrigin="anonymous"></script>
+      </head>
       <body className="font-body antialiased text-foreground bg-black">
         <script
           type="application/ld+json"
