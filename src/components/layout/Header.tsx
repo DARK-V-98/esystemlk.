@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -15,6 +16,7 @@ import type { PageVisibility } from '@/app/admin/pages/actions';
 
 const allNavLinks = [
   { href: '/', label: 'Home', key: 'showHome' },
+  { href: '/about', label: 'About', key: 'showAbout' },
   { href: '/services', label: 'Services', key: 'showServices' },
   { href: '/portfolio', label: 'Portfolio', key: 'showPortfolio' },
   { href: '/pricing', label: 'Pricing', key: 'showPricing' },
@@ -28,7 +30,7 @@ export function Header({ pageSettings }: { pageSettings: PageVisibility }) {
   const { user, loading, signOut } = useAuth();
 
   const navLinks = allNavLinks.filter(link => {
-    if (link.key === 'showHome') return true;
+    if (link.key === 'showHome' || link.key === 'showAbout' || link.key === 'showPortfolio') return true;
     return pageSettings[link.key as keyof PageVisibility] !== false;
   });
 

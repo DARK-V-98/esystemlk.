@@ -234,31 +234,6 @@ export default async function Home() {
         </section>
       )}
 
-      {/* Testimonials Section */}
-      {pageSettings.showTestimonials && (
-        <section id="testimonials" className="w-full py-20 md:py-28">
-          <div className="container mx-auto px-4 md:px-6">
-            <div className="text-center mb-16">
-              <h2 className="font-headline text-4xl md:text-5xl font-bold">From Our Partners</h2>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-              {testimonials.map((testimonial) => (
-                 <div key={testimonial.name} className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-3xl shadow-xl p-8 flex flex-col items-center text-center">
-                    <Image src={testimonial.avatar} alt={testimonial.name} width={80} height={80} className="rounded-full mb-6 border-2 border-primary" data-ai-hint={testimonial.hint} />
-                    <blockquote className="text-lg text-white/90 mb-6 italic">
-                      "{testimonial.review}"
-                    </blockquote>
-                    <div className="mt-auto">
-                        <p className="font-semibold text-white">{testimonial.name}</p>
-                        <p className="text-sm text-muted-foreground">{testimonial.title}</p>
-                    </div>
-                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* Our Approach Section */}
       <section className="w-full py-20 md:py-24">
         <div className="container mx-auto px-4 md:px-6">
@@ -322,6 +297,31 @@ export default async function Home() {
           </div>
         </div>
       </section>
+      
+      {/* Testimonials Section */}
+      {pageSettings.showTestimonials && (
+        <section id="testimonials" className="w-full py-20 md:py-28">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="text-center mb-16">
+              <h2 className="font-headline text-4xl md:text-5xl font-bold">From Our Partners</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+              {testimonials.map((testimonial) => (
+                 <div key={testimonial.name} className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-3xl shadow-xl p-8 flex flex-col items-center text-center">
+                    <Image src={testimonial.avatar} alt={testimonial.name} width={80} height={80} className="rounded-full mb-6 border-2 border-primary" data-ai-hint={testimonial.hint} />
+                    <blockquote className="text-lg text-white/90 mb-6 italic">
+                      "{testimonial.review}"
+                    </blockquote>
+                    <div className="mt-auto">
+                        <p className="font-semibold text-white">{testimonial.name}</p>
+                        <p className="text-sm text-muted-foreground">{testimonial.title}</p>
+                    </div>
+                 </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Contact Section */}
       <section id="contact" className="w-full py-20 md:py-28">
