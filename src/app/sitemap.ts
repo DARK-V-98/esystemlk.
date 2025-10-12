@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/privacy-policy',
     '/services',
     '/testimonials',
+    '/founder-message',
   ];
 
   return pages.map((page) => ({
