@@ -25,11 +25,11 @@ export default function ContactPage() {
                     <h2 className="font-headline text-3xl font-bold">Contact Information</h2>
                     <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-md">
                         <CardContent className="p-6">
-                            <a href="mailto:contact@esystemlk.com" className="flex items-center gap-4 group">
+                            <a href="mailto:esystemlk@gmail.com" className="flex items-center gap-4 group">
                                 <Mail className="w-8 h-8 text-primary" />
                                 <div>
                                     <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">Email</h3>
-                                    <p className="text-muted-foreground">contact@esystemlk.com</p>
+                                    <p className="text-muted-foreground">esystemlk@gmail.com</p>
                                 </div>
                             </a>
                         </CardContent>

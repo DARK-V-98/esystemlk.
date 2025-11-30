@@ -128,7 +128,7 @@ export default function QuotationClient() {
     doc.setFont('helvetica', 'normal');
     doc.text('Phone: +94 76 571 1396', 150, 26);
     doc.text('Website: www.esystemlk.xyz', 150, 31);
-    doc.text('Email: contact@esystemlk.com', 150, 36);
+    doc.text('Email: esystemlk@gmail.com', 150, 36);
 
     // Quotation Title
     doc.setFontSize(26);
