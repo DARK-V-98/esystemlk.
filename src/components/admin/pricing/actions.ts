@@ -1,4 +1,4 @@
-import { db } from '@/lib/firebase';
+import { db } from '../../../lib/firebase';
 import { writeBatch, doc, collection, updateDoc, deleteDoc, getDoc, setDoc, getDocs } from 'firebase/firestore';
 
 const pricingData = [

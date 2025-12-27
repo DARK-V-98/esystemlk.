@@ -1,4 +1,4 @@
-import UsersManagementClient from '@/components/admin/users/users-management-client';
+import UsersManagementClient from '../../components/admin/users/users-management-client';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';

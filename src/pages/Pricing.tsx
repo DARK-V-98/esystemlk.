@@ -1,7 +1,8 @@
-import PricingClient from "@/components/PricingClient";
-import { db } from "@/lib/firebase";
+import PricingClient from "../components/PricingClient";
+import { db } from "../lib/firebase";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import * as Icons from 'lucide-react';
+import { useEffect, useState } from "react";
 
 // Define types based on Firestore structure
 type Tier = { name: string; price: string };
@@ -44,14 +45,14 @@ async function getPricingData() {
     .filter((d) => d.id !== "common-addons")
     .map((category) => {
       if ("services" in category) {
-        category.services = category.services.filter(
+        category.services = (category.services as Service[]).filter(
           (service: Service) => service.enabled
         );
       }
       return category;
     })
     .filter(
-      (category) => "services" in category && category.services.length > 0
+      (category) => "services" in category && (category.services as Service[]).length > 0
     ) as PricingCategory[];
 
   const commonAddons = enabledData.find(
@@ -61,8 +62,20 @@ async function getPricingData() {
   return { pricingData, commonAddons: commonAddons || null };
 }
 
-export default async function PricingPage() {
-  const { pricingData, commonAddons } = await getPricingData();
+export default function PricingPage() {
+  const [pricing, setPricing] = useState<{pricingData: PricingCategory[], commonAddons: CommonAddons | null}>({pricingData: [], commonAddons: null});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getPricingData().then(data => {
+      setPricing(data);
+      setLoading(false);
+    })
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>
+  }
 
   return (
     <>
@@ -81,8 +94,8 @@ export default async function PricingPage() {
       <section className="w-full pb-20 md:pb-28">
         <div className="container mx-auto px-4 md:px-6">
           <PricingClient
-            pricingData={pricingData}
-            commonAddons={commonAddons}
+            pricingData={pricing.pricingData}
+            commonAddons={pricing.commonAddons}
           />
         </div>
       </section>

@@ -1,4 +1,4 @@
-import PricingManagementClient from '@/components/admin/pricing/pricing-management-client';
+import PricingManagementClient from '../../components/admin/pricing/pricing-management-client';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';

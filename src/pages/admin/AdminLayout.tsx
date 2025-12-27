@@ -1,8 +1,8 @@
 import { ReactNode } from 'react';
-import { useAuth } from '@/hooks/use-auth';
+import { useAuth } from '../../hooks/use-auth';
 import { Navigate, Outlet } from 'react-router-dom';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Header } from '@/components/layout/Header';
+import { Skeleton } from '../../components/ui/skeleton';
+import { Header } from '../../components/layout/Header';
 
 const AdminLayout = () => {
   const { user, loading } = useAuth();

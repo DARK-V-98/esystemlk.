@@ -1,4 +1,4 @@
-import QuotationClient from '@/components/admin/quotation/quotation-client';
+import QuotationClient from '../../components/admin/quotation/quotation-client';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';

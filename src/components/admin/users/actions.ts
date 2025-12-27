@@ -1,4 +1,4 @@
-import { db } from '@/lib/firebase';
+import { db } from '../../../lib/firebase';
 import { collection, getDocs, doc, updateDoc, deleteDoc, query, orderBy } from 'firebase/firestore';
 
 export type UserRole = 'user' | 'admin' | 'developer';
