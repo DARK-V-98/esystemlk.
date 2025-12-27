@@ -1,7 +1,6 @@
 'use client';
 import { useState, useEffect } from "react";
 import { Star, Quote, ChevronLeft, ChevronRight } from "lucide-react";
-import Image from "next/image";
 
 const Testimonials = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -12,7 +11,6 @@ const Testimonials = () => {
       id: 1,
       name: "Sarah Johnson",
       role: "CEO, TechStart Inc.",
-      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80",
       content: "esystemlk transformed our outdated website into a stunning, high-converting platform. The team's attention to detail and commitment to excellence exceeded our expectations.",
       rating: 5,
     },
@@ -20,7 +18,6 @@ const Testimonials = () => {
       id: 2,
       name: "Michael Chen",
       role: "Founder, GreenLeaf Solutions",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80",
       content: "The software system they built for us has streamlined our operations completely. Professional team, excellent communication, and outstanding results. Highly recommended!",
       rating: 5,
     },
@@ -28,7 +25,6 @@ const Testimonials = () => {
       id: 3,
       name: "Emily Rodriguez",
       role: "Marketing Director, BrightFuture Co.",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&q=80",
       content: "From concept to launch, the experience was seamless. The lifetime warranty gives us peace of mind, and their support team is always responsive and helpful.",
       rating: 5,
     },
@@ -36,7 +32,6 @@ const Testimonials = () => {
       id: 4,
       name: "David Perera",
       role: "Owner, Island Restaurants",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&q=80",
       content: "Our restaurant website now attracts more customers than ever. The online ordering system works flawlessly. Best investment we've made for our business!",
       rating: 5,
     },
@@ -58,8 +53,8 @@ const Testimonials = () => {
 
   useEffect(() => {
     const interval = setInterval(nextSlide, 5000);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     return () => clearInterval(interval);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAnimating]);
 
   return (
@@ -93,23 +88,13 @@ const Testimonials = () => {
                 isAnimating ? "opacity-0 scale-95" : "opacity-100 scale-100"
               }`}
             >
-              <div className="flex flex-col md:flex-row items-center gap-8">
-                <div className="flex-shrink-0">
-                  <div className="relative">
-                    <Image
-                      src={testimonials[currentIndex].image}
-                      alt={testimonials[currentIndex].name}
-                      width={128}
-                      height={128}
-                      className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover border-4 border-primary/20"
-                    />
-                    <div className="absolute -bottom-2 -right-2 w-10 h-10 rounded-full gradient-primary flex items-center justify-center">
-                      <Quote className="w-5 h-5 text-primary-foreground" />
+              <div className="flex flex-col items-center text-center">
+                  <div className="relative mb-6">
+                    <div className="w-16 h-16 rounded-full gradient-primary flex items-center justify-center">
+                      <Quote className="w-8 h-8 text-primary-foreground" />
                     </div>
                   </div>
-                </div>
-                <div className="text-center md:text-left">
-                  <div className="flex justify-center md:justify-start gap-1 mb-4">
+                  <div className="flex justify-center gap-1 mb-4">
                     {[...Array(testimonials[currentIndex].rating)].map((_, i) => (
                       <Star key={i} className="w-5 h-5 fill-primary text-primary" />
                     ))}
@@ -121,7 +106,6 @@ const Testimonials = () => {
                     <h4 className="text-xl font-semibold">{testimonials[currentIndex].name}</h4>
                     <p className="text-muted-foreground">{testimonials[currentIndex].role}</p>
                   </div>
-                </div>
               </div>
             </div>
 
