@@ -11,6 +11,7 @@ import Services from "@/components/Services";
 import TechStack from "@/components/TechStack";
 import Testimonials from "@/components/Testimonials";
 import WhyUs from "@/components/WhyUs";
+import { motion } from "framer-motion";
 
 export default function Home() {
     useEffect(() => {
@@ -39,16 +40,18 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       <Hero />
-      <Services />
-      <Process />
-      <Pricing />
-      <TechStack />
-      <Testimonials />
-      <ClientLogos />
-      <WhyUs />
-      <FAQ />
-      <CTABanner />
-      <Contact />
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2 }}>
+        <Services />
+        <Process />
+        <Pricing />
+        <TechStack />
+        <Testimonials />
+        <ClientLogos />
+        <WhyUs />
+        <FAQ />
+        <CTABanner />
+        <Contact />
+      </motion.div>
     </div>
   );
 }

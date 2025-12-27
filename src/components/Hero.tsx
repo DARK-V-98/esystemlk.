@@ -2,8 +2,69 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Code2, Globe, Sparkles, Zap, Shield, Rocket } from "lucide-react";
 import Link from "next/link";
+import { motion } from 'framer-motion';
 
 const Hero = () => {
+  const line1 = "Transform Your Business with";
+  const line2 = "Premium Software Solutions";
+
+  const sentence = {
+    hidden: { opacity: 1 },
+    visible: {
+      opacity: 1,
+      transition: {
+        delay: 0.5,
+        staggerChildren: 0.08,
+      },
+    },
+  };
+
+  const letter = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        repeat: Infinity,
+        repeatDelay: 8,
+        duration: 0.5,
+      },
+    },
+  };
+
+  const letterRotate = {
+    hidden: { opacity: 0, y: 50, rotateX: -90 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      rotateX: 0,
+      transition: {
+        repeat: Infinity,
+        repeatDelay: 8, // loop every 8 seconds
+        duration: 0.1
+      },
+    },
+  };
+
+  const AnimatedLine = ({ text }: { text: string }) => (
+    <motion.h1
+      className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6"
+      variants={sentence}
+      initial="hidden"
+      animate="visible"
+    >
+      {text.split("").map((char, index) => (
+        <motion.span
+          key={char + "-" + index}
+          variants={letterRotate}
+          style={{ display: 'inline-block', whiteSpace: 'pre' }}
+        >
+          {char}
+        </motion.span>
+      ))}
+    </motion.h1>
+  );
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
       {/* Background Effects */}
@@ -26,27 +87,44 @@ const Hero = () => {
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-5xl mx-auto text-center">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/5 mb-8 animate-fade-in opacity-0">
+          <motion.div
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/5 mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
             <Sparkles className="w-4 h-4 text-primary animate-bounce-subtle" />
             <span className="text-sm font-medium text-primary">Trusted by 100+ Businesses</span>
-          </div>
+          </motion.div>
 
           {/* Main Heading */}
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 animate-fade-in opacity-0 animation-delay-100">
-            <span className="text-foreground">Transform Your Business with</span>
-            <br />
-            <span className="text-gradient">Premium Software Solutions</span>
-          </h1>
+          <div className="text-foreground">
+             <AnimatedLine text={line1} />
+          </div>
+           <div className="text-gradient">
+             <AnimatedLine text={line2} />
+           </div>
+
 
           {/* Subheading */}
-          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-10 animate-fade-in opacity-0 animation-delay-200">
+          <motion.p 
+            className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-10"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1 }}
+          >
             We build stunning websites, powerful web applications, and comprehensive software systems 
             for businesses of all sizes. Starting from just <span className="text-primary font-semibold">$150</span> with 
             lifetime free maintenance.
-          </p>
+          </motion.p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-fade-in opacity-0 animation-delay-300">
+          <motion.div
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.2 }}
+          >
             <Button asChild variant="hero" size="xl" className="gap-2 group">
               <Link href="#contact">
                 Start Your Project
@@ -59,10 +137,15 @@ const Hero = () => {
                 View Our Work
               </Link>
             </Button>
-          </div>
+          </motion.div>
 
           {/* Feature Pills */}
-          <div className="flex flex-wrap items-center justify-center gap-4 animate-fade-in opacity-0 animation-delay-400">
+          <motion.div
+            className="flex flex-wrap items-center justify-center gap-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.4 }}
+          >
             <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-secondary border border-border">
               <Shield className="w-4 h-4 text-primary" />
               <span className="text-sm font-medium text-foreground">Lifetime Support</span>
@@ -75,7 +158,7 @@ const Hero = () => {
               <Code2 className="w-4 h-4 text-primary" />
               <span className="text-sm font-medium text-foreground">Clean Code</span>
             </div>
-          </div>
+          </motion.div>
         </div>
 
         {/* Floating Tech Icons */}
