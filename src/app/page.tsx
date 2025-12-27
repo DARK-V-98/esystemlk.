@@ -10,7 +10,6 @@ import Services from "@/components/Services";
 import TechStack from "@/components/TechStack";
 import Testimonials from "@/components/Testimonials";
 import WhyUs from "@/components/WhyUs";
-import PageWrapper from "@/components/PageWrapper";
 import { getPortfolioItems } from "./admin/portfolio/actions";
 import PortfolioClient from "@/components/PortfolioClient";
 
@@ -26,7 +25,7 @@ export default async function Home() {
   }));
 
   return (
-    <PageWrapper>
+    <>
         <Hero />
         <Services />
         <Process />
@@ -39,6 +38,6 @@ export default async function Home() {
         <FAQ />
         <CTABanner />
         <Contact />
-    </PageWrapper>
+    </>
   );
 }
