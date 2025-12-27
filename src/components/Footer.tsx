@@ -1,0 +1,146 @@
+'use client';
+
+import { 
+  Code, 
+  Mail, 
+  Phone, 
+  MapPin, 
+  Facebook, 
+  Twitter, 
+  Linkedin, 
+  Instagram,
+  Heart,
+  ArrowUp
+} from "lucide-react";
+import Link from "next/link";
+
+const Footer = () => {
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  return (
+    <footer className="bg-accent text-accent-foreground pt-20 pb-8 relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+      <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+          <div>
+            <a href="#" className="flex items-center gap-2 mb-6 group">
+              <div className="w-10 h-10 gradient-primary rounded-lg flex items-center justify-center animate-pulse-glow">
+                <Code className="w-6 h-6 text-primary-foreground" />
+              </div>
+              <span className="text-2xl font-bold">
+                <span className="text-accent-foreground">esystem</span>
+                <span className="text-primary">lk</span>
+              </span>
+            </a>
+            <p className="text-accent-foreground/70 mb-6 max-w-md">
+              We build stunning websites, powerful web applications, and comprehensive software systems 
+              for businesses of all sizes. Your success is our mission.
+            </p>
+            <div className="flex gap-3">
+              {[Facebook, Twitter, Linkedin, Instagram].map((Icon, index) => (
+                <a
+                  key={index}
+                  href="#"
+                  className="w-10 h-10 rounded-lg bg-accent-foreground/5 border border-accent-foreground/10 flex items-center justify-center hover:bg-primary hover:border-primary hover:text-primary-foreground transition-all duration-300 group"
+                >
+                  <Icon className="w-5 h-5" />
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="font-bold text-lg mb-6">Quick Links</h3>
+            <ul className="space-y-3">
+              {[
+                { name: "Services", href: "#services" },
+                { name: "Pricing", href: "#pricing" },
+                { name: "Why Choose Us", href: "#why-us" },
+                { name: "Contact", href: "#contact" },
+              ].map((link) => (
+                <li key={link.name}>
+                  <a
+                    href={link.href}
+                    className="text-accent-foreground/70 hover:text-primary transition-colors duration-300 flex items-center gap-2 group"
+                  >
+                    <span className="w-0 h-px bg-primary transition-all duration-300 group-hover:w-3" />
+                    {link.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="font-bold text-lg mb-6">Contact Info</h3>
+            <ul className="space-y-4">
+              <li>
+                <a
+                  href="mailto:info@esystemlk.com"
+                  className="flex items-center gap-3 text-accent-foreground/70 hover:text-primary transition-colors"
+                >
+                  <Mail className="w-5 h-5 text-primary" />
+                  info@esystemlk.com
+                </a>
+              </li>
+              <li>
+                <a
+                  href="tel:+94771234567"
+                  className="flex items-center gap-3 text-accent-foreground/70 hover:text-primary transition-colors"
+                >
+                  <Phone className="w-5 h-5 text-primary" />
+                  +94 77 123 4567
+                </a>
+              </li>
+              <li>
+                <div className="flex items-center gap-3 text-accent-foreground/70">
+                  <MapPin className="w-5 h-5 text-primary" />
+                  Sri Lanka
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="border-t border-accent-foreground/10 pt-8 mb-8">
+          <div className="bg-accent-foreground/5 rounded-2xl p-6">
+            <h4 className="font-bold mb-3">Terms & Conditions</h4>
+            <ul className="text-sm text-accent-foreground/70 space-y-2">
+              <li>• All prices mentioned are starting prices. Final cost depends on project complexity and requirements.</li>
+              <li>• Lifetime maintenance includes bug fixes, security updates, and minor text changes. Major feature additions require additional payment.</li>
+              <li>• 50% advance payment required to start any project. Remaining 50% upon completion.</li>
+              <li>• Project timeline depends on complexity and client feedback turnaround time.</li>
+              <li>• Domain and hosting costs are not included in the package prices unless otherwise specified.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-accent-foreground/10">
+          <p className="text-accent-foreground/70 text-sm flex items-center gap-1">
+            © {new Date().getFullYear()} esystemlk. Made with 
+            <Heart className="w-4 h-4 text-primary animate-bounce-subtle" />
+            in Sri Lanka
+          </p>
+          <div className="flex items-center gap-6 text-sm text-accent-foreground/70">
+            <Link href="#" className="hover:text-primary transition-colors">Privacy Policy</Link>
+            <Link href="#" className="hover:text-primary transition-colors">Terms of Service</Link>
+          </div>
+        </div>
+      </div>
+
+      <button
+        onClick={scrollToTop}
+        className="fixed bottom-8 right-8 w-12 h-12 rounded-full gradient-primary shadow-red flex items-center justify-center hover:scale-110 transition-transform z-50"
+        aria-label="Scroll to top"
+      >
+        <ArrowUp className="w-5 h-5 text-primary-foreground" />
+      </button>
+    </footer>
+  );
+};
+
+export default Footer;
