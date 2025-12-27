@@ -1,36 +1,21 @@
+
 'use client';
-import { 
-  SiReact, 
-  SiNodedotjs, 
-  SiTypescript, 
-  SiTailwindcss, 
-  SiMongodb, 
-  SiPostgresql,
-  SiNextdotjs,
-  SiFirebase,
-  SiDocker,
-  SiFigma,
-  SiWordpress,
-  SiVite
-} from "@icons-pack/react-simple-icons";
-import { Cpu, Layers, Cloud, Database } from "lucide-react";
+import { Cpu, Layers, Cloud, Database, React, Code, Wind, Server, Palette, Lock } from "lucide-react";
 
 const TechStack = () => {
   const technologies = [
-    { icon: SiReact, name: "React", color: "#61DAFB", href: "https://reactjs.org/" },
-    { icon: SiNextdotjs, name: "Next.js", color: "var(--foreground)", href: "https://nextjs.org/" },
-    { icon: SiVite, name: "Vite", color: "#646CFF", href: "https://vitejs.dev/" },
-    { icon: SiTypescript, name: "TypeScript", color: "#3178C6", href: "https://www.typescriptlang.org/" },
-    { icon: SiTailwindcss, name: "Tailwind CSS", color: "#06B6D4", href: "https://tailwindcss.com/" },
-    { icon: SiNodedotjs, name: "Node.js", color: "#339933", href: "https://nodejs.org/" },
-    { icon: SiMongodb, name: "MongoDB", color: "#47A248", href: "https://www.mongodb.com/" },
-    { icon: SiPostgresql, name: "PostgreSQL", color: "#4169E1", href: "https://www.postgresql.org/" },
-    { icon: SiFirebase, name: "Firebase", color: "#FFCA28", href: "https://firebase.google.com/" },
-    { icon: SiDocker, name: "Docker", color: "#2496ED", href: "https://www.docker.com/" },
-    { icon: Cloud, name: "AWS", color: "#FF9900", href: "https://aws.amazon.com/" },
-    { icon: SiFigma, name: "Figma", color: "#F24E1E", href: "https://www.figma.com/" },
-    { icon: SiWordpress, name: "WordPress", color: "#21759B", href: "https://wordpress.org/" },
-    { icon: Database, name: "SQL", color: "#4479A1", href: "#" },
+    { icon: React, name: "React", href: "https://reactjs.org/" },
+    { icon: Code, name: "Next.js", href: "https://nextjs.org/" },
+    { icon: Wind, name: "Tailwind CSS", href: "https://tailwindcss.com/" },
+    { icon: Code, name: "TypeScript", href: "https://www.typescriptlang.org/" },
+    { icon: Server, name: "Node.js", href: "https://nodejs.org/" },
+    { icon: Database, name: "MongoDB", href: "https://www.mongodb.com/" },
+    { icon: Database, name: "PostgreSQL", href: "https://www.postgresql.org/" },
+    { icon: Cloud, name: "Firebase", href: "https://firebase.google.com/" },
+    { icon: Cloud, name: "Docker", href: "https://www.docker.com/" },
+    { icon: Cloud, name: "AWS", href: "https://aws.amazon.com/" },
+    { icon: Palette, name: "Figma", href: "https://www.figma.com/" },
+    { icon: Lock, name: "Auth", href: "#" },
   ];
 
   return (
@@ -59,7 +44,7 @@ const TechStack = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4 max-w-6xl mx-auto">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 max-w-6xl mx-auto">
           {technologies.map((tech, index) => (
             <a
               key={index}
@@ -69,7 +54,7 @@ const TechStack = () => {
               className="group flex flex-col items-center justify-center p-6 rounded-2xl bg-card border border-border hover:border-primary/50 hover:-translate-y-1 transition-all duration-300"
             >
               <div className="w-12 h-12 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
-                 <tech.icon style={{ color: tech.color }} className="w-10 h-10 opacity-80 group-hover:opacity-100 transition-opacity" />
+                 <tech.icon className="w-10 h-10 text-primary opacity-80 group-hover:opacity-100 transition-opacity" />
               </div>
               <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
                 {tech.name}
