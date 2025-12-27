@@ -64,7 +64,10 @@ export function FirebaseClientProvider({ children }: { children: ReactNode }) {
       const loadingScreen = document.getElementById('loading-screen');
       if (loadingScreen) {
         loadingScreen.style.opacity = '0';
-        setTimeout(() => setIsAppLoading(false), 500);
+        setTimeout(() => {
+            if (loadingScreen) loadingScreen.style.display = 'none';
+            setIsAppLoading(false);
+        }, 500);
       } else {
         setIsAppLoading(false);
       }
@@ -123,14 +126,13 @@ export function FirebaseClientProvider({ children }: { children: ReactNode }) {
     loading
   }), [firebaseApp, auth, firestore, user, loading]);
 
-  if (isAppLoading) {
-    return <LoadingScreen />;
-  }
-
   return (
-    <FirebaseContext.Provider value={contextValue}>
-      {children}
-    </FirebaseContext.Provider>
+    <>
+      {isAppLoading && <LoadingScreen />}
+      <FirebaseContext.Provider value={contextValue}>
+        {children}
+      </FirebaseContext.Provider>
+    </>
   );
 }
 
