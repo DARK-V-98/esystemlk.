@@ -1,4 +1,5 @@
 
+
 import { 
   Shield, 
   Clock, 
@@ -56,7 +57,7 @@ const features = [
 
 const WhyUs = () => {
   return (
-    <section id="why-us" className="py-24 bg-accent text-accent-foreground relative overflow-hidden">
+    <section id="why-us" className="py-24 bg-accent text-accent-foreground relative overflow-hidden animate-fade-in opacity-0">
       {/* Background pattern */}
       <div className="absolute inset-0 opacity-5">
         <div

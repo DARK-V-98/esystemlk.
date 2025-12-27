@@ -1,3 +1,4 @@
+
 'use client';
 import { Building2 } from "lucide-react";
 
@@ -21,7 +22,7 @@ const clients = [
 
 const ClientLogos = () => {
   return (
-    <section className="py-16 bg-background border-y border-border overflow-hidden">
+    <section className="py-16 bg-background border-y border-border overflow-hidden animate-fade-in opacity-0">
       <div className="container mx-auto px-4 mb-8">
         <div className="text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/5 mb-4">

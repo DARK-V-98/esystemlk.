@@ -1,3 +1,4 @@
+
 'use client'
 import {
   Accordion,
@@ -35,7 +36,7 @@ const faqs = [
   },
   {
     question: "What if I'm not satisfied with the design?",
-    answer: "We provide unlimited design revisions during the design phase. We work closely with you until you're 100% satisfied before moving to development.",
+    answer: "We provide unlimited design revisions during the design phase. We work closely with you until you're 100% satisfied with the design before moving to development.",
   },
   {
     question: "Do you offer ongoing support after launch?",
@@ -45,7 +46,7 @@ const faqs = [
 
 const FAQ = () => {
   return (
-    <section className="py-24 bg-secondary/30 relative overflow-hidden">
+    <section className="py-24 bg-secondary/30 relative overflow-hidden animate-fade-in opacity-0">
       {/* Background decoration */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-primary/3 rounded-full blur-3xl" />

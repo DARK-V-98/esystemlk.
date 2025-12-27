@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import {
   ArrowRight,
@@ -13,7 +14,7 @@ import Link from "next/link";
 
 const CTABanner = () => {
   return (
-    <section className="py-20 bg-accent relative overflow-hidden">
+    <section className="py-20 bg-accent relative overflow-hidden animate-fade-in opacity-0">
       {/* Background effects */}
       <div className="absolute inset-0">
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primary/20 via-transparent to-primary/10" />

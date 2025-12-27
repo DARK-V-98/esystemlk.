@@ -1,3 +1,4 @@
+
 'use client';
 import { 
   SiReact, 
@@ -31,7 +32,7 @@ const TechStack = () => {
   ];
 
   return (
-    <section id="tech" className="py-24 bg-background relative overflow-hidden">
+    <section id="tech" className="py-24 bg-background relative overflow-hidden animate-fade-in opacity-0">
       {/* Background decoration */}
       <div className="absolute inset-0">
         <div className="absolute top-1/4 left-1/4 w-64 h-64 border border-primary/10 rounded-full animate-spin-slow" />
