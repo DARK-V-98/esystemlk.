@@ -121,5 +121,10 @@ service cloud.firestore {
         allow create: if true;
         allow update, delete: if isAdmin();
     }
+    
+    match /portfolio/{docId} {
+        allow read: if true;
+        allow write: if isAdmin(); // Only admins can modify portfolio items
+    }
   }
 }
