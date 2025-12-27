@@ -1,13 +1,112 @@
-
+/**
+ * Core Philosophy: This ruleset enforces a strict user-ownership model combined with role-based access control (RBAC) for administrators.
+ * Standard users can only access their own data within their personal data tree (/users/{userId}), ensuring strong data privacy. A separate
+ * `/roles_admin` collection provides a fast, secure mechanism to grant administrators elevated read privileges for monitoring and management,
+ * such as viewing user profiles on a dashboard.
+ *
+ * Data Structure:
+ * - /users/{userId}: A user's primary profile document, which includes their role information for application-level logic.
+ * - /users/{userId}/sessions/{sessionId}: A subcollection containing private session data, strictly owned by the parent user.
+ * - /roles_admin/{userId}: A dedicated lookup collection. The existence of a document here grants a user admin privileges across the system.
+ *
+ * Key Security Decisions:
+ * - Default Deny: All paths are closed by default. Access is granted explicitly.
+ * - User Data Privacy: Users can only read and write their own documents under `/users/{userId}`. They cannot list other users.
+ * - Admin Read Access: Administrators, verified by the existence of a document in `/roles_admin`, are granted read-only (`get`, `list`)
+ *   access to the `/users` collection for dashboard functionality. They cannot write to other users' data to prevent impersonation.
+ * - Immutable Roles: The `/roles_admin` collection is read-only from the client-side. This is a critical security measure to prevent any user,
+ *   including an admin, from escalating their own or others' privileges. Role management must be performed through a trusted server environment
+ *   or the Firebase Console.
+ *
+ * Denormalization for Authorization:
+ * This ruleset relies on the `/roles_admin/{userId}` collection for authorization. Instead of reading a `role` field from a user's profile
+ * document (which would require a costly `get` operation), we use a fast and efficient `exists()` check. This "existence over content"
+ * pattern is highly performant and secure for implementing system-wide roles.
+ *
+ * Structural Segregation:
+ * The separation of user profiles (`/users`), private sessions (`/users/{userId}/sessions`), and admin roles (`/roles_admin`) into distinct
+ * collections and subcollections creates clear security boundaries and enables safe, performant list operations for authorized users.
+ */
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow read access to all documents for all users
-    // This is necessary for public-facing website content
-    match /{document=**} {
-      allow read: if true;
-      allow write: if request.auth != null; // Only authenticated users can write
+
+    // Helper functions for readable and reusable logic
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+    function isAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
+    }
+    // Functions for validating relational data integrity on create
+    function isUserDocumentValidOnCreate(userId) {
+      return request.resource.data.id == userId;
+    }
+    function isSessionDocumentValidOnCreate(userId) {
+      return request.resource.data.userId == userId;
+    }
+    // Functions for validating relational data integrity on update
+    function isUserDocumentValidOnUpdate() {
+      return request.resource.data.id == resource.data.id;
+    }
+    function isSessionDocumentValidOnUpdate() {
+      return request.resource.data.userId == resource.data.userId;
+    }
+
+    /**
+     * @description Manages user profile documents. Users can manage their own profile.
+     * Admins are granted read-only access to view profiles for a dashboard.
+     * @path /users/{userId}
+     * @allow (create) A new user signing up: `create /users/user_abc` if auth.uid is `user_abc`.
+     * @allow (get) An admin viewing another user's profile: `get /users/user_xyz` if auth.uid has an admin role.
+     * @deny (update) A user trying to edit another user's profile: `update /users/user_xyz` if auth.uid is `user_abc`.
+     * @deny (list) A non-admin user trying to see all users: `list /users` will be rejected.
+     * @principle Enforces document ownership for writes and role-based access for reads.
+     */
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
+      allow create: if isOwner(userId) && isUserDocumentValidOnCreate(userId);
+      allow update: if isExistingOwner(userId) && isUserDocumentValidOnUpdate();
+      allow delete: if isExistingOwner(userId);
+
+      /**
+       * @description Manages a user's private session documents. Access is strictly limited to the user who owns the sessions.
+       * @path /users/{userId}/sessions/{sessionId}
+       * @allow (create) A user creating a new session document for themselves: `create /users/user_abc/sessions/session_123` if auth.uid is `user_abc`.
+       * @deny (get) Any user, including an admin, trying to read another user's session: `get /users/user_xyz/sessions/session_456` is denied for auth.uid `user_abc`.
+       * @principle Restricts access to a user's own private data tree.
+       */
+      match /sessions/{sessionId} {
+        allow get: if isOwner(userId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && isSessionDocumentValidOnCreate(userId);
+        allow update: if isExistingOwner(userId) && isSessionDocumentValidOnUpdate();
+        allow delete: if isExistingOwner(userId);
+      }
+    }
+
+    /**
+     * @description A lookup collection where document existence grants admin privileges.
+     * This collection is read-only from the client to prevent privilege escalation.
+     * @path /roles_admin/{userId}
+     * @allow (get) Any signed-in user checking if another user is an admin: `get /roles_admin/user_xyz`.
+     * @deny (list) Any user trying to list all admins: `list /roles_admin` is denied.
+     * @deny (create, update, delete) Any user trying to modify roles: `create /roles_admin/user_abc` is denied.
+     * @principle Secures role management by making role assignments read-only from the client.
+     */
+    match /roles_admin/{userId} {
+      allow get: if isSignedIn();
+      allow list: if false;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
     }
   }
 }
