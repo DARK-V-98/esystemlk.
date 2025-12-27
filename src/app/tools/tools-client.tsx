@@ -29,7 +29,7 @@ interface Tool {
 const allTools: Tool[] = [
   { icon: 'FileSignature', title: 'Invoice Generator', description: 'Create and download professional PDF invoices for your clients.', category: 'Business', link: '/tools/invoice-generator', style: 'primary' },
   { icon: 'Landmark', title: 'GST/VAT Calculator', description: 'Quickly add or remove GST/VAT from prices for your business calculations.', category: 'Business', link: '/tools/gst-vat-calculator', style: 'primary' },
-  { icon: 'CandlestickChart', title: 'Currency Converter', description: 'Convert between major currencies. Rates are for demonstration purposes.', category: 'Business', link: '/tools/currency-converter', style: 'primary' },
+  { icon: 'CandlestickChart', title: 'Currency Converter', description: 'Convert between major currencies using live exchange rates.', category: 'Business', link: '/tools/currency-converter', style: 'primary' },
   { icon: 'Server', title: 'Uptime Checker', description: 'Check if a website is online and responding from our server location.', category: 'Web', link: '/tools/uptime-checker', style: 'primary' },
   { icon: 'Terminal', title: 'API Tester', description: 'A lightweight, browser-based client to test your API endpoints. A mini Postman.', category: 'Web', link: '/tools/api-tester', style: 'secondary' },
   { icon: 'Barcode', title: 'Barcode Generator', description: 'Create standard barcodes (EAN, UPC, etc.) for products or inventory management.', category: 'Utility', link: '/tools/barcode-generator', style: 'outline' },
