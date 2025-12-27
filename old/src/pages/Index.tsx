@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import { ArrowRight, CodeXml, CreditCard, Mail, MessageCircle, Paintbrush, Phone, ServerCog, Compass, Palette, ClipboardCheck, Rocket, LifeBuoy, ShoppingCart } from "lucide-react";
-import Link from "next/link";
-import Image from "next/image";
-import { getPageSettings } from "./admin/pages/actions";
-import { ContactForm } from "./contact/contact-form";
+import { getPageSettings } from "../app/admin/pages/actions";
+import { ContactForm } from "../components/ContactForm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import FeaturedProjects from "@/components/FeaturedProjects";
+import { useEffect, useState } from "react";
 
 const services = [
   {
@@ -133,8 +133,17 @@ const portfolioItems = [
   },
 ];
 
-export default async function Home() {
-  const pageSettings = await getPageSettings();
+export default function Index() {
+  const [pageSettings, setPageSettings] = useState({showServices: true, showTestimonials: true});
+
+  useEffect(() => {
+    async function fetchSettings() {
+      const settings = await getPageSettings();
+      setPageSettings(settings);
+    }
+    fetchSettings();
+  }, []);
+
   const imageProjects = portfolioItems.filter(p => p.imageUrl);
 
   return (
@@ -156,7 +165,7 @@ export default async function Home() {
                 </p>
                 <div className="mt-10">
                     <Button asChild size="lg" className="rounded-full text-lg px-10 py-7 bg-white text-black hover:bg-white/90 hover:shadow-lg hover:shadow-white/20 transition-all duration-300">
-                    <Link href="/contact">Start a Project</Link>
+                    <Link to="/contact">Start a Project</Link>
                     </Button>
                 </div>
             </div>
@@ -174,7 +183,7 @@ export default async function Home() {
             <p className="text-muted-foreground md:text-xl mt-4">Powerful and flexible Point of Sale systems tailored for your business, available for rental or lifetime purchase.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            <Link href="/contact" className="block group">
+            <Link to="/contact" className="block group">
               <Card className="h-full flex flex-col bg-black/30 backdrop-blur-lg border border-white/10 rounded-3xl shadow-xl transition-all duration-300 hover:border-white/30 hover:-translate-y-2">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-4">
@@ -191,7 +200,7 @@ export default async function Home() {
                 </CardContent>
               </Card>
             </Link>
-            <Link href="/contact" className="block group">
+            <Link to="/contact" className="block group">
               <Card className="h-full flex flex-col bg-black/30 backdrop-blur-lg border border-white/10 rounded-3xl shadow-xl transition-all duration-300 hover:border-white/30 hover:-translate-y-2">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-4">
@@ -307,7 +316,7 @@ export default async function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
               {testimonials.map((testimonial) => (
                  <div key={testimonial.name} className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-3xl shadow-xl p-8 flex flex-col items-center text-center">
-                    <Image src={testimonial.avatar} alt={testimonial.name} width={80} height={80} className="rounded-full mb-6 border-2 border-primary" data-ai-hint={testimonial.hint} />
+                    <img src={testimonial.avatar} alt={testimonial.name} width={80} height={80} className="rounded-full mb-6 border-2 border-primary" data-ai-hint={testimonial.hint} />
                     <blockquote className="text-lg text-white/90 mb-6 italic">
                       "{testimonial.review}"
                     </blockquote>
