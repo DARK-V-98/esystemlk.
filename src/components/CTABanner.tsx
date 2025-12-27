@@ -9,6 +9,7 @@ import {
   Zap,
   FileText,
 } from "lucide-react";
+import Link from "next/link";
 
 const CTABanner = () => {
   return (
@@ -55,17 +56,22 @@ const CTABanner = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in opacity-0 animation-delay-300">
-            <Button variant="hero" size="xl" className="gap-2 group">
-              Start Your Project
-              <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+            <Button asChild variant="hero" size="xl" className="gap-2 group">
+              <Link href="#contact">
+                Start Your Project
+                <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+              </Link>
             </Button>
             <Button
+              asChild
               variant="heroOutline"
               size="xl"
               className="gap-2 border-accent-foreground/20 text-accent-foreground hover:bg-accent-foreground hover:text-accent"
             >
-              <Phone className="w-5 h-5" />
-              Schedule a Call
+              <a href="tel:+94765711396">
+                <Phone className="w-5 h-5" />
+                Schedule a Call
+              </a>
             </Button>
           </div>
 

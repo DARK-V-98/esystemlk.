@@ -1,5 +1,5 @@
 'use client';
-import { Check, Star, Zap, Crown, Rocket } from "lucide-react";
+import { Check, Star, Zap, Crown, Rocket, Palette } from "lucide-react";
 import { Button } from "./ui/button";
 import Link from "next/link";
 
@@ -19,6 +19,22 @@ const Pricing = () => {
         "Social Media Links",
         "1 Month Free Support",
         "Free Lifetime Warranty",
+      ],
+    },
+    {
+      icon: Palette,
+      name: "Logo & Branding",
+      price: "40",
+      description: "Professional logos & branding for your business",
+      popular: true,
+      features: [
+        "Essential Logo Design",
+        "Business Starter Kit",
+        "Premium Branding Suite",
+        "Full Social Media Kit",
+        "Business Card Design",
+        "Animated Logo Intro",
+        "Unlimited Revisions",
       ],
     },
     {
@@ -42,33 +58,14 @@ const Pricing = () => {
       name: "Software System",
       price: "500",
       description: "Enterprise-grade solutions for growing businesses",
-      popular: true,
+      popular: false,
       features: [
         "Full Software Development",
         "Advanced Features",
         "Multiple Integrations",
         "Scalable Architecture",
         "Security Implementation",
-        "Staff Training",
         "6 Months Free Support",
-        "Free Lifetime Warranty",
-        "Priority Support",
-      ],
-    },
-    {
-      icon: Rocket,
-      name: "Enterprise",
-      price: "Custom",
-      description: "Tailored solutions for large organizations",
-      popular: false,
-      features: [
-        "Custom Enterprise Solution",
-        "Unlimited Features",
-        "Dedicated Team",
-        "24/7 Premium Support",
-        "SLA Agreement",
-        "On-Site Training",
-        "Continuous Updates",
         "Free Lifetime Warranty",
       ],
     },
