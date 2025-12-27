@@ -58,6 +58,27 @@ const pricingData = [
     ]
   },
   {
+    icon: "Palette",
+    category: "Logo & Brand Identity",
+    services: [
+        {
+            name: "Professional Quality Logo Designs",
+            tiers: [
+                { name: "Essential Logo (Normal)", price: "Rs. 8,000" },
+                { name: "Business Starter Kit (Standard)", price: "Rs. 15,000" },
+                { name: "Premium Branding Suite (Advanced)", price: "Rs. 25,000" },
+            ],
+            addons: [
+                { name: "Facebook Kit (Avatar, Banner, 5 Posts)", price: "Rs. 5,000" },
+                { name: "YouTube Kit (Avatar, Banner, 5 Community Posts)", price: "Rs. 5,000" },
+                { name: "Full Social Media Kit (FB, YT, Insta, LinkedIn)", price: "Rs. 12,000" },
+                { name: "Business Card Design", price: "Rs. 3,000" },
+                { name: "Animated Logo Intro", price: "Rs. 10,000" },
+            ],
+        },
+    ],
+  },
+  {
     icon: "HeartPulse",
     category: "Healthcare & Wellness",
     services: [
