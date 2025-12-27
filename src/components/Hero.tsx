@@ -19,19 +19,6 @@ const Hero = () => {
     },
   };
 
-  const letter = {
-    hidden: { opacity: 0, y: 50 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        repeat: Infinity,
-        repeatDelay: 8,
-        duration: 0.5,
-      },
-    },
-  };
-
   const letterRotate = {
     hidden: { opacity: 0, y: 50, rotateX: -90 },
     visible: {
@@ -46,21 +33,27 @@ const Hero = () => {
     },
   };
 
-  const AnimatedLine = ({ text }: { text: string }) => (
+  const AnimatedLine = ({ text, className }: { text: string, className?: string }) => (
     <motion.h1
-      className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6"
+      className={`text-4xl md:text-6xl lg:text-7xl font-bold mb-6 ${className}`}
       variants={sentence}
       initial="hidden"
       animate="visible"
     >
-      {text.split("").map((char, index) => (
-        <motion.span
-          key={char + "-" + index}
-          variants={letterRotate}
-          style={{ display: 'inline-block', whiteSpace: 'pre' }}
-        >
-          {char}
-        </motion.span>
+      {text.split(" ").map((word, wordIndex) => (
+        <span key={word + "-" + wordIndex} className="inline-block whitespace-nowrap">
+          {word.split("").map((char, charIndex) => (
+            <motion.span
+              key={char + "-" + charIndex}
+              variants={letterRotate}
+              className="inline-block"
+            >
+              {char}
+            </motion.span>
+          ))}
+          {/* Add a space after each word */}
+          <span className="inline-block">&nbsp;</span>
+        </span>
       ))}
     </motion.h1>
   );
@@ -98,12 +91,8 @@ const Hero = () => {
           </motion.div>
 
           {/* Main Heading */}
-          <div className="text-foreground">
-             <AnimatedLine text={line1} />
-          </div>
-           <div className="text-gradient">
-             <AnimatedLine text={line2} />
-           </div>
+          <AnimatedLine text={line1} className="text-foreground" />
+          <AnimatedLine text={line2} className="text-gradient" />
 
 
           {/* Subheading */}
