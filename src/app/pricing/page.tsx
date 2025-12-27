@@ -1,3 +1,4 @@
+
 import PricingClient from './pricing-client';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
