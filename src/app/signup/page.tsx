@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -12,14 +11,17 @@ import { useAuth } from "@/hooks/use-auth";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 
 const signupSchema = z.object({
   displayName: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters." }),
+  password: z.string().min(8, { message: "Password must be at least 8 characters." }),
   confirmPassword: z.string(),
+  agreeTerms: z.boolean().refine(val => val === true, { message: "You must agree to the terms." }),
 }).refine(data => data.password === data.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
@@ -30,6 +32,7 @@ type SignupFormValues = z.infer<typeof signupSchema>;
 export default function SignupPage() {
   const { user, signUpWithEmail, signInWithGoogle, loading } = useAuth();
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
@@ -38,6 +41,7 @@ export default function SignupPage() {
       email: "",
       password: "",
       confirmPassword: "",
+      agreeTerms: false,
     },
   });
 
@@ -50,6 +54,12 @@ export default function SignupPage() {
   const onSubmit = (data: SignupFormValues) => {
     signUpWithEmail(data.email, data.password, data.displayName);
   };
+  
+  const GoogleIcon = () => (
+    <svg className="mr-2 h-5 w-5" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
+        <path fill="currentColor" d="M488 261.8C488 403.3 381.5 512 244 512 109.8 512 0 402.2 0 261.8S109.8 11.6 244 11.6c70.3 0 129.8 27.8 174.4 72.4l-64 64C320.5 112.2 284.1 91 244 91c-82.6 0-150.1 66.6-150.1 170.8s67.5 170.8 150.1 170.8c99.9 0 133-77.2 137.9-117.4H244V261.8h244z"></path>
+    </svg>
+  );
 
   if (loading || user) {
       return (
@@ -67,54 +77,119 @@ export default function SignupPage() {
       );
   }
 
-  const GoogleIcon = () => (
-    <svg className="mr-2 h-5 w-5" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
-        <path fill="currentColor" d="M488 261.8C488 403.3 381.5 512 244 512 109.8 512 0 402.2 0 261.8S109.8 11.6 244 11.6c70.3 0 129.8 27.8 174.4 72.4l-64 64C320.5 112.2 284.1 91 244 91c-82.6 0-150.1 66.6-150.1 170.8s67.5 170.8 150.1 170.8c99.9 0 133-77.2 137.9-117.4H244V261.8h244z"></path>
-    </svg>
-  );
-
   return (
-    <div className="container mx-auto flex items-center justify-center min-h-[calc(100vh-10rem)] py-12">
-      <Card className="w-full max-w-md bg-card border-border shadow-2xl">
-        <CardHeader className="text-center">
-          <CardTitle className="font-headline text-3xl">Create an Account</CardTitle>
-          <CardDescription>Join us to get started</CardDescription>
-        </CardHeader>
-        <CardContent>
+    <div className="min-h-screen bg-background">
+      {/* Desktop View */}
+      <div className="hidden md:flex container mx-auto items-center justify-center min-h-screen py-12">
+        <Card className="w-full max-w-md bg-card border-border shadow-2xl">
+          <CardHeader className="text-center">
+            <CardTitle className="font-headline text-3xl">Create an Account</CardTitle>
+            <CardDescription>Join us to get started</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                {/* Desktop form fields */}
+                <FormField
+                  control={form.control}
+                  name="displayName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Display Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Your Name" {...field} className="rounded-lg bg-background border-border focus:border-primary focus:ring-0" disabled={loading}/>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input type="email" placeholder="you@example.com" {...field} className="rounded-lg bg-background border-border focus:border-primary focus:ring-0" disabled={loading} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input type="password" placeholder="••••••••" {...field} className="rounded-lg bg-background border-border focus:border-primary focus:ring-0" disabled={loading} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confirm Password</FormLabel>
+                      <FormControl>
+                        <Input type="password" placeholder="••••••••" {...field} className="rounded-lg bg-background border-border focus:border-primary focus:ring-0" disabled={loading} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-full" size="lg" disabled={loading}>
+                  {loading ? "Creating Account..." : "Sign Up"}
+                </Button>
+              </form>
+            </Form>
+            
+            <div className="relative my-6">
+              <Separator />
+              <span className="absolute left-1/2 -translate-x-1/2 -top-3 bg-card px-2 text-muted-foreground text-sm">OR</span>
+            </div>
+
+            <Button variant="outline" className="w-full rounded-full" size="lg" onClick={signInWithGoogle} disabled={loading}>
+              <GoogleIcon /> Sign Up with Google
+            </Button>
+            
+            <p className="mt-6 text-center text-sm text-muted-foreground">
+              Already have an account?{" "}
+              <Link href="/login" className="text-primary hover:underline">Sign In</Link>
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+      
+      {/* Mobile View */}
+      <div className="md:hidden flex flex-col min-h-screen bg-background relative">
+        <div className="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-br from-primary/10 via-background to-background blur-xl"></div>
+        <div className="p-6 flex-shrink-0 z-10">
+          <Button variant="ghost" size="icon" onClick={() => router.back()}>
+            <ArrowLeft />
+          </Button>
+        </div>
+        
+        <div className="px-6 pb-6 z-10">
+          <h1 className="text-3xl font-bold">Let's Get Started</h1>
+          <p className="text-muted-foreground">Fill the form to continue</p>
+        </div>
+
+        <div className="flex-grow p-6 z-10">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="displayName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Display Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Your Name"
-                        {...field}
-                        className="rounded-lg bg-background border-border focus:border-primary focus:ring-0"
-                        disabled={loading}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>Your Email Address</FormLabel>
                     <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="you@example.com"
-                        {...field}
-                        className="rounded-lg bg-background border-border focus:border-primary focus:ring-0"
-                        disabled={loading}
-                      />
+                      <Input type="email" {...field} className="h-12 rounded-xl bg-secondary/50 border-border" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -125,71 +200,48 @@ export default function SignupPage() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>Choose a Password</FormLabel>
                     <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="••••••••"
-                        {...field}
-                        className="rounded-lg bg-background border-border focus:border-primary focus:ring-0"
-                        disabled={loading}
-                      />
+                      <div className="relative">
+                        <Input type={showPassword ? 'text' : 'password'} placeholder="min. 8 characters" {...field} className="h-12 rounded-xl bg-secondary/50 border-border pr-10" />
+                        <Button type="button" variant="ghost" size="icon" className="absolute right-1 top-1 h-10 w-10 text-muted-foreground" onClick={() => setShowPassword(!showPassword)}>
+                          {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                        </Button>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-               <FormField
+              <FormField
                 control={form.control}
-                name="confirmPassword"
+                name="agreeTerms"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Confirm Password</FormLabel>
+                  <FormItem className="flex justify-between items-center py-2">
+                    <FormLabel className="mb-0">I agree with terms of use</FormLabel>
                     <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="••••••••"
-                        {...field}
-                        className="rounded-lg bg-background border-border focus:border-primary focus:ring-0"
-                        disabled={loading}
-                      />
+                      <Switch checked={field.value} onCheckedChange={field.onChange} />
                     </FormControl>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-full" size="lg" disabled={loading}>
-                {loading ? "Creating Account..." : "Sign Up"}
+              <Button type="submit" className="w-full h-14 rounded-xl text-base" variant="dark" disabled={loading}>
+                {loading ? "Signing Up..." : "Sign Up"}
               </Button>
             </form>
           </Form>
+        </div>
 
-          <div className="relative my-6">
-            <Separator />
-            <span className="absolute left-1/2 -translate-x-1/2 -top-3 bg-card px-2 text-muted-foreground text-sm">
-              OR
-            </span>
-          </div>
-
-          <Button
-            variant="outline"
-            className="w-full rounded-full"
-            size="lg"
-            onClick={signInWithGoogle}
-            disabled={loading}
-          >
-            <GoogleIcon />
-            Sign Up with Google
-          </Button>
-
-          <p className="mt-6 text-center text-sm text-muted-foreground">
-            Already have an account?{" "}
-            <Link href="/login" className="text-primary hover:underline">
-              Sign In
-            </Link>
-          </p>
-        </CardContent>
-      </Card>
+        <div className="px-6 pb-6 text-center z-10 space-y-4">
+            <div className="relative">
+              <Separator />
+              <span className="absolute left-1/2 -translate-x-1/2 -top-3 bg-background px-2 text-muted-foreground text-sm">OR</span>
+            </div>
+            <Button variant="outline" className="w-full h-14 rounded-xl text-base bg-secondary/50 border-border" onClick={signInWithGoogle} disabled={loading}>
+               <GoogleIcon /> Sign up with Google
+            </Button>
+        </div>
+      </div>
     </div>
   );
 }
