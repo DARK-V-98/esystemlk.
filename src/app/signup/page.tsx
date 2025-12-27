@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -16,6 +17,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import Image from "next/image";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const signupSchema = z.object({
   displayName: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -327,3 +329,5 @@ export default function SignupPage() {
     </div>
   );
 }
+
+    
