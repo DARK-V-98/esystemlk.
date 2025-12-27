@@ -5,7 +5,7 @@ import { useState, useTransition, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { addPortfolioItem, deletePortfolioItem, getPortfolioItems, type PortfolioItem } from './actions';
+import { addPortfolioItem, deletePortfolioItem, type PortfolioItem } from './actions';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import Image from 'next/image';
 import { Trash2, UploadCloud } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Project name is required." }),
@@ -27,16 +28,12 @@ export default function PortfolioManagementClient({ initialItems }: { initialIte
     const { toast } = useToast();
     const formRef = useRef<HTMLFormElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const router = useRouter();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: { name: "", link: "" },
     });
-
-    const refreshItems = async () => {
-        const updatedItems = await getPortfolioItems();
-        setItems(updatedItems);
-    };
 
     function onSubmit() {
         startTransition(async () => {
@@ -55,7 +52,8 @@ export default function PortfolioManagementClient({ initialItems }: { initialIte
                 if(fileInputRef.current) {
                     fileInputRef.current.value = "";
                 }
-                await refreshItems();
+                // Instead of fetching, we optimistically update or simply refresh
+                router.refresh(); 
             }
         });
     }
