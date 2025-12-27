@@ -3,8 +3,8 @@
 
 import React, { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { initializeFirebase } from '@/firebase';
-import { Auth, onAuthStateChanged, User as FirebaseAuthUser } from 'firebase/auth';
-import { doc, getDoc, getFirestore } from 'firebase/firestore';
+import { Auth, onAuthStateChanged, User as FirebaseAuthUser, setPersistence, browserLocalPersistence } from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { FirebaseApp } from 'firebase/app';
 import { Firestore } from 'firebase/firestore';
 import LoadingScreen from '@/components/LoadingScreen';
@@ -49,6 +49,8 @@ export function FirebaseClientProvider({ children }: { children: ReactNode }) {
   // Memoize Firebase services initialization
   const { firebaseApp, auth, firestore } = useMemo(() => {
     const services = initializeFirebase();
+    // Set persistence to local storage to keep user signed in across sessions
+    setPersistence(services.auth, browserLocalPersistence);
     return {
       firebaseApp: services.firebaseApp,
       auth: services.auth,
@@ -63,6 +65,8 @@ export function FirebaseClientProvider({ children }: { children: ReactNode }) {
       if (loadingScreen) {
         loadingScreen.style.opacity = '0';
         setTimeout(() => setIsAppLoading(false), 500);
+      } else {
+        setIsAppLoading(false);
       }
     };
     
@@ -79,22 +83,28 @@ export function FirebaseClientProvider({ children }: { children: ReactNode }) {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setLoading(true);
       if (firebaseUser) {
-        const userRef = doc(firestore, 'users', firebaseUser.uid);
-        const userSnap = await getDoc(userRef);
-        
-        if (userSnap.exists()) {
-          const userData = userSnap.data();
-          setUser(formatUser(firebaseUser, userData.role));
-        } else {
-          // Create user document if it doesn't exist (e.g., first Google sign-in)
-          const newUserDoc = { 
-            email: firebaseUser.email, 
-            role: 'user', 
-            displayName: firebaseUser.displayName || 'New User',
-            photoURL: firebaseUser.photoURL
-          };
-          await setDoc(userRef, newUserDoc);
-          setUser(formatUser(firebaseUser, 'user'));
+        try {
+          const userRef = doc(firestore, 'users', firebaseUser.uid);
+          const userSnap = await getDoc(userRef);
+          
+          if (userSnap.exists()) {
+            const userData = userSnap.data();
+            setUser(formatUser(firebaseUser, userData.role || 'user'));
+          } else {
+            // Create user document if it doesn't exist (e.g., first Google sign-in)
+            const newUserDoc = { 
+              email: firebaseUser.email, 
+              role: 'user', 
+              displayName: firebaseUser.displayName || 'New User',
+              photoURL: firebaseUser.photoURL,
+            };
+            await setDoc(userRef, newUserDoc);
+            setUser(formatUser(firebaseUser, 'user'));
+          }
+        } catch (error) {
+            console.error("Error fetching or creating user document:", error);
+            // Even if Firestore fails, we can set a basic user object
+            setUser(formatUser(firebaseUser, 'user'));
         }
       } else {
         setUser(null);
@@ -113,9 +123,12 @@ export function FirebaseClientProvider({ children }: { children: ReactNode }) {
     loading
   }), [firebaseApp, auth, firestore, user, loading]);
 
+  if (isAppLoading) {
+    return <LoadingScreen />;
+  }
+
   return (
     <FirebaseContext.Provider value={contextValue}>
-      {isAppLoading && <LoadingScreen />}
       {children}
     </FirebaseContext.Provider>
   );

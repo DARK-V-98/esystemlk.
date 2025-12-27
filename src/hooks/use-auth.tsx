@@ -15,7 +15,7 @@ import { useAuthContext as useAuthContextFromProvider } from '@/firebase/client-
 
 // This hook provides methods for authentication, consuming the main context.
 export const useAuth = () => {
-  const { auth, firestore, loading, user } = useAuthContextFromProvider();
+  const { auth, firestore } = useAuthContextFromProvider();
   const router = useRouter();
 
   const signInWithGoogle = async () => {
@@ -37,12 +37,13 @@ export const useAuth = () => {
       await updateProfile(firebaseUser, { displayName });
 
       const userRef = doc(firestore, 'users', firebaseUser.uid);
+      // Use setDoc with merge:true to avoid overwriting the doc if it was created by onAuthStateChanged
       await setDoc(userRef, {
         email: firebaseUser.email,
         role: 'user',
         displayName: displayName,
         photoURL: firebaseUser.photoURL,
-      });
+      }, { merge: true });
 
       router.push('/admin');
     } catch (error) {
@@ -65,8 +66,6 @@ export const useAuth = () => {
   };
 
   return {
-    user,
-    loading,
     signInWithGoogle,
     signUpWithEmail,
     signInWithEmail,
@@ -75,4 +74,5 @@ export const useAuth = () => {
 };
 
 // Re-export for easier consumption if desired, or just use the hook directly
-export const useAuthContext = useAuth;
+export const useAuthContext = useAuthContextFromProvider;
+
