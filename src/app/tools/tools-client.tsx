@@ -15,7 +15,7 @@ import * as Icons from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
-type ToolCategory = 'Utility' | 'Converter' | 'Image' | 'Security' | 'Design' | 'SEO';
+type ToolCategory = 'Utility' | 'Converter' | 'Image' | 'Security' | 'Design' | 'Web' | 'Text';
 
 interface Tool {
   icon: keyof typeof Icons;
@@ -27,9 +27,9 @@ interface Tool {
 }
 
 const allTools: Tool[] = [
-  { icon: 'Terminal', title: 'API Tester', description: 'A lightweight, browser-based client to test your API endpoints. A mini Postman.', category: 'Utility', link: '/tools/api-tester', style: 'primary' },
+  { icon: 'Terminal', title: 'API Tester', description: 'A lightweight, browser-based client to test your API endpoints. A mini Postman.', category: 'Web', link: '/tools/api-tester', style: 'primary' },
   { icon: 'Barcode', title: 'Barcode Generator', description: 'Create standard barcodes (EAN, UPC, etc.) for products or inventory management.', category: 'Utility', link: '/tools/barcode-generator', style: 'outline' },
-  { icon: 'FileCode', title: 'Code Minifier', description: 'Minify your CSS, JavaScript, and HTML code to reduce file size and improve load times.', category: 'Utility', link: '/tools/code-minifier', style: 'secondary' },
+  { icon: 'FileCode', title: 'Code Minifier', description: 'Minify your CSS, JavaScript, and HTML code to reduce file size and improve load times.', category: 'Web', link: '/tools/code-minifier', style: 'secondary' },
   { icon: 'Palette', title: 'Color Palette Generator', description: 'Generate beautiful color palettes from a base color or randomly. Get HEX, RGB, and HSL values.', category: 'Design', link: '/tools/color-palette-generator', style: 'outline' },
   { icon: 'Lock', title: 'File Encryption & Decryption', description: 'Secure any file with AES-256 encryption. Lock and unlock files with a password, client-side.', category: 'Security', link: '/tools/file-encryption', style: 'outline' },
   { icon: 'FileImage', title: 'Image Converter', description: 'Convert image files between different formats (e.g., JPG, PNG, WEBP).', category: 'Image', link: '/tools/image-converter', style: 'primary' },
@@ -42,10 +42,14 @@ const allTools: Tool[] = [
   { icon: 'FileArchive', title: 'PDF Suite', description: 'Convert images to PDF or extract pages from a PDF file into images.', category: 'Converter', link: '/tools/pdf-suite', style: 'primary' },
   { icon: 'QrCode', title: 'QR Code Generator', description: 'Generate QR codes from any text or URL. Download a high-quality PNG instantly.', category: 'Utility', link: '/tools/qr-code-generator', style: 'outline' },
   { icon: 'Scan', title: 'QR Code Scanner', description: 'Scan QR codes using your camera or by uploading an image. Details and read code data securely.', category: 'Utility', link: '/tools/qr-code-scanner', style: 'outline' },
-  { icon: 'Regex', title: 'Regex Tester', description: 'Test and debug your regular expressions with live matching, groups, and replacements.', category: 'Utility', link: '/tools/regex-tester', style: 'secondary' },
+  { icon: 'Regex', title: 'Regex Tester', description: 'Test and debug your regular expressions with live matching, groups, and replacements.', category: 'Web', link: '/tools/regex-tester', style: 'secondary' },
+  { icon: 'Link', title: 'URL Encoder / Decoder', description: 'Encode or decode strings to be URL-safe. Essential for handling data in URIs.', category: 'Web', link: '/tools/url-encoder', style: 'secondary' },
+  { icon: 'Binary', title: 'Base64 Encoder / Decoder', description: 'Convert text or files to and from Base64 encoding for data transmission.', category: 'Converter', link: '/tools/base64-encoder', style: 'primary' },
+  { icon: 'Clock', title: 'Unix Timestamp Converter', description: 'Convert Unix timestamps to human-readable dates and vice-versa. Handles seconds and ms.', category: 'Utility', link: '/tools/timestamp-converter', style: 'outline' },
+  { icon: 'CaseSensitive', title: 'Case Converter', description: 'Transform text between different formats like camelCase, snake_case, and kebab-case.', category: 'Text', link: '/tools/case-converter', style: 'secondary' },
 ];
 
-const categories: ('All' | ToolCategory)[] = ['All', 'Converter', 'Image', 'Security', 'Utility', 'Design', 'SEO'];
+const categories: ('All' | ToolCategory)[] = ['All', 'Converter', 'Image', 'Security', 'Utility', 'Design', 'Web', 'Text'];
 
 const whyUsItems: { icon: keyof typeof Icons; title: string; description: string }[] = [
     { icon: 'Zap', title: 'Blazing Fast', description: 'All tools run instantly in your browser, with no waiting for uploads or server processing.' },
@@ -79,7 +83,7 @@ export default function ToolsClient() {
         tool.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
         tool.description.toLowerCase().includes(searchTerm.toLowerCase());
       return matchesCategory && matchesSearch;
-    });
+    }).sort((a, b) => a.title.localeCompare(b.title));
   }, [searchTerm, activeFilter]);
 
   return (
