@@ -56,6 +56,10 @@ const allTools: Tool[] = [
   { icon: 'ShieldCheck', title: 'SSL Certificate Checker', description: 'Check a domain\'s SSL certificate for expiry, issuer, and other details.', category: 'Security', link: '/tools/ssl-checker', style: 'primary' },
   { icon: 'Hash', title: 'Number Base Converter', description: 'Convert numbers between Binary, Octal, Decimal, and Hexadecimal systems.', category: 'Utility', link: '/tools/number-base-converter', style: 'secondary' },
   { icon: 'Globe2', title: 'Time Zone Converter', description: 'Find out the time in different cities and countries around the world. Useful for global teams.', category: 'Utility', link: '/tools/time-zone-converter', style: 'primary' },
+  { icon: 'Minimize', title: 'Image Compressor', description: 'Reduce image file size with adjustable quality. Supports JPEG and WebP formats.', category: 'Image', link: '/tools/image-compressor', style: 'primary' },
+  { icon: 'Camera', title: 'Image Metadata Viewer', description: 'View EXIF data from photos and remove it. Supports GPS, camera model, and more.', category: 'Image', link: '/tools/image-metadata-viewer', style: 'secondary' },
+  { icon: 'Wand2', title: 'SVG Optimizer', description: 'Minify SVG code by removing unnecessary data and attributes for smaller file sizes.', category: 'Web', link: '/tools/svg-optimizer', style: 'outline' },
+  { icon: 'AppWindow', title: 'Favicon Generator', description: 'Create a complete set of favicons for all devices from a single image.', category: 'Design', link: '/tools/favicon-generator', style: 'primary' },
 ];
 
 const categories: ('All' | ToolCategory)[] = ['All', 'Security', 'Converter', 'Image', 'Utility', 'Design', 'Web', 'Text'];
