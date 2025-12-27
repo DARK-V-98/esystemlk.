@@ -26,7 +26,7 @@ const Footer = () => {
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-          <div>
+          <div className="lg:col-span-2">
             <a href="#" className="flex items-center gap-2 mb-6 group">
               <div className="w-10 h-10 gradient-primary rounded-lg flex items-center justify-center animate-pulse-glow">
                 <Code className="w-6 h-6 text-primary-foreground" />
@@ -40,6 +40,7 @@ const Footer = () => {
               We build stunning websites, powerful web applications, and comprehensive software systems 
               for businesses of all sizes. Your success is our mission.
             </p>
+            {/* Social Links */}
             <div className="flex gap-3">
               {[Facebook, Twitter, Linkedin, Instagram].map((Icon, index) => (
                 <a
@@ -53,6 +54,7 @@ const Footer = () => {
             </div>
           </div>
 
+          {/* Quick Links */}
           <div>
             <h3 className="font-bold text-lg mb-6">Quick Links</h3>
             <ul className="space-y-3">
@@ -75,6 +77,7 @@ const Footer = () => {
             </ul>
           </div>
 
+          {/* Contact Info */}
           <div>
             <h3 className="font-bold text-lg mb-6">Contact Info</h3>
             <ul className="space-y-4">
@@ -106,6 +109,7 @@ const Footer = () => {
           </div>
         </div>
 
+        {/* Terms & Conditions */}
         <div className="border-t border-accent-foreground/10 pt-8 mb-8">
           <div className="bg-accent-foreground/5 rounded-2xl p-6">
             <h4 className="font-bold mb-3">Terms & Conditions</h4>
@@ -119,6 +123,7 @@ const Footer = () => {
           </div>
         </div>
 
+        {/* Bottom Bar */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-accent-foreground/10">
           <p className="text-accent-foreground/70 text-sm flex items-center gap-1">
             © {new Date().getFullYear()} esystemlk. Made with 
@@ -132,6 +137,7 @@ const Footer = () => {
         </div>
       </div>
 
+      {/* Scroll to top button */}
       <button
         onClick={scrollToTop}
         className="fixed bottom-8 right-8 w-12 h-12 rounded-full gradient-primary shadow-red flex items-center justify-center hover:scale-110 transition-transform z-50"

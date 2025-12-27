@@ -19,7 +19,7 @@ const config: Config = {
     },
     extend: {
       fontFamily: {
-        sans: ['DM Sans', 'sans-serif'],
+        sans: ['var(--font-dm-sans)'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -55,7 +55,7 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        red: {
+         red: {
           dark: 'hsl(var(--red-dark))',
         }
       },
@@ -64,7 +64,7 @@ const config: Config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
-      boxShadow: {
+       boxShadow: {
         'red': 'var(--shadow-red)',
         'red-lg': 'var(--shadow-red-lg)',
       },

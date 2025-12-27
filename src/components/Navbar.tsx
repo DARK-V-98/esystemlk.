@@ -60,9 +60,11 @@ const Navbar = () => {
           </div>
 
           <div className="hidden md:block">
-            <Button variant="hero" size="lg" className="gap-2">
-              <Rocket className="w-5 h-5" />
-              Get Started
+            <Button asChild variant="hero" size="lg" className="gap-2">
+              <Link href="#contact">
+                <Rocket className="w-5 h-5" />
+                Get Started
+              </Link>
             </Button>
           </div>
 
@@ -90,9 +92,11 @@ const Navbar = () => {
                 {link.name}
               </a>
             ))}
-            <Button variant="hero" size="lg" className="gap-2 mt-4">
-              <Rocket className="w-5 h-5" />
-              Get Started
+             <Button asChild variant="hero" size="lg" className="gap-2 mt-4">
+              <Link href="#contact">
+                <Rocket className="w-5 h-5" />
+                Get Started
+              </Link>
             </Button>
           </div>
         </div>
