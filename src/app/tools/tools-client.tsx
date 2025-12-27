@@ -15,7 +15,7 @@ import * as Icons from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
-type ToolCategory = 'Utility' | 'Converter' | 'Image' | 'Security' | 'Design' | 'Web' | 'Text' | 'Documents';
+type ToolCategory = 'Utility' | 'Converter' | 'Image' | 'Security' | 'Design' | 'Web' | 'Text' | 'Documents' | 'Business';
 
 interface Tool {
   icon: keyof typeof Icons;
@@ -27,7 +27,11 @@ interface Tool {
 }
 
 const allTools: Tool[] = [
-  { icon: 'Terminal', title: 'API Tester', description: 'A lightweight, browser-based client to test your API endpoints. A mini Postman.', category: 'Web', link: '/tools/api-tester', style: 'primary' },
+  { icon: 'FileSignature', title: 'Invoice Generator', description: 'Create and download professional PDF invoices for your clients.', category: 'Business', link: '/tools/invoice-generator', style: 'primary' },
+  { icon: 'Landmark', title: 'GST/VAT Calculator', description: 'Quickly add or remove GST/VAT from prices for your business calculations.', category: 'Business', link: '/tools/gst-vat-calculator', style: 'primary' },
+  { icon: 'CandlestickChart', title: 'Currency Converter', description: 'Convert between major currencies. Rates are for demonstration purposes.', category: 'Business', link: '/tools/currency-converter', style: 'primary' },
+  { icon: 'Server', title: 'Uptime Checker', description: 'Check if a website is online and responding from our server location.', category: 'Web', link: '/tools/uptime-checker', style: 'primary' },
+  { icon: 'Terminal', title: 'API Tester', description: 'A lightweight, browser-based client to test your API endpoints. A mini Postman.', category: 'Web', link: '/tools/api-tester', style: 'secondary' },
   { icon: 'Barcode', title: 'Barcode Generator', description: 'Create standard barcodes (EAN, UPC, etc.) for products or inventory management.', category: 'Utility', link: '/tools/barcode-generator', style: 'outline' },
   { icon: 'Binary', title: 'Text <> Binary Converter', description: 'Convert text to its binary representation and back. Useful for developers and students.', category: 'Converter', link: '/tools/text-binary-converter', style: 'secondary' },
   { icon: 'FileCode', title: 'Code Minifier', description: 'Minify your CSS, JavaScript, and HTML code to reduce file size and improve load times.', category: 'Web', link: '/tools/code-minifier', style: 'secondary' },
@@ -66,7 +70,7 @@ const allTools: Tool[] = [
   { icon: 'Code', title: 'HTML Entity Encoder/Decoder', description: 'Convert special characters to their HTML entity equivalents and back.', category: 'Text', link: '/tools/html-entity-encoder', style: 'outline' },
 ];
 
-const categories: ('All' | ToolCategory)[] = ['All', 'Security', 'Converter', 'Image', 'Documents', 'Utility', 'Design', 'Web', 'Text'];
+const categories: ('All' | ToolCategory)[] = ['All', 'Business', 'Web', 'Security', 'Converter', 'Image', 'Documents', 'Utility', 'Design', 'Text'];
 
 const whyUsItems: { icon: keyof typeof Icons; title: string; description: string }[] = [
     { icon: 'Zap', title: 'Blazing Fast', description: 'All tools run instantly in your browser, with no waiting for uploads or server processing.' },
