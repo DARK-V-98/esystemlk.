@@ -1,6 +1,4 @@
 
-"use client";
-
 import { Suspense } from 'react';
 import { getPortfolioItems } from './actions';
 import PortfolioManagementClient from './portfolio-management-client';
@@ -12,14 +10,14 @@ import { Skeleton } from '@/components/ui/skeleton';
 function PortfolioManagementSkeleton() {
     return (
         <div className="space-y-8">
-            <Skeleton className="h-40 w-full" />
-            <Skeleton className="h-64 w-full" />
+            <Skeleton className="h-40 w-full rounded-2xl" />
+            <Skeleton className="h-64 w-full rounded-2xl" />
         </div>
     );
 }
 
-export default function AdminPortfolioPage() {
-  const portfolioItemsPromise = getPortfolioItems();
+export default async function AdminPortfolioPage() {
+  const portfolioItems = await getPortfolioItems();
 
   return (
     <div className="container mx-auto py-10 px-4 md:px-6">
@@ -40,9 +38,8 @@ export default function AdminPortfolioPage() {
       </div>
       
       <Suspense fallback={<PortfolioManagementSkeleton />}>
-        <PortfolioManagementClient portfolioItemsPromise={portfolioItemsPromise} />
+        <PortfolioManagementClient initialItems={portfolioItems} />
       </Suspense>
     </div>
   );
 }
-

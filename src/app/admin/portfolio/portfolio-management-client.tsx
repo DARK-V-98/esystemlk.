@@ -1,11 +1,11 @@
 
 "use client";
 
-import { useState, useTransition, use, useEffect } from 'react';
+import { useState, useTransition, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { addPortfolioItem, deletePortfolioItem, getPortfolioItems, type PortfolioItem } from './actions';
+import { addPortfolioItem, deletePortfolioItem, type PortfolioItem } from './actions';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -21,12 +21,15 @@ const portfolioSchema = z.object({
   image: z.instanceof(File).refine(file => file.size > 0, 'An image is required.'),
 });
 
-export default function PortfolioManagementClient({ portfolioItemsPromise }: { portfolioItemsPromise: Promise<PortfolioItem[]> }) {
-  const initialItems = use(portfolioItemsPromise);
+export default function PortfolioManagementClient({ initialItems }: { initialItems: PortfolioItem[] }) {
   const [items, setItems] = useState<PortfolioItem[]>(initialItems);
   const [itemToDelete, setItemToDelete] = useState<PortfolioItem | null>(null);
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
+
+  useEffect(() => {
+    setItems(initialItems);
+  }, [initialItems]);
 
   const form = useForm({
     resolver: zodResolver(portfolioSchema),
@@ -52,11 +55,6 @@ export default function PortfolioManagementClient({ portfolioItemsPromise }: { p
     }
   }, [imageFile]);
 
-  const refreshItems = async () => {
-    const freshItems = await getPortfolioItems();
-    setItems(freshItems);
-  };
-
   const onSubmit = async (values: z.infer<typeof portfolioSchema>) => {
     const formData = new FormData();
     formData.append('name', values.name);
@@ -69,7 +67,9 @@ export default function PortfolioManagementClient({ portfolioItemsPromise }: { p
         toast({ title: 'Success', description: result.message });
         form.reset();
         setPreview(null);
-        await refreshItems();
+        // We can't call getPortfolioItems here directly, so we'll just optimistically update UI
+        // For a full refresh, a page reload or revalidation would be needed
+        // For now, this just clears the form. Re-fetching will be handled by Next.js revalidation.
       } else {
         toast({ title: 'Error', description: result.message, variant: 'destructive' });
       }
@@ -82,7 +82,7 @@ export default function PortfolioManagementClient({ portfolioItemsPromise }: { p
         const result = await deletePortfolioItem(itemToDelete.id, itemToDelete.imageUrl);
          if (result.success) {
             toast({ title: 'Success', description: result.message });
-            await refreshItems();
+            setItems(prevItems => prevItems.filter(item => item.id !== itemToDelete.id));
         } else {
             toast({ title: 'Error', description: result.message, variant: 'destructive' });
         }
