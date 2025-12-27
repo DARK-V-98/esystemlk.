@@ -15,7 +15,7 @@ import * as Icons from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
-type ToolCategory = 'Utility' | 'Converter' | 'Image' | 'Security' | 'Design' | 'Web' | 'Text';
+type ToolCategory = 'Utility' | 'Converter' | 'Image' | 'Security' | 'Design' | 'Web' | 'Text' | 'Documents';
 
 interface Tool {
   icon: keyof typeof Icons;
@@ -37,11 +37,11 @@ const allTools: Tool[] = [
   { icon: 'Scan', title: 'Image Cropper', description: 'Crop specific areas of an image with an easy-to-use interface. Download only the selected part.', category: 'Image', link: '/tools/image-cropper', style: 'secondary' },
   { icon: 'MoveHorizontal', title: 'Image Resizer', description: 'Resize images to custom dimensions. Perfect for web, social media, or documents.', category: 'Image', link: '/tools/image-resizer', style: 'outline' },
   { icon: 'Braces', title: 'JSON <> CSV Converter', description: 'Convert JSON files to CSV and vice-versa. Supports nested JSON and file uploads.', category: 'Converter', link: '/tools/json-csv-converter', style: 'outline' },
-  { icon: 'Sheet', title: 'CSV <> Excel Converter', description: 'Convert CSV files to Excel (.xlsx) format for better readability and business use.', category: 'Converter', link: '/tools/csv-excel-converter', style: 'primary' },
+  { icon: 'Sheet', title: 'CSV <> Excel Converter', description: 'Convert CSV files to Excel (.xlsx) format for better readability and business use.', category: 'Documents', link: '/tools/csv-excel-converter', style: 'primary' },
   { icon: 'Key', title: 'JWT Decoder', description: 'Decode and inspect JSON Web Tokens to view header and payload data securely.', category: 'Security', link: '/tools/jwt-decoder', style: 'outline' },
   { icon: 'FileText', title: 'Markdown to HTML', description: 'Convert Markdown text into clean HTML with a live preview and copy-to-clipboard functionality.', category: 'Converter', link: '/tools/markdown-to-html', style: 'outline' },
   { icon: 'Shield', title: 'Password Generator', description: 'Create strong, secure passwords with custom length and character settings.', category: 'Security', link: '/tools/password-generator', style: 'outline' },
-  { icon: 'FileArchive', title: 'PDF Suite', description: 'Convert images to PDF or extract pages from a PDF file into images.', category: 'Converter', link: '/tools/pdf-suite', style: 'primary' },
+  { icon: 'FileArchive', title: 'PDF Suite', description: 'Merge, split, compress, and convert images to PDF, all in one place.', category: 'Documents', link: '/tools/pdf-suite', style: 'primary' },
   { icon: 'QrCode', title: 'QR Code Generator', description: 'Generate QR codes from any text or URL. Download a high-quality PNG instantly.', category: 'Utility', link: '/tools/qr-code-generator', style: 'outline' },
   { icon: 'Scan', title: 'QR Code Scanner', description: 'Scan QR codes using your camera or by uploading an image. Details and read code data securely.', category: 'Utility', link: '/tools/qr-code-scanner', style: 'outline' },
   { icon: 'Regex', title: 'Regex Tester', description: 'Test and debug your regular expressions with live matching, groups, and replacements.', category: 'Web', link: '/tools/regex-tester', style: 'secondary' },
@@ -54,7 +54,7 @@ const allTools: Tool[] = [
   { icon: 'Globe', title: 'My IP Information', description: 'Quickly check your public IP address and related network information.', category: 'Web', link: '/tools/my-ip', style: 'outline' },
   { icon: 'Ticket', title: 'CSRF Token Generator', description: 'Generate secure, random tokens to protect against Cross-Site Request Forgery.', category: 'Security', link: '/tools/csrf-token-generator', style: 'outline' },
   { icon: 'ShieldCheck', title: 'SSL Certificate Checker', description: 'Check a domain\'s SSL certificate for expiry, issuer, and other details.', category: 'Security', link: '/tools/ssl-checker', style: 'primary' },
-  { icon: 'Hash', title: 'Number Base Converter', description: 'Convert numbers between Binary, Octal, Decimal, and Hexadecimal systems.', category: 'Utility', link: '/tools/number-base-converter', style: 'secondary' },
+  { icon: 'Hash', title: 'Number Base Converter', description: 'Convert numbers between Binary, Octal, Decimal, and Hexadecimal systems.', category: 'Converter', link: '/tools/number-base-converter', style: 'secondary' },
   { icon: 'Globe2', title: 'Time Zone Converter', description: 'Find out the time in different cities and countries around the world. Useful for global teams.', category: 'Utility', link: '/tools/time-zone-converter', style: 'primary' },
   { icon: 'Minimize', title: 'Image Compressor', description: 'Reduce image file size with adjustable quality. Supports JPEG and WebP formats.', category: 'Image', link: '/tools/image-compressor', style: 'primary' },
   { icon: 'Camera', title: 'Image Metadata Viewer', description: 'View EXIF data from photos and remove it. Supports GPS, camera model, and more.', category: 'Image', link: '/tools/image-metadata-viewer', style: 'secondary' },
@@ -66,7 +66,7 @@ const allTools: Tool[] = [
   { icon: 'Code', title: 'HTML Entity Encoder/Decoder', description: 'Convert special characters to their HTML entity equivalents and back.', category: 'Text', link: '/tools/html-entity-encoder', style: 'outline' },
 ];
 
-const categories: ('All' | ToolCategory)[] = ['All', 'Security', 'Converter', 'Image', 'Utility', 'Design', 'Web', 'Text'];
+const categories: ('All' | ToolCategory)[] = ['All', 'Security', 'Converter', 'Image', 'Documents', 'Utility', 'Design', 'Web', 'Text'];
 
 const whyUsItems: { icon: keyof typeof Icons; title: string; description: string }[] = [
     { icon: 'Zap', title: 'Blazing Fast', description: 'All tools run instantly in your browser, with no waiting for uploads or server processing.' },
