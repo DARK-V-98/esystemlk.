@@ -70,18 +70,38 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
       {/* Desktop View */}
-      <div className="hidden md:flex container mx-auto items-center justify-center min-h-screen py-12">
-        <Card className="w-full max-w-md bg-card border-border shadow-2xl">
-          <CardHeader className="text-center">
-            <CardTitle className="font-headline text-3xl">Welcome Back</CardTitle>
-            <CardDescription>Sign in to access your account</CardDescription>
-          </CardHeader>
-          <CardContent>
+      <div className="hidden md:grid md:grid-cols-2 max-w-4xl w-full bg-card border-border shadow-2xl rounded-3xl overflow-hidden">
+        {/* Left Panel */}
+        <div className="relative p-8 flex flex-col justify-between bg-accent text-accent-foreground">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-primary/10"></div>
+          <div className="relative z-10">
+            <Link href="/" className="flex items-center gap-2 group">
+              <Image src="/logo.png" alt="ESystemLk Logo" width={40} height={40} className="rounded-lg" />
+              <span className="text-2xl font-bold">
+                <span className="text-accent-foreground">esystem</span>
+                <span className="text-primary">lk</span>
+              </span>
+            </Link>
+          </div>
+          <div className="relative z-10 mt-auto">
+            <h2 className="text-3xl font-bold text-accent-foreground">Welcome Back</h2>
+            <p className="text-accent-foreground/80 mt-2">Sign in to continue to your dashboard.</p>
+          </div>
+        </div>
+
+        {/* Right Panel */}
+        <div className="p-8">
+            <CardHeader className="text-left p-0 mb-8">
+              <CardTitle className="font-headline text-3xl">Sign In</CardTitle>
+              <CardDescription>
+                Don't have an account?{" "}
+                <Link href="/signup" className="text-primary hover:underline">Sign Up</Link>
+              </CardDescription>
+            </CardHeader>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                {/* Form fields for desktop... */}
                 <FormField
                   control={form.control}
                   name="email"
@@ -100,15 +120,23 @@ export default function LoginPage() {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
+                      <div className="flex justify-between items-center">
+                        <FormLabel>Password</FormLabel>
+                         <Link href="#" className="text-sm font-medium text-primary hover:underline">Forgot password?</Link>
+                      </div>
                       <FormControl>
-                        <Input type="password" placeholder="••••••••" {...field} className="rounded-lg bg-background border-border focus:border-primary focus:ring-0" disabled={loading} />
+                         <div className="relative">
+                           <Input type={showPassword ? 'text' : 'password'} placeholder="••••••••" {...field} className="rounded-lg bg-background border-border focus:border-primary focus:ring-0 pr-10" disabled={loading} />
+                           <Button type="button" variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground" onClick={() => setShowPassword(!showPassword)}>
+                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                          </Button>
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-full" size="lg" disabled={loading}>
+                <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg" size="lg" disabled={loading}>
                   {loading ? "Signing In..." : "Sign In"}
                 </Button>
               </form>
@@ -119,20 +147,15 @@ export default function LoginPage() {
               <span className="absolute left-1/2 -translate-x-1/2 -top-3 bg-card px-2 text-muted-foreground text-sm">OR</span>
             </div>
 
-            <Button variant="outline" className="w-full rounded-full border-border hover:bg-accent" size="lg" onClick={signInWithGoogle} disabled={loading}>
+            <Button variant="outline" className="w-full rounded-lg border-border hover:bg-accent" size="lg" onClick={signInWithGoogle} disabled={loading}>
               <GoogleIcon /> Sign In with Google
             </Button>
-            
-            <p className="mt-6 text-center text-sm text-muted-foreground">
-              Don't have an account?{" "}
-              <Link href="/signup" className="text-primary hover:underline">Sign Up</Link>
-            </p>
-          </CardContent>
-        </Card>
+        </div>
       </div>
 
+
       {/* Mobile View */}
-      <div className="md:hidden flex flex-col min-h-screen bg-background relative overflow-hidden">
+      <div className="md:hidden w-full flex flex-col min-h-[80vh] bg-background relative overflow-hidden rounded-3xl shadow-2xl border border-border">
         <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-br from-primary/10 via-background to-background blur-2xl"></div>
         <div className="p-6 flex-shrink-0 z-10">
           <div className="flex justify-between items-center">
@@ -178,6 +201,9 @@ export default function LoginPage() {
                         </Button>
                       </div>
                     </FormControl>
+                     <div className="text-right">
+                       <Link href="#" className="text-sm font-medium text-primary hover:underline">Forgot password?</Link>
+                     </div>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -187,7 +213,6 @@ export default function LoginPage() {
                   <Switch id="remember-me" />
                   <label htmlFor="remember-me" className="text-muted-foreground">Remember me</label>
                 </div>
-                <Link href="#" className="text-sm font-medium text-primary">Forgot password?</Link>
               </div>
               <Button type="submit" className="w-full h-14 rounded-xl text-base" variant="dark" disabled={loading}>
                 {loading ? "Logging In..." : "Login"}

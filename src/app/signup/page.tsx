@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
+import Image from "next/image";
 
 const signupSchema = z.object({
   displayName: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -79,24 +80,43 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
       {/* Desktop View */}
-      <div className="hidden md:flex container mx-auto items-center justify-center min-h-screen py-12">
-        <Card className="w-full max-w-md bg-card border-border shadow-2xl">
-          <CardHeader className="text-center">
-            <CardTitle className="font-headline text-3xl">Create an Account</CardTitle>
-            <CardDescription>Join us to get started</CardDescription>
-          </CardHeader>
-          <CardContent>
+      <div className="hidden md:grid md:grid-cols-2 max-w-4xl w-full bg-card border-border shadow-2xl rounded-3xl overflow-hidden">
+        {/* Left Panel */}
+        <div className="relative p-8 flex flex-col justify-between bg-accent text-accent-foreground">
+           <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-primary/10"></div>
+           <div className="relative z-10">
+            <Link href="/" className="flex items-center gap-2 group">
+              <Image src="/logo.png" alt="ESystemLk Logo" width={40} height={40} className="rounded-lg" />
+              <span className="text-2xl font-bold">
+                <span className="text-accent-foreground">esystem</span>
+                <span className="text-primary">lk</span>
+              </span>
+            </Link>
+          </div>
+           <div className="relative z-10 mt-auto">
+            <h2 className="text-3xl font-bold">Create Your Future</h2>
+            <p className="text-accent-foreground/80 mt-2">Join us and start building your digital presence today.</p>
+          </div>
+        </div>
+        {/* Right Panel */}
+        <div className="p-8">
+            <CardHeader className="text-left p-0 mb-8">
+              <CardTitle className="font-headline text-3xl">Create an Account</CardTitle>
+              <CardDescription>
+                Already have an account?{" "}
+                <Link href="/login" className="text-primary hover:underline">Sign In</Link>
+              </CardDescription>
+            </CardHeader>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                {/* Desktop form fields */}
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
                   control={form.control}
                   name="displayName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Display Name</FormLabel>
+                      <FormLabel>Full Name</FormLabel>
                       <FormControl>
                         <Input placeholder="Your Name" {...field} className="rounded-lg bg-background border-border focus:border-primary focus:ring-0" disabled={loading}/>
                       </FormControl>
@@ -124,7 +144,12 @@ export default function SignupPage() {
                     <FormItem>
                       <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="••••••••" {...field} className="rounded-lg bg-background border-border focus:border-primary focus:ring-0" disabled={loading} />
+                         <div className="relative">
+                           <Input type={showPassword ? 'text' : 'password'} placeholder="••••••••" {...field} className="rounded-lg bg-background border-border focus:border-primary focus:ring-0 pr-10" disabled={loading} />
+                           <Button type="button" variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground" onClick={() => setShowPassword(!showPassword)}>
+                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                          </Button>
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -137,7 +162,12 @@ export default function SignupPage() {
                     <FormItem>
                       <FormLabel>Confirm Password</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="••••••••" {...field} className="rounded-lg bg-background border-border focus:border-primary focus:ring-0" disabled={loading} />
+                        <div className="relative">
+                         <Input type={showConfirmPassword ? 'text' : 'password'} placeholder="••••••••" {...field} className="rounded-lg bg-background border-border focus:border-primary focus:ring-0 pr-10" disabled={loading} />
+                           <Button type="button" variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                            {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                          </Button>
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -147,21 +177,21 @@ export default function SignupPage() {
                     control={form.control}
                     name="agreeTerms"
                     render={({ field }) => (
-                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                      <FormItem className="flex flex-row items-center space-x-3 space-y-0 pt-2">
                         <FormControl>
-                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                          <Checkbox checked={field.value} onCheckedChange={field.onChange} id="terms-desktop" />
                         </FormControl>
                         <div className="space-y-1 leading-none">
-                          <FormLabel>
-                             I agree with the <Link href="/privacy-policy" className="text-primary hover:underline">terms of use</Link>
+                          <FormLabel htmlFor="terms-desktop" className="text-sm font-normal text-muted-foreground">
+                             I agree to the <Link href="/privacy-policy" className="text-primary hover:underline">Terms & Conditions</Link>
                           </FormLabel>
                         </div>
                          <FormMessage />
                       </FormItem>
                     )}
                   />
-                <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-full" size="lg" disabled={loading}>
-                  {loading ? "Creating Account..." : "Sign Up"}
+                <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg" size="lg" disabled={loading}>
+                  {loading ? "Creating Account..." : "Create Account"}
                 </Button>
               </form>
             </Form>
@@ -171,20 +201,14 @@ export default function SignupPage() {
               <span className="absolute left-1/2 -translate-x-1/2 -top-3 bg-card px-2 text-muted-foreground text-sm">OR</span>
             </div>
 
-            <Button variant="outline" className="w-full rounded-full" size="lg" onClick={signInWithGoogle} disabled={loading}>
+            <Button variant="outline" className="w-full rounded-lg" size="lg" onClick={signInWithGoogle} disabled={loading}>
               <GoogleIcon /> Sign Up with Google
             </Button>
-            
-            <p className="mt-6 text-center text-sm text-muted-foreground">
-              Already have an account?{" "}
-              <Link href="/login" className="text-primary hover:underline">Sign In</Link>
-            </p>
-          </CardContent>
-        </Card>
+        </div>
       </div>
       
       {/* Mobile View */}
-      <div className="md:hidden flex flex-col min-h-screen bg-background relative">
+      <div className="md:hidden w-full flex flex-col min-h-[80vh] bg-background relative overflow-hidden rounded-3xl shadow-2xl border border-border">
         <div className="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-br from-primary/10 via-background to-background blur-xl"></div>
         <div className="p-6 flex-shrink-0 z-10">
           <Button asChild variant="ghost" size="icon">
@@ -268,12 +292,14 @@ export default function SignupPage() {
                 control={form.control}
                 name="agreeTerms"
                 render={({ field }) => (
-                  <FormItem className="flex justify-between items-center py-2">
-                    <FormLabel htmlFor="terms-mobile" className="mb-0 text-muted-foreground">I agree with <Link href="/privacy-policy" className="text-primary">terms of use</Link></FormLabel>
+                  <FormItem className="flex flex-row items-center justify-between py-2">
+                    <FormLabel htmlFor="terms-mobile" className="mb-0 text-muted-foreground">
+                      I agree with <Link href="/privacy-policy" className="text-primary">terms of use</Link>
+                    </FormLabel>
                     <FormControl>
                       <Switch id="terms-mobile" checked={field.value} onCheckedChange={field.onChange} />
                     </FormControl>
-                     <FormMessage />
+                    <FormMessage className="basis-full" />
                   </FormItem>
                 )}
               />
