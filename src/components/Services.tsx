@@ -1,4 +1,3 @@
-
 'use client';
 import { 
   Globe, 
@@ -94,14 +93,14 @@ const Services = () => {
   return (
     <section id="services" className="py-24 bg-secondary/30 relative overflow-hidden">
       {/* Background decoration */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-red-glow opacity-30 blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-80 h-80 bg-red-glow opacity-20 blur-3xl" />
+      <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-80 h-80 bg-primary/3 rounded-full blur-3xl" />
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary font-medium mb-4 animate-fade-in">
-            <Settings className="w-4 h-4 animate-spin-slow" />
-            <span>Our Services</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/5 mb-6 animate-fade-in opacity-0">
+            <Settings className="w-4 h-4 text-primary animate-spin-slow" />
+            <span className="text-sm font-medium text-primary">Our Services</span>
           </div>
           <h2 className="text-3xl md:text-5xl font-bold mb-4">
             Complete <span className="text-gradient">Digital Solutions</span>
@@ -112,33 +111,36 @@ const Services = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {services.map((service, index) => (
-            <div
-              key={index}
-              className="group bg-card rounded-2xl p-6 shadow-card border border-border/50 hover:border-primary/30 hover-lift cursor-pointer"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <div className="w-14 h-14 rounded-xl bg-gradient-primary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                <service.icon className="w-7 h-7 text-primary-foreground" />
+          {services.map((service, index) => {
+            const Icon = service.icon;
+            return (
+              <div
+                key={index}
+                className="group bg-card rounded-2xl p-6 shadow-card border border-border/50 hover:border-primary/30 hover:-translate-y-1 transition-transform duration-300 cursor-pointer"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <div className="w-14 h-14 rounded-xl gradient-primary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <Icon className="w-7 h-7 text-primary-foreground" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
+                  {service.title}
+                </h3>
+                <p className="text-muted-foreground text-sm mb-4">
+                  {service.description}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {service.features.map((feature, idx) => (
+                    <span
+                      key={idx}
+                      className="text-xs px-3 py-1 rounded-full bg-secondary text-secondary-foreground"
+                    >
+                      {feature}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
-                {service.title}
-              </h3>
-              <p className="text-muted-foreground text-sm mb-4">
-                {service.description}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {service.features.map((feature, idx) => (
-                  <span
-                    key={idx}
-                    className="text-xs px-3 py-1 rounded-full bg-secondary text-secondary-foreground"
-                  >
-                    {feature}
-                  </span>
-                ))}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
