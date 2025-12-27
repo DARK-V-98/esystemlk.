@@ -1,12 +1,25 @@
 
-import PortfolioManagementClient from './portfolio-management-client';
+"use client";
+
+import { Suspense } from 'react';
 import { getPortfolioItems } from './actions';
+import PortfolioManagementClient from './portfolio-management-client';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
-export default async function AdminPortfolioPage() {
-  const initialItems = await getPortfolioItems();
+function PortfolioManagementSkeleton() {
+    return (
+        <div className="space-y-8">
+            <Skeleton className="h-40 w-full" />
+            <Skeleton className="h-64 w-full" />
+        </div>
+    );
+}
+
+export default function AdminPortfolioPage() {
+  const portfolioItemsPromise = getPortfolioItems();
 
   return (
     <div className="container mx-auto py-10 px-4 md:px-6">
@@ -25,8 +38,11 @@ export default async function AdminPortfolioPage() {
             </Link>
         </Button>
       </div>
-
-      <PortfolioManagementClient initialItems={initialItems} />
+      
+      <Suspense fallback={<PortfolioManagementSkeleton />}>
+        <PortfolioManagementClient portfolioItemsPromise={portfolioItemsPromise} />
+      </Suspense>
     </div>
   );
 }
+

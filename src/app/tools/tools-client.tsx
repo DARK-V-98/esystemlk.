@@ -52,6 +52,7 @@ const allTools: Tool[] = [
   { icon: 'Globe', title: 'My IP Information', description: 'Quickly check your public IP address and related network information.', category: 'Web', link: '/tools/my-ip', style: 'outline' },
   { icon: 'Ticket', title: 'CSRF Token Generator', description: 'Generate secure, random tokens to protect against Cross-Site Request Forgery.', category: 'Security', link: '/tools/csrf-token-generator', style: 'outline' },
   { icon: 'ShieldCheck', title: 'SSL Certificate Checker', description: 'Check a domain\'s SSL certificate for expiry, issuer, and other details.', category: 'Security', link: '/tools/ssl-checker', style: 'primary' },
+  { icon: 'Search', title: 'DNS Lookup', description: 'Query Domain Name System (DNS) records like A, AAAA, MX, and NS for any domain.', category: 'Web', link: '/tools/dns-lookup', style: 'primary' }
 ];
 
 const categories: ('All' | ToolCategory)[] = ['All', 'Security', 'Converter', 'Image', 'Utility', 'Design', 'Web', 'Text'];

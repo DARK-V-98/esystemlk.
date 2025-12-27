@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import PricingClient from './pricing-client';
 import { db } from '@/lib/firebase';
@@ -73,3 +74,4 @@ export default async function PricingPage() {
     </>
   );
 }
+
