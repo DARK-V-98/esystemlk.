@@ -24,7 +24,7 @@ export default function CurrencyConverterPage() {
   const [fromCurrency, setFromCurrency] = useState('USD');
   const [toCurrency, setToCurrency] = useState('LKR');
   const [convertedAmount, setConvertedAmount] = useState('');
-  const [rates, setRates] = useState<Record<string, number> | null>(null);
+  const [rates, setRates] = useState<Record<string, { value: number }> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastChanged, setLastChanged] = useState<'amount' | 'converted'>('amount');
@@ -34,15 +34,16 @@ export default function CurrencyConverterPage() {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch('https://open.er-api.com/v6/latest/USD');
+        const response = await fetch('/api/currency-rates');
         if (!response.ok) {
           throw new Error('Failed to fetch exchange rates.');
         }
-        const data = await response.json();
-        if (data.result === 'error') {
-            throw new Error(data['error-type']);
+        const result = await response.json();
+        if (result.data) {
+            setRates(result.data);
+        } else {
+             throw new Error(result.message || 'Invalid data from currency API.');
         }
-        setRates(data.rates);
       } catch (e) {
         setError(e instanceof Error ? e.message : 'An unknown error occurred.');
       } finally {
@@ -61,7 +62,15 @@ export default function CurrencyConverterPage() {
             setConvertedAmount('');
             return;
         }
-        const rate = rates[toCurrency] / rates[fromCurrency];
+        // Conversion: (amount / fromRate) * toRate
+        const fromRate = rates[fromCurrency]?.value ?? 0;
+        const toRate = rates[toCurrency]?.value ?? 0;
+        
+        if(fromRate === 0) {
+            setConvertedAmount('N/A');
+            return;
+        }
+        const rate = toRate / fromRate;
         setConvertedAmount((amountNum * rate).toFixed(2));
     } else { // lastChanged === 'converted'
         const convertedNum = parseFloat(convertedAmount);
@@ -69,7 +78,14 @@ export default function CurrencyConverterPage() {
             setAmount('');
             return;
         }
-        const rate = rates[fromCurrency] / rates[toCurrency];
+        const fromRate = rates[fromCurrency]?.value ?? 0;
+        const toRate = rates[toCurrency]?.value ?? 0;
+        
+        if (toRate === 0) {
+            setAmount('N/A');
+            return;
+        }
+        const rate = fromRate / toRate;
         setAmount((convertedNum * rate).toFixed(2));
     }
   };
@@ -138,7 +154,7 @@ export default function CurrencyConverterPage() {
             </div>
            )}
           <p className="text-xs text-muted-foreground text-center">
-            Rates are updated periodically and provided by a third-party service.
+            Rates are updated periodically and provided by currencyapi.com.
           </p>
         </CardContent>
       </Card>
