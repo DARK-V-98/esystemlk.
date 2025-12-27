@@ -1,4 +1,5 @@
 
+'use client';
 
 import { 
   Shield, 
@@ -11,6 +12,7 @@ import {
   Users,
   Server
 } from "lucide-react";
+import AnimatedStat from "./AnimatedStat";
 
 const features = [
   {
@@ -54,6 +56,18 @@ const features = [
     description: "A team of experienced developers and designers committed to your success.",
   },
 ];
+
+const stats = [
+  { value: "400+", label: "Happy Clients" },
+  { value: "25+", label: "Websites" },
+  { value: "20+", label: "Software Systems" },
+  { value: "5+", label: "Web Apps" },
+  { value: "100+", label: "Logo Designs" },
+  { value: "100+", label: "IT Services Provided" },
+  { value: "10+", label: "On-Site Managements" },
+  { value: "6+", label: "Years Experience" },
+];
+
 
 const WhyUs = () => {
   return (
@@ -130,24 +144,13 @@ const WhyUs = () => {
 
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-20 pt-16 border-t border-accent-foreground/10">
-          {[
-            { value: "400+", label: "Happy Clients" },
-            { value: "25+", label: "Websites" },
-            { value: "20+", label: "Software Systems" },
-            { value: "5+", label: "Web Apps" },
-            { value: "100+", label: "Logo Designs" },
-            { value: "100+", label: "IT Services Provided" },
-            { value: "10+", label: "On-Site Managements" },
-            { value: "6+", label: "Years Experience" },
-          ].map((stat, index) => (
-            <div
+          {stats.map((stat, index) => (
+            <AnimatedStat 
               key={stat.label}
-              className={`text-center animate-fade-in opacity-0`}
-              style={{ animationDelay: `${(index + 11) * 100}ms` }}
-            >
-              <div className="text-4xl md:text-5xl font-bold text-primary mb-2">{stat.value}</div>
-              <div className="text-accent-foreground/70">{stat.label}</div>
-            </div>
+              value={stat.value}
+              label={stat.label}
+              animationDelay={index * 0.1}
+            />
           ))}
         </div>
       </div>
