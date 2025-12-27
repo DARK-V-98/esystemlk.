@@ -1,5 +1,14 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, Rocket, Phone } from "lucide-react";
+import {
+  ArrowRight,
+  Sparkles,
+  Rocket,
+  Phone,
+  CalendarCheck,
+  Lock,
+  Zap,
+  FileText,
+} from "lucide-react";
 
 const CTABanner = () => {
   return (
@@ -27,7 +36,9 @@ const CTABanner = () => {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/50 bg-primary/10 mb-8 animate-fade-in opacity-0">
             <Sparkles className="w-4 h-4 text-primary animate-bounce-subtle" />
-            <span className="text-sm font-medium text-primary">Limited Time Offer</span>
+            <span className="text-sm font-medium text-primary">
+              Limited Time Offer
+            </span>
           </div>
 
           {/* Heading */}
@@ -38,23 +49,19 @@ const CTABanner = () => {
 
           {/* Description */}
           <p className="text-lg md:text-xl text-accent-foreground/80 mb-10 max-w-2xl mx-auto animate-fade-in opacity-0 animation-delay-200">
-            Get a free consultation and 10% discount on your first project. 
+            Get a free consultation and 10% discount on your first project.
             Limited slots available each month!
           </p>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in opacity-0 animation-delay-300">
-            <Button 
-              variant="hero" 
-              size="xl" 
-              className="gap-2 group"
-            >
+            <Button variant="hero" size="xl" className="gap-2 group">
               Start Your Project
               <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
             </Button>
-            <Button 
-              variant="heroOutline" 
-              size="xl" 
+            <Button
+              variant="heroOutline"
+              size="xl"
               className="gap-2 border-accent-foreground/20 text-accent-foreground hover:bg-accent-foreground hover:text-accent"
             >
               <Phone className="w-5 h-5" />
@@ -65,12 +72,21 @@ const CTABanner = () => {
           {/* Trust indicators */}
           <div className="flex flex-wrap items-center justify-center gap-8 mt-12 text-accent-foreground/60 text-sm animate-fade-in opacity-0 animation-delay-400">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              <CalendarCheck className="w-4 h-4 text-primary" />
               <span>Available Now</span>
             </div>
-            <div>🔒 100% Secure</div>
-            <div>⚡ Fast Response</div>
-            <div>🎯 Free Quote</div>
+            <div className="flex items-center gap-2">
+              <Lock className="w-4 h-4 text-primary" />
+              <span>100% Secure</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Zap className="w-4 h-4 text-primary" />
+              <span>Fast Response</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <FileText className="w-4 h-4 text-primary" />
+              <span>Free Quote</span>
+            </div>
           </div>
         </div>
       </div>
