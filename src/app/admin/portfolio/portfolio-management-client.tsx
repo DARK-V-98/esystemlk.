@@ -1,10 +1,11 @@
+
 "use client";
 
 import { useState, useTransition, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { addPortfolioItem, deletePortfolioItem, type PortfolioItem } from './actions';
+import { addPortfolioItem, deletePortfolioItem, getPortfolioItems, type PortfolioItem } from './actions';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -25,11 +26,17 @@ export default function PortfolioManagementClient({ initialItems }: { initialIte
     const [isPending, startTransition] = useTransition();
     const { toast } = useToast();
     const formRef = useRef<HTMLFormElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: { name: "", link: "" },
     });
+
+    const refreshItems = async () => {
+        const updatedItems = await getPortfolioItems();
+        setItems(updatedItems);
+    };
 
     function onSubmit() {
         startTransition(async () => {
@@ -45,9 +52,10 @@ export default function PortfolioManagementClient({ initialItems }: { initialIte
 
             if (result.success) {
                 form.reset();
-                formRef.current?.reset();
-                 // You might need to refresh the page to see the new item, 
-                 // as server-side revalidation won't update this client component's state automatically.
+                if(fileInputRef.current) {
+                    fileInputRef.current.value = "";
+                }
+                await refreshItems();
             }
         });
     }
@@ -109,7 +117,13 @@ export default function PortfolioManagementClient({ initialItems }: { initialIte
                                     <FormItem>
                                         <FormLabel>Project Image</FormLabel>
                                         <FormControl>
-                                            <Input type="file" accept="image/*" onChange={(e) => onChange(e.target.files?.[0])} {...rest} />
+                                            <Input 
+                                                type="file" 
+                                                accept="image/*" 
+                                                onChange={(e) => onChange(e.target.files?.[0])} 
+                                                {...rest}
+                                                ref={fileInputRef}
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
