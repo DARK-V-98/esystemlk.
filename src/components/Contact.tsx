@@ -1,4 +1,3 @@
-
 'use client'
 
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -236,7 +235,7 @@ const Contact = () => {
                 {
                   icon: Globe,
                   title: "Website",
-                  value: "www.esystemlk.com",
+                  value: "www.esystemlk.xyz",
                   link: "#",
                 },
                 {
