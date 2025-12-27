@@ -29,6 +29,7 @@ interface Tool {
 const allTools: Tool[] = [
   { icon: 'Terminal', title: 'API Tester', description: 'A lightweight, browser-based client to test your API endpoints. A mini Postman.', category: 'Web', link: '/tools/api-tester', style: 'primary' },
   { icon: 'Barcode', title: 'Barcode Generator', description: 'Create standard barcodes (EAN, UPC, etc.) for products or inventory management.', category: 'Utility', link: '/tools/barcode-generator', style: 'outline' },
+  { icon: 'Binary', title: 'Text <> Binary Converter', description: 'Convert text to its binary representation and back. Useful for developers and students.', category: 'Converter', link: '/tools/text-binary-converter', style: 'secondary' },
   { icon: 'FileCode', title: 'Code Minifier', description: 'Minify your CSS, JavaScript, and HTML code to reduce file size and improve load times.', category: 'Web', link: '/tools/code-minifier', style: 'secondary' },
   { icon: 'Palette', title: 'Color Palette Generator', description: 'Generate beautiful color palettes from a base color or randomly. Get HEX, RGB, and HSL values.', category: 'Design', link: '/tools/color-palette-generator', style: 'outline' },
   { icon: 'Lock', title: 'File Encryption & Decryption', description: 'Secure any file with AES-256 encryption. Lock and unlock files with a password, client-side.', category: 'Security', link: '/tools/file-encryption', style: 'outline' },
@@ -36,6 +37,7 @@ const allTools: Tool[] = [
   { icon: 'Scan', title: 'Image Cropper', description: 'Crop specific areas of an image with an easy-to-use interface. Download only the selected part.', category: 'Image', link: '/tools/image-cropper', style: 'secondary' },
   { icon: 'MoveHorizontal', title: 'Image Resizer', description: 'Resize images to custom dimensions. Perfect for web, social media, or documents.', category: 'Image', link: '/tools/image-resizer', style: 'outline' },
   { icon: 'Braces', title: 'JSON <> CSV Converter', description: 'Convert JSON files to CSV and vice-versa. Supports nested JSON and file uploads.', category: 'Converter', link: '/tools/json-csv-converter', style: 'outline' },
+  { icon: 'Sheet', title: 'CSV <> Excel Converter', description: 'Convert CSV files to Excel (.xlsx) format for better readability and business use.', category: 'Converter', link: '/tools/csv-excel-converter', style: 'primary' },
   { icon: 'Key', title: 'JWT Decoder', description: 'Decode and inspect JSON Web Tokens to view header and payload data securely.', category: 'Security', link: '/tools/jwt-decoder', style: 'outline' },
   { icon: 'FileText', title: 'Markdown to HTML', description: 'Convert Markdown text into clean HTML with a live preview and copy-to-clipboard functionality.', category: 'Converter', link: '/tools/markdown-to-html', style: 'outline' },
   { icon: 'Shield', title: 'Password Generator', description: 'Create strong, secure passwords with custom length and character settings.', category: 'Security', link: '/tools/password-generator', style: 'outline' },
@@ -51,7 +53,9 @@ const allTools: Tool[] = [
   { icon: 'KeyRound', title: 'HMAC Generator', description: 'Create HMAC signatures for verifying data integrity and authenticity.', category: 'Security', link: '/tools/hmac-generator', style: 'secondary' },
   { icon: 'Globe', title: 'My IP Information', description: 'Quickly check your public IP address and related network information.', category: 'Web', link: '/tools/my-ip', style: 'outline' },
   { icon: 'Ticket', title: 'CSRF Token Generator', description: 'Generate secure, random tokens to protect against Cross-Site Request Forgery.', category: 'Security', link: '/tools/csrf-token-generator', style: 'outline' },
-  { icon: 'ShieldCheck', title: 'SSL Certificate Checker', description: 'Check a domain\'s SSL certificate for expiry, issuer, and other details.', category: 'Security', link: '/tools/ssl-checker', style: 'primary' }
+  { icon: 'ShieldCheck', title: 'SSL Certificate Checker', description: 'Check a domain\'s SSL certificate for expiry, issuer, and other details.', category: 'Security', link: '/tools/ssl-checker', style: 'primary' },
+  { icon: 'Hash', title: 'Number Base Converter', description: 'Convert numbers between Binary, Octal, Decimal, and Hexadecimal systems.', category: 'Utility', link: '/tools/number-base-converter', style: 'secondary' },
+  { icon: 'Globe2', title: 'Time Zone Converter', description: 'Find out the time in different cities and countries around the world. Useful for global teams.', category: 'Utility', link: '/tools/time-zone-converter', style: 'primary' },
 ];
 
 const categories: ('All' | ToolCategory)[] = ['All', 'Security', 'Converter', 'Image', 'Utility', 'Design', 'Web', 'Text'];
