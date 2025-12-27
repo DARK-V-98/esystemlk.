@@ -203,7 +203,7 @@ export default function QrCodeScannerPage() {
                                     <CardTitle>Scan Result</CardTitle>
                                      <div className="flex items-center gap-1">
                                         <Button variant="ghost" size="icon" onClick={handleCopy} title="Copy result">
-                                            {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 w-4" />}
+                                            {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
                                         </Button>
                                         {isUrl(scanResult) && (
                                             <Button asChild variant="ghost" size="icon" title="Open link">

@@ -38,7 +38,7 @@ export default function BarcodeGeneratorPage() {
   const [error, setError] = useState<string | null>(null);
   const barcodeRef = useRef<SVGSVGElement>(null);
 
-  const { register, handleSubmit, watch, control } = useForm({
+  const { register, handleSubmit, watch, setValue } = useForm({
     defaultValues: {
       content: 'Example 1234',
       format: 'CODE128',
