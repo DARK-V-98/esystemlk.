@@ -83,20 +83,20 @@ const Footer = () => {
             <ul className="space-y-4">
               <li>
                 <a
-                  href="mailto:info@esystemlk.com"
+                  href="mailto:esystemlk@gmail.com"
                   className="flex items-center gap-3 text-accent-foreground/70 hover:text-primary transition-colors"
                 >
                   <Mail className="w-5 h-5 text-primary" />
-                  info@esystemlk.com
+                  esystemlk@gmail.com
                 </a>
               </li>
               <li>
                 <a
-                  href="tel:+94771234567"
+                  href="tel:+94765711396"
                   className="flex items-center gap-3 text-accent-foreground/70 hover:text-primary transition-colors"
                 >
                   <Phone className="w-5 h-5 text-primary" />
-                  +94 77 123 4567
+                  +94 76 571 1396
                 </a>
               </li>
               <li>
@@ -125,10 +125,8 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-accent-foreground/10">
-          <p className="text-accent-foreground/70 text-sm flex items-center gap-1">
-            © {new Date().getFullYear()} esystemlk. Made with 
-            <Heart className="w-4 h-4 text-primary animate-bounce-subtle" />
-            in Sri Lanka
+          <p className="text-accent-foreground/70 text-sm">
+            © 2020 - {new Date().getFullYear()} Developed and Powered by esystemlk
           </p>
           <div className="flex items-center gap-6 text-sm text-accent-foreground/70">
             <Link href="/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link>

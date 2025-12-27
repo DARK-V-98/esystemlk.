@@ -223,14 +223,14 @@ const Contact = () => {
                 {
                   icon: Mail,
                   title: "Email Us",
-                  value: "info@esystemlk.com",
-                  link: "mailto:info@esystemlk.com",
+                  value: "esystemlk@gmail.com",
+                  link: "mailto:esystemlk@gmail.com",
                 },
                 {
                   icon: Phone,
                   title: "Call Us",
-                  value: "+94 77 123 4567",
-                  link: "tel:+94771234567",
+                  value: "+94 76 571 1396",
+                  link: "tel:+94765711396",
                 },
                 {
                   icon: Globe,
