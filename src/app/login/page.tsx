@@ -59,6 +59,12 @@ export default function LoginPage() {
       );
   }
 
+  const GoogleIcon = () => (
+    <svg className="mr-2 h-5 w-5" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
+        <path fill="currentColor" d="M488 261.8C488 403.3 381.5 512 244 512 109.8 512 0 402.2 0 261.8S109.8 11.6 244 11.6c70.3 0 129.8 27.8 174.4 72.4l-64 64C320.5 112.2 284.1 91 244 91c-82.6 0-150.1 66.6-150.1 170.8s67.5 170.8 150.1 170.8c99.9 0 133-77.2 137.9-117.4H244V261.8h244z"></path>
+    </svg>
+  );
+
   return (
     <div className="container mx-auto flex items-center justify-center min-h-[calc(100vh-10rem)] py-12">
       <Card className="w-full max-w-md bg-card border-border shadow-2xl">
@@ -127,6 +133,7 @@ export default function LoginPage() {
             onClick={signInWithGoogle}
             disabled={loading}
           >
+            <GoogleIcon />
             Sign In with Google
           </Button>
           
