@@ -60,6 +60,10 @@ const allTools: Tool[] = [
   { icon: 'Camera', title: 'Image Metadata Viewer', description: 'View EXIF data from photos and remove it. Supports GPS, camera model, and more.', category: 'Image', link: '/tools/image-metadata-viewer', style: 'secondary' },
   { icon: 'Wand2', title: 'SVG Optimizer', description: 'Minify SVG code by removing unnecessary data and attributes for smaller file sizes.', category: 'Web', link: '/tools/svg-optimizer', style: 'outline' },
   { icon: 'AppWindow', title: 'Favicon Generator', description: 'Create a complete set of favicons for all devices from a single image.', category: 'Design', link: '/tools/favicon-generator', style: 'primary' },
+  { icon: 'Pilcrow', title: 'Lorem Ipsum Generator', description: 'Generate placeholder text in paragraphs, sentences, or words for your designs.', category: 'Text', link: '/tools/lorem-ipsum-generator', style: 'outline' },
+  { icon: 'Link2', title: 'Slug Generator', description: 'Create clean, SEO-friendly URL slugs from your page or post titles.', category: 'Web', link: '/tools/slug-generator', style: 'primary' },
+  { icon: 'BookOpen', title: 'Word & Character Counter', description: 'Analyze your text for word count, character count, and estimated reading time.', category: 'Text', link: '/tools/word-counter', style: 'secondary' },
+  { icon: 'Code', title: 'HTML Entity Encoder/Decoder', description: 'Convert special characters to their HTML entity equivalents and back.', category: 'Text', link: '/tools/html-entity-encoder', style: 'outline' },
 ];
 
 const categories: ('All' | ToolCategory)[] = ['All', 'Security', 'Converter', 'Image', 'Utility', 'Design', 'Web', 'Text'];
