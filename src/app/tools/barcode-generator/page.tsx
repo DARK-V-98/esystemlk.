@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
@@ -7,8 +8,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, Download, Barcode } from 'lucide-react';
+import { ArrowLeft, Download, Barcode, Palette, Ruler } from 'lucide-react';
 import Link from 'next/link';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 
 // A selection of common barcode formats supported by JsBarcode
 const barcodeFormats = [
@@ -24,74 +27,103 @@ const barcodeFormats = [
 
 export default function BarcodeGeneratorPage() {
   const [barcodeValue, setBarcodeValue] = useState('Example 1234');
-  const [barcodeFormat, setBarcodeFormat] = useState('CODE128');
+  const [barcodeOptions, setBarcodeOptions] = useState({
+    format: 'CODE128',
+    width: 2,
+    height: 100,
+    displayValue: true,
+    lineColor: '#ffffff',
+    background: 'transparent',
+  });
   const [error, setError] = useState<string | null>(null);
   const barcodeRef = useRef<SVGSVGElement>(null);
 
-  const { register, handleSubmit, setValue } = useForm({
+  const { register, handleSubmit, watch, control } = useForm({
     defaultValues: {
       content: 'Example 1234',
       format: 'CODE128',
+      width: 2,
+      height: 100,
+      displayValue: true,
+      lineColor: '#ffffff',
+      background: '#00000000' // transparent
     },
   });
   
+  const watchedValues = watch();
+
   useEffect(() => {
     if (barcodeRef.current && barcodeValue) {
       try {
         JsBarcode(barcodeRef.current, barcodeValue, {
-          format: barcodeFormat,
-          lineColor: '#ffffff',
-          background: 'transparent',
-          width: 2,
-          height: 100,
-          displayValue: true,
-          fontOptions: "bold",
+          ...barcodeOptions,
           font: "monospace",
           fontSize: 18,
-          fontColor: '#ffffff',
           textMargin: 5
         });
         setError(null);
       } catch (e) {
         const message = e instanceof Error ? e.message : "Invalid input for this barcode type.";
         setError(message);
-        // Clear the SVG content on error
         if (barcodeRef.current) {
             barcodeRef.current.innerHTML = '';
         }
       }
     }
-  }, [barcodeValue, barcodeFormat]);
+  }, [barcodeValue, barcodeOptions]);
 
-  const onSubmit = (data: { content: string, format: string }) => {
-    setBarcodeFormat(data.format);
+  const onSubmit = (data: typeof watchedValues) => {
+    setBarcodeOptions({
+      format: data.format,
+      width: data.width,
+      height: data.height,
+      displayValue: data.displayValue,
+      lineColor: data.lineColor,
+      background: 'transparent', // Keep preview background transparent
+    });
     setBarcodeValue(data.content);
   };
   
   const handleDownload = () => {
     if (barcodeRef.current) {
-      const svgData = new XMLSerializer().serializeToString(barcodeRef.current);
+      const svgElement = barcodeRef.current.cloneNode(true) as SVGSVGElement;
+
+      // Create a temporary SVG with a white background for download
+      try {
+        JsBarcode(svgElement, barcodeValue, {
+            ...barcodeOptions,
+            background: '#ffffff', // Set white background for PNG
+            lineColor: '#000000', // Set black lines for PNG
+            fontColor: '#000000', // Set black text for PNG
+            font: "monospace",
+            fontSize: 18,
+            textMargin: 5
+        });
+      } catch (e) {
+          setError('Could not generate barcode for download.');
+          return;
+      }
+
+      const svgData = new XMLSerializer().serializeToString(svgElement);
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
       
-      const svgSize = barcodeRef.current.getBoundingClientRect();
-      canvas.width = svgSize.width + 20;
-      canvas.height = svgSize.height + 20;
+      const svgSize = svgElement.getBoundingClientRect();
+      canvas.width = svgSize.width > 0 ? svgSize.width + 40 : 300;
+      canvas.height = svgSize.height > 0 ? svgSize.height + 40 : 150;
       
       if(ctx){
-        // Fill background
         ctx.fillStyle = "white";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
         const img = new Image();
         img.onload = () => {
-          // Draw image on canvas with padding
-          ctx.drawImage(img, 10, 10);
+          ctx.drawImage(img, 20, 20);
           
           const pngUrl = canvas.toDataURL("image/png");
           const downloadLink = document.createElement("a");
           downloadLink.href = pngUrl;
-          downloadLink.download = `${barcodeValue.replace(/ /g, '_')}-${barcodeFormat}.png`;
+          downloadLink.download = `${barcodeValue.replace(/ /g, '_')}-${barcodeOptions.format}.png`;
           document.body.appendChild(downloadLink);
           downloadLink.click();
           document.body.removeChild(downloadLink);
@@ -129,11 +161,11 @@ export default function BarcodeGeneratorPage() {
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <div>
-                <label htmlFor="content" className="text-sm font-medium">Barcode Content</label>
+                <Label htmlFor="content">Barcode Content</Label>
                 <Input {...register('content')} id="content" className="mt-1" />
               </div>
               <div>
-                <label htmlFor="format" className="text-sm font-medium">Format</label>
+                <Label htmlFor="format">Format</Label>
                 <Select onValueChange={(value) => setValue('format', value)} defaultValue="CODE128">
                   <SelectTrigger id="format" className="mt-1">
                     <SelectValue placeholder="Select format" />
@@ -145,6 +177,24 @@ export default function BarcodeGeneratorPage() {
                   </SelectContent>
                 </Select>
               </div>
+
+               <div className="space-y-4">
+                  <div className="flex items-center space-x-2">
+                      <Checkbox id="displayValue" {...register('displayValue')} defaultChecked />
+                      <Label htmlFor="displayValue">Display value</Label>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                      <div>
+                          <Label htmlFor="width">Width ({watchedValues.width})</Label>
+                          <Input type="range" id="width" {...register('width', { valueAsNumber: true })} min="1" max="4" step="0.5" />
+                      </div>
+                      <div>
+                           <Label htmlFor="height">Height ({watchedValues.height})</Label>
+                          <Input type="range" id="height" {...register('height', { valueAsNumber: true })} min="50" max="150" />
+                      </div>
+                  </div>
+              </div>
+
               <Button type="submit" className="w-full">
                 <Barcode className="mr-2 h-4 w-4" /> Generate Barcode
               </Button>

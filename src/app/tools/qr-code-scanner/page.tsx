@@ -6,7 +6,7 @@ import jsQR from 'jsqr';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Upload, Video, X, Copy, Check } from 'lucide-react';
+import { ArrowLeft, Upload, Video, X, Copy, Check, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 
 export default function QrCodeScannerPage() {
@@ -16,6 +16,9 @@ export default function QrCodeScannerPage() {
     const [copied, setCopied] = useState(false);
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
+    const streamRef = useRef<MediaStream | null>(null);
+
 
     const startScan = async () => {
         setScanResult(null);
@@ -23,6 +26,8 @@ export default function QrCodeScannerPage() {
         setIsScanning(true);
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+            streamRef.current = stream;
+            setHasCameraPermission(true);
             if (videoRef.current) {
                 videoRef.current.srcObject = stream;
                 videoRef.current.setAttribute("playsinline", "true"); // required to tell iOS safari we don't want fullscreen
@@ -30,15 +35,20 @@ export default function QrCodeScannerPage() {
                 requestAnimationFrame(tick);
             }
         } catch (err) {
+            console.error("Camera access error:", err);
             setError("Could not access camera. Please grant permission and try again.");
             setIsScanning(false);
+            setHasCameraPermission(false);
         }
     };
 
     const stopScan = () => {
-        if (videoRef.current && videoRef.current.srcObject) {
-            const stream = videoRef.current.srcObject as MediaStream;
-            stream.getTracks().forEach(track => track.stop());
+        if (streamRef.current) {
+            streamRef.current.getTracks().forEach(track => track.stop());
+            streamRef.current = null;
+        }
+        if (videoRef.current) {
+            videoRef.current.srcObject = null;
         }
         setIsScanning(false);
     };
@@ -47,8 +57,13 @@ export default function QrCodeScannerPage() {
         if (videoRef.current && videoRef.current.readyState === videoRef.current.HAVE_ENOUGH_DATA && canvasRef.current) {
             const video = videoRef.current;
             const canvas = canvasRef.current;
-            const ctx = canvas.getContext('2d');
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
             
+            if (video.videoHeight === 0) {
+                 if (isScanning) requestAnimationFrame(tick);
+                 return;
+            }
+
             canvas.height = video.videoHeight;
             canvas.width = video.videoWidth;
             
@@ -62,10 +77,8 @@ export default function QrCodeScannerPage() {
                 if (code) {
                     setScanResult(code.data);
                     stopScan();
-                } else {
-                    if (isScanning) {
-                       requestAnimationFrame(tick);
-                    }
+                } else if (isScanning) {
+                    requestAnimationFrame(tick);
                 }
             }
         } else if (isScanning) {
@@ -76,6 +89,7 @@ export default function QrCodeScannerPage() {
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            stopScan(); // Stop camera if it's running
             const reader = new FileReader();
             reader.onload = (event) => {
                 const img = new Image();
@@ -85,14 +99,17 @@ export default function QrCodeScannerPage() {
                         const ctx = canvas.getContext('2d');
                         canvas.width = img.width;
                         canvas.height = img.height;
-                        ctx?.drawImage(img, 0, 0, img.width, img.height);
-                        const imageData = ctx?.getImageData(0, 0, img.width, img.height);
+                        if (!ctx) return;
+                        ctx.drawImage(img, 0, 0, img.width, img.height);
+                        const imageData = ctx.getImageData(0, 0, img.width, img.height);
                         if(imageData) {
                             const code = jsQR(imageData.data, imageData.width, imageData.height);
                             if (code) {
                                 setScanResult(code.data);
+                                setError(null);
                             } else {
                                 setError("No QR code found in the image.");
+                                setScanResult(null);
                             }
                         }
                     }
@@ -110,14 +127,22 @@ export default function QrCodeScannerPage() {
           setTimeout(() => setCopied(false), 2000);
         }
     };
+    
+    const isUrl = (text: string | null): boolean => {
+        if (!text) return false;
+        try {
+            new URL(text);
+            return text.startsWith('http://') || text.startsWith('https://');
+        } catch (_) {
+            return false;
+        }
+    }
+
 
     useEffect(() => {
+        // Cleanup function to stop camera when component unmounts
         return () => {
-            // Cleanup: stop camera when component unmounts
-            if (videoRef.current && videoRef.current.srcObject) {
-                const stream = videoRef.current.srcObject as MediaStream;
-                stream.getTracks().forEach(track => track.stop());
-            }
+            stopScan();
         }
     }, []);
 
@@ -147,11 +172,8 @@ export default function QrCodeScannerPage() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                     <div className="bg-black/20 rounded-lg overflow-hidden relative aspect-video flex items-center justify-center">
-                        {isScanning ? (
-                            <video ref={videoRef} className="w-full h-full object-cover" />
-                        ) : (
-                             <p className="text-muted-foreground">Camera is off</p>
-                        )}
+                        <video ref={videoRef} className="w-full h-full object-cover" hidden={!isScanning} />
+                        {!isScanning && <p className="text-muted-foreground">Camera is off</p>}
                     </div>
                     
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -179,18 +201,22 @@ export default function QrCodeScannerPage() {
                              <CardHeader>
                                 <div className="flex justify-between items-center">
                                     <CardTitle>Scan Result</CardTitle>
-                                     <Button variant="ghost" size="icon" onClick={handleCopy}>
-                                        {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 w-4" />}
-                                    </Button>
+                                     <div className="flex items-center gap-1">
+                                        <Button variant="ghost" size="icon" onClick={handleCopy} title="Copy result">
+                                            {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 w-4" />}
+                                        </Button>
+                                        {isUrl(scanResult) && (
+                                            <Button asChild variant="ghost" size="icon" title="Open link">
+                                                 <a href={scanResult} target="_blank" rel="noopener noreferrer">
+                                                    <ExternalLink className="w-4 h-4" />
+                                                </a>
+                                            </Button>
+                                        )}
+                                    </div>
                                 </div>
                              </CardHeader>
                             <CardContent>
                                 <p className="font-mono bg-background p-4 rounded-md break-all">{scanResult}</p>
-                                 <Button asChild variant="link" className="mt-2 px-0">
-                                    <a href={scanResult} target="_blank" rel="noopener noreferrer">
-                                        Open Link
-                                    </a>
-                                </Button>
                             </CardContent>
                          </Card>
                     )}
@@ -199,4 +225,3 @@ export default function QrCodeScannerPage() {
         </div>
     );
 }
-
