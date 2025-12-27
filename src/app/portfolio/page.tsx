@@ -1,49 +1,11 @@
 
 import PortfolioClient from './portfolio-client';
-import type { PortfolioItem } from './portfolio-client';
-
-const projects: PortfolioItem[] = [
-  {
-    id: '1',
-    name: 'Fly Cargo Lanka',
-    link: 'https://www.flycargolanka.lk',
-    imageUrl: 'https://placehold.co/600x400.png',
-    hint: 'cargo logistics',
-  },
-  {
-    id: '2',
-    name: 'Aarya Hardware',
-    link: 'https://www.aaryahardware.lk',
-    imageUrl: 'https://placehold.co/600x400.png',
-    hint: 'hardware store',
-  },
-  {
-    id: '3',
-    name: 'Big Costa Construction Pvt Ltd',
-    link: 'https://www.bigcosta.lk',
-    imageUrl: 'https://placehold.co/600x400.png',
-    hint: 'construction company',
-  },
-  {
-    id: '4',
-    name: 'ESystemLK POS System - Rental',
-    link: '/contact',
-    description: 'Monthly First Payment: Rs. 5,000 | Monthly Rental: Rs. 3,000. Get started with our flexible POS solution.',
-    imageUrl: 'https://placehold.co/600x400.png',
-    hint: 'point of sale system',
-  },
-  {
-    id: '5',
-    name: 'ESystemLK POS System - Lifetime',
-    link: '/contact',
-    description: 'Starting from Rs. 50,000. A one-time payment for a powerful, customizable POS system with various add-ons.',
-    imageUrl: 'https://placehold.co/600x400.png',
-    hint: 'software interface',
-  },
-];
-
+import type { PortfolioItem } from '../admin/portfolio/actions';
+import { getPortfolioItems } from '../admin/portfolio/actions';
 
 export default async function PortfolioPage() {
+  const projects = await getPortfolioItems();
+  
   return (
     <>
       <section className="w-full py-20 md:py-28">
