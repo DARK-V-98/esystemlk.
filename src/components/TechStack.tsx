@@ -19,6 +19,7 @@ const TechStack = () => {
   const technologies = [
     { icon: SiReact, name: "React", color: "#61DAFB", isSimple: true, href: "https://reactjs.org/" },
     { icon: SiNextdotjs, name: "Next.js", color: "var(--foreground)", isSimple: true, href: "https://nextjs.org/" },
+    { icon: SiVite, name: "Vite", color: "#646CFF", isSimple: true, href: "https://vitejs.dev/" },
     { icon: SiTypescript, name: "TypeScript", color: "#3178C6", isSimple: true, href: "https://www.typescriptlang.org/" },
     { icon: SiTailwindcss, name: "Tailwind CSS", color: "#06B6D4", isSimple: true, href: "https://tailwindcss.com/" },
     { icon: SiNodedotjs, name: "Node.js", color: "#339933", isSimple: true, href: "https://nodejs.org/" },
@@ -30,7 +31,6 @@ const TechStack = () => {
     { icon: SiFigma, name: "Figma", color: "#F24E1E", isSimple: true, href: "https://www.figma.com/" },
     { icon: SiWordpress, name: "WordPress", color: "#21759B", isSimple: true, href: "https://wordpress.org/" },
     { icon: Database, name: "SQL", color: "#4479A1", isSimple: false, href: "#" },
-    { icon: SiVite, name: "Vite", color: "#646CFF", isSimple: true, href: "https://vitejs.dev/" },
   ];
 
   return (
@@ -60,7 +60,7 @@ const TechStack = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 max-w-5xl mx-auto">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4 max-w-6xl mx-auto">
           {technologies.map((tech, index) => (
             <a
               key={index}
@@ -70,7 +70,7 @@ const TechStack = () => {
               className="group flex flex-col items-center justify-center p-6 rounded-2xl bg-card border border-border hover:border-primary/50 hover:-translate-y-1 transition-all duration-300"
             >
               <div className="w-12 h-12 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
-                <tech.icon style={{ color: tech.color }} className="w-10 h-10 opacity-80 group-hover:opacity-100 transition-opacity" />
+                 <tech.icon style={{ color: tech.color }} className="w-10 h-10 opacity-80 group-hover:opacity-100 transition-opacity" />
               </div>
               <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
                 {tech.name}

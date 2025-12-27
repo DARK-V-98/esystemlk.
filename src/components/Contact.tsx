@@ -14,7 +14,8 @@ import {
   ArrowRight,
   CheckCircle2
 } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import Link from "next/link";
 
 const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);

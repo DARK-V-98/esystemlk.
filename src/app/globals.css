@@ -229,6 +229,9 @@
   .animate-float {
     animation: float 3s ease-in-out infinite;
   }
+  .animate-float-delayed {
+    animation: float 3s 1.5s ease-in-out infinite;
+  }
 
   .animate-pulse-glow {
     animation: pulse-glow 2s ease-in-out infinite;

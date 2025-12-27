@@ -46,10 +46,12 @@ const faqs = [
 const FAQ = () => {
   return (
     <section className="py-24 bg-secondary/30 relative overflow-hidden">
+      {/* Background decoration */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-primary/3 rounded-full blur-3xl" />
 
       <div className="container mx-auto px-4 relative z-10">
+        {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/5 mb-6 animate-fade-in opacity-0">
             <HelpCircle className="w-4 h-4 text-primary" />
@@ -63,6 +65,7 @@ const FAQ = () => {
           </p>
         </div>
 
+        {/* FAQ Accordion */}
         <div className="max-w-3xl mx-auto animate-fade-in opacity-0 animation-delay-300">
           <Accordion type="single" collapsible className="space-y-4">
             {faqs.map((faq, index) => (
@@ -82,6 +85,7 @@ const FAQ = () => {
           </Accordion>
         </div>
 
+        {/* Still have questions CTA */}
         <div className="mt-16 text-center animate-fade-in opacity-0 animation-delay-500">
           <div className="inline-flex flex-col sm:flex-row items-center gap-4 p-6 rounded-2xl bg-card border border-border">
             <div className="text-center sm:text-left">
