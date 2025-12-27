@@ -10,6 +10,8 @@ import { ArrowLeft, Download, Crop, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { Slider } from '@/components/ui/slider';
 import { getCroppedImg } from './crop-image';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 export default function ImageCropperPage() {
   const [sourceFile, setSourceFile] = useState<string | null>(null);
@@ -18,6 +20,7 @@ export default function ImageCropperPage() {
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [cropShape, setCropShape] = useState<'rect' | 'round'>('rect');
 
   const onCropComplete = useCallback((croppedArea: any, croppedAreaPixels: any) => {
     setCroppedAreaPixels(croppedAreaPixels);
@@ -42,7 +45,7 @@ export default function ImageCropperPage() {
     }
     setIsProcessing(true);
     try {
-      const croppedImage = await getCroppedImg(sourceFile, croppedAreaPixels);
+      const croppedImage = await getCroppedImg(sourceFile, croppedAreaPixels, cropShape);
       if (croppedImage) {
         const a = document.createElement('a');
         a.href = croppedImage;
@@ -92,7 +95,8 @@ export default function ImageCropperPage() {
                 image={sourceFile}
                 crop={crop}
                 zoom={zoom}
-                aspect={4 / 3}
+                aspect={cropShape === 'rect' ? 4 / 3 : 1}
+                cropShape={cropShape}
                 onCropChange={setCrop}
                 onZoomChange={setZoom}
                 onCropComplete={onCropComplete}
@@ -101,10 +105,14 @@ export default function ImageCropperPage() {
           )}
 
           {sourceFile && (
-             <div className="space-y-4">
-                <div>
-                    <label className="text-sm font-medium">Zoom</label>
+             <div className="space-y-6">
+                <div className="space-y-2">
+                    <Label className="text-sm font-medium">Zoom</Label>
                     <Slider value={[zoom]} onValueChange={(val) => setZoom(val[0])} min={1} max={3} step={0.1} />
+                </div>
+                <div className="flex items-center space-x-2">
+                    <Switch id="crop-shape" checked={cropShape === 'round'} onCheckedChange={(checked) => setCropShape(checked ? 'round' : 'rect')} />
+                    <Label htmlFor="crop-shape">Round Crop (for Avatars)</Label>
                 </div>
                 <Button onClick={handleDownload} disabled={isProcessing} className="w-full">
                     {isProcessing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}

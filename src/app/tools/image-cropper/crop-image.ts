@@ -1,5 +1,6 @@
 
-export const getCroppedImg = (imageSrc: string, pixelCrop: any): Promise<string | null> => {
+
+export const getCroppedImg = (imageSrc: string, pixelCrop: any, cropShape: 'rect' | 'round' = 'rect'): Promise<string | null> => {
   const image = new Image();
   image.src = imageSrc;
   image.crossOrigin = "anonymous";
@@ -13,6 +14,14 @@ export const getCroppedImg = (imageSrc: string, pixelCrop: any): Promise<string 
 
       if (!ctx) {
         return reject(new Error('Failed to get canvas context'));
+      }
+
+      if (cropShape === 'round') {
+        // Create a circular clipping path
+        ctx.beginPath();
+        ctx.arc(pixelCrop.width / 2, pixelCrop.height / 2, pixelCrop.width / 2, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.clip();
       }
 
       ctx.drawImage(
