@@ -17,12 +17,12 @@ type Addon = { name: string; price: string };
 type Service = { name: string; tiers: Tier[]; addons?: Addon[] };
 type PricingCategory = {
     id: string;
-    icon: keyof typeof Icons;
+    icon: string;
     category: string;
     services: Service[];
 };
 type CommonAddons = {
-    icon: keyof typeof Icons;
+    icon: string;
     category: string;
     items: { name: string; price: string }[];
 };
@@ -33,8 +33,8 @@ type PricingClientProps = {
 };
 
 // Generic Icon component
-const Icon = ({ name, className }: { name: keyof typeof Icons; className?: string }) => {
-    const LucideIcon = Icons[name] as React.ElementType;
+const Icon = ({ name, className }: { name: string; className?: string }) => {
+    const LucideIcon = Icons[name as keyof typeof Icons] as React.ElementType;
     if (!LucideIcon) return <Icons.Package className={className} />;
     return <LucideIcon className={className} />;
 };
