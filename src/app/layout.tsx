@@ -5,6 +5,9 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/hooks/use-auth";
+import LoadingScreen from "@/components/LoadingScreen";
+import RootLayoutClient from "./layout-client";
+
 
 const dm_sans = DM_Sans({
   subsets: ['latin'],
@@ -25,10 +28,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={dm_sans.className}>
         <AuthProvider>
-          <Navbar />
-          <main>{children}</main>
-          <Footer />
-          <Toaster />
+          <RootLayoutClient>
+            {children}
+          </RootLayoutClient>
         </AuthProvider>
       </body>
     </html>
