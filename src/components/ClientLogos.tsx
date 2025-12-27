@@ -49,7 +49,7 @@ const ClientLogos = () => {
                 key={`first-${index}`}
                 className="flex items-center justify-center px-8 py-4 bg-secondary/50 border border-border rounded-xl min-w-[180px] hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 group"
               >
-                <span className="font-bold text-muted-foreground group-hover:text-primary transition-colors whitespace-nowrap">
+                <span className="font-bold text-muted-foreground group-hover:text-primary transition-colors whitespace-nowrap uppercase">
                   {client}
                 </span>
               </div>
@@ -62,7 +62,7 @@ const ClientLogos = () => {
                 key={`second-${index}`}
                 className="flex items-center justify-center px-8 py-4 bg-secondary/50 border border-border rounded-xl min-w-[180px] hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 group"
               >
-                <span className="font-bold text-muted-foreground group-hover:text-primary transition-colors whitespace-nowrap">
+                <span className="font-bold text-muted-foreground group-hover:text-primary transition-colors whitespace-nowrap uppercase">
                   {client}
                 </span>
               </div>
