@@ -1,9 +1,13 @@
+
 import UsersManagementClient from './users-management-client';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { getUsers } from './actions';
 
-export default function AdminUsersPage() {
+export default async function AdminUsersPage() {
+  const users = await getUsers();
+
   return (
     <div className="container mx-auto py-10 px-4 md:px-6">
       <div className="bg-card border border-border rounded-3xl py-8 text-center mb-10">
@@ -22,7 +26,7 @@ export default function AdminUsersPage() {
         </Button>
       </div>
 
-      <UsersManagementClient />
+      <UsersManagementClient initialUsers={users} />
     </div>
   );
 }

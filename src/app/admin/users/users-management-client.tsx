@@ -28,28 +28,16 @@ import { useAuthContext } from '@/hooks/use-auth';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 
-export default function UsersManagementClient() {
-  const [users, setUsers] = useState<ManagedUser[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+export default function UsersManagementClient({ initialUsers }: { initialUsers: ManagedUser[] }) {
+  const [users, setUsers] = useState<ManagedUser[]>(initialUsers);
+  const [isLoading, setIsLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [userToDelete, setUserToDelete] = useState<ManagedUser | null>(null);
   const { toast } = useToast();
   const { user: currentUser } = useAuthContext();
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState<UserRole | 'all'>('all');
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
   
-  const fetchUsers = () => {
-    setIsLoading(true);
-    getUsers().then(data => {
-      setUsers(data);
-      setIsLoading(false);
-    });
-  }
-
   const filteredUsers = useMemo(() => {
     return users.filter(user => {
         const searchLower = searchTerm.toLowerCase();
