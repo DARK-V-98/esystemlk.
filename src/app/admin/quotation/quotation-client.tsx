@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -303,7 +304,7 @@ export default function QuotationClient() {
 
                 <Card className="bg-card border border-border rounded-2xl shadow-lg">
                     <CardHeader><CardTitle>Quotation Details</CardTitle></CardHeader>
-                    <CardContent className="grid md:grid-cols-3 gap-4">
+                    <CardContent className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
                          <Input readOnly placeholder="Quotation Number" {...register('quotationNumber')} />
                          <Controller
                             control={control}
@@ -375,7 +376,7 @@ export default function QuotationClient() {
                 </CardHeader>
                 <CardContent>
                     <div className="overflow-x-auto">
-                        <table className="w-full">
+                        <table className="w-full min-w-[600px]">
                             <thead>
                                 <tr className="border-b border-border">
                                     <th className="text-left p-2">Description</th>
@@ -418,7 +419,7 @@ export default function QuotationClient() {
                 </CardHeader>
                 <CardContent>
                     <div className="overflow-x-auto">
-                        <table className="w-full">
+                        <table className="w-full min-w-[600px]">
                             <thead>
                                 <tr className="border-b border-border">
                                     <th className="text-left p-2">Description</th>
@@ -453,8 +454,8 @@ export default function QuotationClient() {
         </div>
 
         {/* Totals Section */}
-        <div className="grid md:grid-cols-3 gap-6 mt-8">
-            <Card className="bg-card border border-border rounded-2xl shadow-lg md:col-start-3">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+            <Card className="bg-card border border-border rounded-2xl shadow-lg lg:col-start-2 xl:col-start-3">
                  <CardHeader><CardTitle>Totals & Payment</CardTitle></CardHeader>
                  <CardContent className="space-y-4">
                     <div>

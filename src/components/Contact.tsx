@@ -100,7 +100,7 @@ const Contact = () => {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-          <div className="bg-card border border-border rounded-3xl p-8 md:p-10 animate-fade-in opacity-0 animation-delay-300">
+          <div className="bg-card border border-border rounded-3xl p-6 md:p-10 animate-fade-in opacity-0 animation-delay-300">
             {isSubmitted ? (
               <div className="h-full flex flex-col items-center justify-center text-center py-12">
                 <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6 animate-scale-in">

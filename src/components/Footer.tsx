@@ -1,3 +1,4 @@
+
 'use client';
 
 import { 
@@ -124,7 +125,7 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-accent-foreground/10">
-          <p className="text-accent-foreground/70 text-sm">
+          <p className="text-accent-foreground/70 text-sm text-center md:text-left">
             © 2020 - {new Date().getFullYear()} Developed and Powered by esystemlk
           </p>
           <div className="flex items-center gap-6 text-sm text-accent-foreground/70">

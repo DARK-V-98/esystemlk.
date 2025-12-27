@@ -91,17 +91,17 @@ export default function PricingClient({ pricingData, commonAddons }: PricingClie
 
     return (
         <div className="space-y-12">
-            <div className="mb-12 p-8 bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl">
-                <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div className="mb-12 p-6 md:p-8 bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl">
+                <div className="grid md:grid-cols-2 gap-4 md:gap-8 items-center">
                     <Input
                         type="text"
-                        placeholder="Search prices (e.g., 'e-commerce', 'LMS')..."
+                        placeholder="Search for a service..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="h-12 text-lg rounded-full bg-black/30 border-white/10 focus:border-white/50 focus:ring-0 transition-colors"
+                        className="h-12 text-base md:text-lg rounded-full bg-black/30 border-white/10 focus:border-white/50 focus:ring-0 transition-colors"
                     />
                     <Select onValueChange={setActiveFilter} defaultValue={activeFilter}>
-                        <SelectTrigger className="h-12 text-lg rounded-full bg-black/30 border-white/10 focus:border-white/50 focus:ring-0 transition-colors">
+                        <SelectTrigger className="h-12 text-base md:text-lg rounded-full bg-black/30 border-white/10 focus:border-white/50 focus:ring-0 transition-colors">
                             <SelectValue placeholder="Filter by category..." />
                         </SelectTrigger>
                         <SelectContent>
@@ -116,7 +116,7 @@ export default function PricingClient({ pricingData, commonAddons }: PricingClie
             </div>
 
             <Card className="bg-primary/10 backdrop-blur-lg border border-primary/20 shadow-2xl rounded-3xl">
-                <CardContent className="p-8 flex items-center gap-6">
+                <CardContent className="p-8 flex flex-col md:flex-row items-center gap-6">
                     <Info className="w-10 h-10 text-primary shrink-0" />
                     <div>
                         <h3 className="font-headline text-xl font-bold mb-2 text-primary">Looking for a Custom or Budget-Friendly Package?</h3>
@@ -131,13 +131,13 @@ export default function PricingClient({ pricingData, commonAddons }: PricingClie
             {filteredPricingData.length > 0 ? (
                 filteredPricingData.map((categoryData) => (
                     <Card key={categoryData.id} className="bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl overflow-hidden">
-                        <CardHeader className="p-8 md:p-12">
-                            <div className="flex items-start md:items-center gap-6 flex-col md:flex-row">
-                                <Icon name={categoryData.icon} className="w-10 h-10 text-primary" />
-                                <CardTitle className="font-headline text-3xl font-bold">{categoryData.category}</CardTitle>
+                        <CardHeader className="p-6 md:p-8">
+                            <div className="flex items-center gap-4">
+                                <Icon name={categoryData.icon} className="w-8 h-8 md:w-10 md:h-10 text-primary" />
+                                <CardTitle className="font-headline text-2xl md:text-3xl font-bold">{categoryData.category}</CardTitle>
                             </div>
                         </CardHeader>
-                        <CardContent className="px-8 md:px-12 pb-8 md:pb-12 pt-0">
+                        <CardContent className="px-6 md:px-8 pb-6 md:pb-8 pt-0">
                             <div className="space-y-10">
                                 {categoryData.services.map((service, sIndex) => (
                                     <div key={sIndex}>
@@ -146,7 +146,7 @@ export default function PricingClient({ pricingData, commonAddons }: PricingClie
                                             {service.tiers.map((tier, tIndex) => (
                                                 <li key={tIndex} className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 text-muted-foreground border-b border-white/10 pb-3">
                                                     <span>{tier.name}</span>
-                                                    <span className="font-semibold text-foreground text-right">{tier.price}</span>
+                                                    <span className="font-semibold text-foreground text-left sm:text-right">{tier.price}</span>
                                                 </li>
                                             ))}
                                         </ul>
@@ -157,7 +157,7 @@ export default function PricingClient({ pricingData, commonAddons }: PricingClie
                                                     {service.addons.map((addon, aIndex) => (
                                                        <li key={aIndex} className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 text-muted-foreground border-b border-dashed border-white/10 pb-2 text-sm">
                                                            <span>{addon.name}</span>
-                                                           <span className="font-semibold text-foreground/80 text-right">{addon.price}</span>
+                                                           <span className="font-semibold text-foreground/80 text-left sm:text-right">{addon.price}</span>
                                                        </li>
                                                     ))}
                                                 </ul>
@@ -179,18 +179,18 @@ export default function PricingClient({ pricingData, commonAddons }: PricingClie
 
             {commonAddons && (
                  <Card className="bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl overflow-hidden">
-                    <CardHeader className="p-8 md:p-12">
-                        <div className="flex items-start md:items-center gap-6 flex-col md:flex-row">
-                            <Icon name={commonAddons.icon} className="w-10 h-10 text-primary" />
-                            <CardTitle className="font-headline text-3xl font-bold">{commonAddons.category}</CardTitle>
+                    <CardHeader className="p-6 md:p-8">
+                        <div className="flex items-center gap-4">
+                            <Icon name={commonAddons.icon} className="w-8 h-8 md:w-10 md:h-10 text-primary" />
+                            <CardTitle className="font-headline text-2xl md:text-3xl font-bold">{commonAddons.category}</CardTitle>
                         </div>
                     </CardHeader>
-                    <CardContent className="px-8 md:px-12 pb-8 md:pb-12 pt-0">
+                    <CardContent className="px-6 md:px-8 pb-6 md:pb-8 pt-0">
                          <ul className="space-y-3">
                             {commonAddons.items.map((item, iIndex) => (
                                <li key={iIndex} className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 text-muted-foreground border-b border-white/10 pb-3">
                                    <span>{item.name}</span>
-                                   <span className="font-semibold text-foreground text-right">{item.price}</span>
+                                   <span className="font-semibold text-foreground text-left sm:text-right">{item.price}</span>
                                </li>
                             ))}
                         </ul>
