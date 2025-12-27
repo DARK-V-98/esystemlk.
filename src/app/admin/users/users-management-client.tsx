@@ -1,9 +1,8 @@
-
 "use client";
 
 import { useState, useEffect, useTransition, useMemo } from 'react';
 import { getUsers, updateUserRole, deleteUser, type ManagedUser, type UserRole } from './actions';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 import {
   Table,
   TableBody,
@@ -64,32 +63,34 @@ export default function UsersManagementClient() {
   }, [users, searchTerm, roleFilter]);
 
   const handleRoleChange = (uid: string, role: UserRole) => {
-    startTransition(async () => {
-      const result = await updateUserRole(uid, role);
-      if (result.success) {
-        setUsers(prev => prev.map(u => u.uid === uid ? { ...u, role } : u));
-      }
-      toast({
-        title: result.success ? 'Success' : 'Error',
-        description: result.message,
-        variant: result.success ? 'default' : 'destructive',
+    startTransition(() => {
+      updateUserRole(uid, role).then(result => {
+        if (result.success) {
+          setUsers(prev => prev.map(u => u.uid === uid ? { ...u, role } : u));
+        }
+        toast({
+          title: result.success ? 'Success' : 'Error',
+          description: result.message,
+          variant: result.success ? 'default' : 'destructive',
+        });
       });
     });
   };
 
   const handleDeleteUser = () => {
     if (!userToDelete) return;
-    startTransition(async () => {
-        const result = await deleteUser(userToDelete.uid);
-        if (result.success) {
-            setUsers(prev => prev.filter(u => u.uid !== userToDelete.uid));
-        }
-        toast({
-            title: result.success ? 'Success' : 'Error',
-            description: result.message,
-            variant: result.success ? 'default' : 'destructive',
+    startTransition(() => {
+        deleteUser(userToDelete.uid).then(result => {
+            if (result.success) {
+                setUsers(prev => prev.filter(u => u.uid !== userToDelete.uid));
+            }
+            toast({
+                title: result.success ? 'Success' : 'Error',
+                description: result.message,
+                variant: result.success ? 'default' : 'destructive',
+            });
+            setUserToDelete(null);
         });
-        setUserToDelete(null);
     });
   };
 
@@ -104,7 +105,7 @@ export default function UsersManagementClient() {
 
   if (isLoading) {
       return (
-        <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg p-6">
+        <Card className="bg-card border-border rounded-2xl shadow-lg p-6">
             {renderSkeleton()}
         </Card>
       );
@@ -113,7 +114,7 @@ export default function UsersManagementClient() {
   return (
     <AlertDialog>
       <div className="space-y-8">
-        <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
+        <Card className="bg-card border-border rounded-2xl shadow-lg">
             <CardHeader>
                 <CardTitle>Filter Users</CardTitle>
                 <CardDescription>Search by name/email or filter by role.</CardDescription>
@@ -124,10 +125,10 @@ export default function UsersManagementClient() {
                         placeholder="Search by name or email..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="rounded-lg bg-black/30 border-white/10 focus:border-white/50 focus:ring-0"
+                        className="rounded-lg bg-background border-border focus:border-primary focus:ring-0"
                     />
                     <Select value={roleFilter} onValueChange={(value) => setRoleFilter(value as UserRole | 'all')}>
-                        <SelectTrigger className="w-full md:w-auto rounded-lg bg-black/30 border-white/10 focus:border-white/50 focus:ring-0">
+                        <SelectTrigger className="w-full md:w-auto rounded-lg bg-background border-border focus:border-primary focus:ring-0">
                             <SelectValue placeholder="Filter by role" />
                         </SelectTrigger>
                         <SelectContent>
@@ -141,7 +142,7 @@ export default function UsersManagementClient() {
             </CardContent>
         </Card>
 
-        <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
+        <Card className="bg-card border-border rounded-2xl shadow-lg">
             <div className="overflow-x-auto">
                 <Table>
                     <TableHeader>

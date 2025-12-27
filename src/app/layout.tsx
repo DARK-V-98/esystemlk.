@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster";
+import { AuthProvider } from "@/hooks/use-auth";
 
 const dm_sans = DM_Sans({
   subsets: ['latin'],
@@ -22,12 +23,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark" style={{colorScheme: "dark"}}>
-      <body className={dm_sans.variable}>
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
-        <Toaster />
+    <html lang="en">
+      <body className={dm_sans.className}>
+        <AuthProvider>
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+          <Toaster />
+        </AuthProvider>
       </body>
     </html>
   );

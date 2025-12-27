@@ -46,7 +46,7 @@ export default function LoginPage() {
   if (loading || user) {
       return (
           <div className="container mx-auto flex items-center justify-center min-h-[calc(100vh-10rem)] py-12">
-                <Card className="w-full max-w-md bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl p-6">
+                <Card className="w-full max-w-md bg-card border border-border shadow-2xl p-6">
                     <Skeleton className="h-8 w-3/4 mx-auto mb-2" />
                     <Skeleton className="h-4 w-1/2 mx-auto mb-6" />
                     <div className="space-y-6">
@@ -61,7 +61,7 @@ export default function LoginPage() {
 
   return (
     <div className="container mx-auto flex items-center justify-center min-h-[calc(100vh-10rem)] py-12">
-      <Card className="w-full max-w-md bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl">
+      <Card className="w-full max-w-md bg-card border-border shadow-2xl">
         <CardHeader className="text-center">
           <CardTitle className="font-headline text-3xl">Welcome Back</CardTitle>
           <CardDescription>Sign in to access your account</CardDescription>
@@ -80,7 +80,7 @@ export default function LoginPage() {
                         type="email"
                         placeholder="you@example.com"
                         {...field}
-                        className="rounded-lg bg-black/30 border-white/10 focus:border-white/50 focus:ring-0"
+                        className="rounded-lg bg-background border-border focus:border-primary focus:ring-0"
                         disabled={loading}
                       />
                     </FormControl>
@@ -99,7 +99,7 @@ export default function LoginPage() {
                         type="password"
                         placeholder="••••••••"
                         {...field}
-                        className="rounded-lg bg-black/30 border-white/10 focus:border-white/50 focus:ring-0"
+                        className="rounded-lg bg-background border-border focus:border-primary focus:ring-0"
                         disabled={loading}
                       />
                     </FormControl>
@@ -122,7 +122,7 @@ export default function LoginPage() {
 
           <Button
             variant="outline"
-            className="w-full rounded-full border-white/20 hover:bg-white/10"
+            className="w-full rounded-full border-border hover:bg-accent"
             size="lg"
             onClick={signInWithGoogle}
             disabled={loading}

@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -291,7 +290,7 @@ export default function QuotationClient() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Column - Client & Quote Info */}
             <div className="lg:col-span-2 space-y-6">
-                <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
+                <Card className="bg-card border border-border rounded-2xl shadow-lg">
                     <CardHeader><CardTitle>Client Information</CardTitle></CardHeader>
                     <CardContent className="grid md:grid-cols-2 gap-4">
                         <Input placeholder="Client Full Name" {...register('clientName')} required />
@@ -302,7 +301,7 @@ export default function QuotationClient() {
                     </CardContent>
                 </Card>
 
-                <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
+                <Card className="bg-card border border-border rounded-2xl shadow-lg">
                     <CardHeader><CardTitle>Quotation Details</CardTitle></CardHeader>
                     <CardContent className="grid md:grid-cols-3 gap-4">
                          <Input readOnly placeholder="Quotation Number" {...register('quotationNumber')} />
@@ -342,17 +341,17 @@ export default function QuotationClient() {
 
              {/* Right Column - Summary & Actions */}
             <div className="lg:col-span-1 space-y-6">
-                 <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
+                 <Card className="bg-card border border-border rounded-2xl shadow-lg">
                     <CardHeader><CardTitle>Summary & Actions</CardTitle></CardHeader>
                     <CardContent className="space-y-4">
                         <div className="flex justify-between items-center"><span className="text-muted-foreground">Subtotal</span><span className="font-semibold">Rs. {subtotal.toFixed(2)}</span></div>
                         <div className="flex justify-between items-center"><span className="text-muted-foreground">Discount Amount</span><span className="font-semibold">- Rs. {discountAmount.toFixed(2)}</span></div>
                         <div className="flex justify-between items-center"><span className="text-muted-foreground">Tax Amount</span><span className="font-semibold">+ Rs. {taxAmount.toFixed(2)}</span></div>
-                        <div className="border-t border-white/20 my-2"></div>
+                        <div className="border-t border-border my-2"></div>
                         <div className="flex justify-between items-center text-lg"><span className="font-bold">Total</span><span className="font-bold">Rs. {finalTotal.toFixed(2)}</span></div>
                         <div className="flex justify-between items-center"><span className="text-muted-foreground">Advance Paid</span><span className="font-semibold">- Rs. {(Number(advancePaid) || 0).toFixed(2)}</span></div>
-                        <div className="border-t border-white/20 my-2"></div>
-                        <div className={cn("flex justify-between items-center text-xl", isFullyPaid && "text-green-400")}>
+                        <div className="border-t border-border my-2"></div>
+                        <div className={cn("flex justify-between items-center text-xl", isFullyPaid && "text-green-500")}>
                            <span className="font-bold">Balance Due</span>
                            <span className="font-bold">Rs. {balanceDue.toFixed(2)}</span>
                         </div>
@@ -369,7 +368,7 @@ export default function QuotationClient() {
 
         {/* Items Table */}
         <div className="mt-8">
-            <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
+            <Card className="bg-card border border-border rounded-2xl shadow-lg">
                 <CardHeader>
                     <CardTitle>Products / Services</CardTitle>
                     <CardDescription>Add the main items for this quotation.</CardDescription>
@@ -378,7 +377,7 @@ export default function QuotationClient() {
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead>
-                                <tr className="border-b border-white/20">
+                                <tr className="border-b border-border">
                                     <th className="text-left p-2">Description</th>
                                     <th className="text-left p-2 w-28">Quantity</th>
                                     <th className="text-left p-2 w-40">Unit Price (Rs)</th>
@@ -388,11 +387,11 @@ export default function QuotationClient() {
                             </thead>
                             <tbody>
                                 {fields.map((item, index) => (
-                                    <tr key={item.id} className="border-b border-white/10">
+                                    <tr key={item.id} className="border-b border-border">
                                         <td><Input type="text" placeholder="Item Description" {...register(`items.${index}.description`)} className="my-1" required /></td>
                                         <td><Input type="number" {...register(`items.${index}.quantity`, { valueAsNumber: true })} className="my-1" min="1" required /></td>
                                         <td><Input type="number" step="0.01" {...register(`items.${index}.unitPrice`, { valueAsNumber: true })} className="my-1" min="0" required /></td>
-                                        <td><Input readOnly value={((Number(watchedItems[index]?.quantity) || 0) * (Number(watchedItems[index]?.unitPrice) || 0)).toFixed(2)} className="my-1 bg-black/20" /></td>
+                                        <td><Input readOnly value={((Number(watchedItems[index]?.quantity) || 0) * (Number(watchedItems[index]?.unitPrice) || 0)).toFixed(2)} className="my-1 bg-secondary" /></td>
                                         <td>
                                             <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)}>
                                                 <Trash2 className="h-4 w-4 text-destructive" />
@@ -412,7 +411,7 @@ export default function QuotationClient() {
         
         {/* Optional Items Table */}
         <div className="mt-8">
-            <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
+            <Card className="bg-card border border-border rounded-2xl shadow-lg">
                 <CardHeader>
                     <CardTitle>Optional Services / Add-ons</CardTitle>
                     <CardDescription>Add any optional items for this quotation. These items do not affect the main total.</CardDescription>
@@ -421,7 +420,7 @@ export default function QuotationClient() {
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead>
-                                <tr className="border-b border-white/20">
+                                <tr className="border-b border-border">
                                     <th className="text-left p-2">Description</th>
                                     <th className="text-left p-2 w-28">Quantity</th>
                                     <th className="text-left p-2 w-40">Unit Price (Rs)</th>
@@ -431,11 +430,11 @@ export default function QuotationClient() {
                             </thead>
                             <tbody>
                                 {optionalFields.map((item, index) => (
-                                    <tr key={item.id} className="border-b border-white/10">
+                                    <tr key={item.id} className="border-b border-border">
                                         <td><Input type="text" placeholder="Optional Item Description" {...register(`optionalItems.${index}.description`)} className="my-1" /></td>
                                         <td><Input type="number" {...register(`optionalItems.${index}.quantity`, { valueAsNumber: true })} className="my-1" min="1" /></td>
                                         <td><Input type="number" step="0.01" {...register(`optionalItems.${index}.unitPrice`, { valueAsNumber: true })} className="my-1" min="0" /></td>
-                                        <td><Input readOnly value={((Number(watchedOptionalItems[index]?.quantity) || 0) * (Number(watchedOptionalItems[index]?.unitPrice) || 0)).toFixed(2)} className="my-1 bg-black/20" /></td>
+                                        <td><Input readOnly value={((Number(watchedOptionalItems[index]?.quantity) || 0) * (Number(watchedOptionalItems[index]?.unitPrice) || 0)).toFixed(2)} className="my-1 bg-secondary" /></td>
                                         <td>
                                             <Button type="button" variant="ghost" size="icon" onClick={() => removeOptional(index)}>
                                                 <Trash2 className="h-4 w-4 text-destructive" />
@@ -455,7 +454,7 @@ export default function QuotationClient() {
 
         {/* Totals Section */}
         <div className="grid md:grid-cols-3 gap-6 mt-8">
-            <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg md:col-start-3">
+            <Card className="bg-card border border-border rounded-2xl shadow-lg md:col-start-3">
                  <CardHeader><CardTitle>Totals & Payment</CardTitle></CardHeader>
                  <CardContent className="space-y-4">
                     <div>
@@ -492,9 +491,3 @@ export default function QuotationClient() {
     </form>
   );
 }
-
-    
-
-    
-
-    

@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useTransition } from 'react';
@@ -6,7 +5,7 @@ import { db } from '@/lib/firebase';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { updatePricingDocStatus, uploadPricingData, deletePricingDoc, updateServiceStatus, deleteServiceFromCategory, updatePricingItem, addPricingItem, type PricingItemPath, type PricingItemData, type AddItemContext, type AddItemData } from './actions';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -97,28 +96,31 @@ export default function PricingManagementClient() {
     }, [toast]);
 
     const handleUpload = () => {
-        startTransition(async () => {
-            const result = await uploadPricingData();
-            toast({
-                title: result.success ? 'Success' : 'Error',
-                description: result.message,
-                variant: result.success ? 'default' : 'destructive',
+        startTransition(() => {
+            uploadPricingData().then(result => {
+                toast({
+                    title: result.success ? 'Success' : 'Error',
+                    description: result.message,
+                    variant: result.success ? 'default' : 'destructive',
+                });
             });
         });
     };
     
     const handleStatusChange = (type: 'category' | 'service', id: string, status: boolean, serviceName?: string) => {
-        startTransition(async () => {
-            let result;
+        startTransition(() => {
+            let promise;
             if (type === 'category') {
-                result = await updatePricingDocStatus(id, status);
+                promise = updatePricingDocStatus(id, status);
             } else if (type === 'service' && serviceName) {
-                result = await updateServiceStatus(id, serviceName, status);
+                promise = updateServiceStatus(id, serviceName, status);
             }
-            toast({
-                title: result?.success ? 'Success' : 'Error',
-                description: result?.message,
-                variant: result?.success ? 'default' : 'destructive',
+            promise?.then(result => {
+                toast({
+                    title: result?.success ? 'Success' : 'Error',
+                    description: result?.message,
+                    variant: result?.success ? 'default' : 'destructive',
+                });
             });
         });
     };
@@ -126,19 +128,21 @@ export default function PricingManagementClient() {
     const handleDelete = () => {
         if (!itemToDelete) return;
         
-        startTransition(async () => {
-            let result;
+        startTransition(() => {
+            let promise;
             if (itemToDelete.type === 'category') {
-                result = await deletePricingDoc(itemToDelete.categoryId);
+                promise = deletePricingDoc(itemToDelete.categoryId);
             } else if (itemToDelete.type === 'service' && itemToDelete.serviceName) {
-                result = await deleteServiceFromCategory(itemToDelete.categoryId, itemToDelete.serviceName);
+                promise = deleteServiceFromCategory(itemToDelete.categoryId, itemToDelete.serviceName);
             }
-            toast({
-                title: result?.success ? 'Success' : 'Error',
-                description: result?.message,
-                variant: result?.success ? 'default' : 'destructive',
+            promise?.then(result => {
+                toast({
+                    title: result?.success ? 'Success' : 'Error',
+                    description: result?.message,
+                    variant: result?.success ? 'default' : 'destructive',
+                });
+                setItemToDelete(null);
             });
-            setItemToDelete(null);
         });
     };
 
@@ -162,7 +166,7 @@ export default function PricingManagementClient() {
     const onEditSubmit = (values: z.infer<typeof editFormSchema>) => {
         if (!currentItem) return;
 
-        startTransition(async () => {
+        startTransition(() => {
             const dataToUpdate: PricingItemData = {};
             const isCategory = !currentItem.path.serviceName && !currentItem.path.isCommonAddon;
 
@@ -176,18 +180,18 @@ export default function PricingManagementClient() {
                 }
             }
 
-            const result = await updatePricingItem(currentItem.path, dataToUpdate);
+            updatePricingItem(currentItem.path, dataToUpdate).then(result => {
+                toast({
+                    title: result.success ? 'Success' : 'Error',
+                    description: result.message,
+                    variant: result.success ? 'default' : 'destructive',
+                });
 
-            toast({
-                title: result.success ? 'Success' : 'Error',
-                description: result.message,
-                variant: result.success ? 'default' : 'destructive',
+                if (result.success) {
+                    setIsEditDialogOpen(false);
+                    setCurrentItem(null);
+                }
             });
-
-            if (result.success) {
-                setIsEditDialogOpen(false);
-                setCurrentItem(null);
-            }
         });
     };
 
@@ -200,23 +204,23 @@ export default function PricingManagementClient() {
             return;
         }
 
-        startTransition(async () => {
+        startTransition(() => {
             const data: AddItemData = { name: values.name! };
             if (priceRequired) data.price = values.price;
             if (addItemContext.type === 'category') data.icon = values.icon;
             
-            const result = await addPricingItem(addItemContext, data);
-            
-            toast({
-                title: result.success ? 'Success' : 'Error',
-                description: result.message,
-                variant: result.success ? 'default' : 'destructive',
-            });
+            addPricingItem(addItemContext, data).then(result => {
+                toast({
+                    title: result.success ? 'Success' : 'Error',
+                    description: result.message,
+                    variant: result.success ? 'default' : 'destructive',
+                });
 
-            if (result.success) {
-                setIsAddDialogOpen(false);
-                setAddItemContext(null);
-            }
+                if (result.success) {
+                    setIsAddDialogOpen(false);
+                    setAddItemContext(null);
+                }
+            });
         });
     };
 
@@ -358,7 +362,7 @@ export default function PricingManagementClient() {
                     </AlertDialogFooter>
                 </AlertDialogContent>
 
-                <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
+                <Card className="bg-card border border-border rounded-2xl shadow-lg">
                     <CardHeader>
                         <CardTitle>Database Management</CardTitle>
                         <CardDescription>
@@ -378,12 +382,12 @@ export default function PricingManagementClient() {
                 {isLoading ? renderSkeleton() : (
                     <div className="space-y-6">
                         {pricingData.map((category) => (
-                            <Card key={category.id} className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg overflow-hidden">
-                                <CardHeader className="bg-black/20 p-6">
+                            <Card key={category.id} className="bg-card border-border rounded-2xl shadow-lg overflow-hidden">
+                                <CardHeader className="bg-secondary/50 p-6">
                                     <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                                         <div className="flex items-center gap-4">
                                             <Icon name={category.icon} className="w-8 h-8 text-primary" />
-                                            <CardTitle className="text-2xl font-headline">{category.category}</CardTitle>
+                                            <CardTitle className="text-2xl">{category.category}</CardTitle>
                                         </div>
                                         <div className="flex items-center gap-2 self-end md:self-center">
                                             {'services' in category && (
@@ -433,7 +437,7 @@ export default function PricingManagementClient() {
                                                         <div className="space-y-3">
                                                             <h4 className="font-semibold mt-2">Tiers</h4>
                                                             {service.tiers.map((tier, tIndex) => (
-                                                                <div key={tIndex} className="flex justify-between items-center text-sm text-muted-foreground p-2 rounded-md hover:bg-white/5">
+                                                                <div key={tIndex} className="flex justify-between items-center text-sm text-muted-foreground p-2 rounded-md hover:bg-secondary">
                                                                     <span>{tier.name}</span>
                                                                     <div className="flex items-center gap-1">
                                                                         <span className="font-mono text-foreground">{tier.price}</span>
@@ -445,7 +449,7 @@ export default function PricingManagementClient() {
                                                                 <>
                                                                     <h4 className="font-semibold mt-4">Add-ons</h4>
                                                                     {service.addons.map((addon, aIndex) => (
-                                                                        <div key={aIndex} className="flex justify-between items-center text-sm text-muted-foreground p-2 rounded-md hover:bg-white/5">
+                                                                        <div key={aIndex} className="flex justify-between items-center text-sm text-muted-foreground p-2 rounded-md hover:bg-secondary">
                                                                             <span>{addon.name}</span>
                                                                             <div className="flex items-center gap-1">
                                                                                 <span className="font-mono text-foreground">{addon.price}</span>
@@ -471,7 +475,7 @@ export default function PricingManagementClient() {
                                     ) : (
                                         <div className="space-y-3">
                                             {(category as CommonAddons).items.map((item, index) => (
-                                                <div key={index} className="flex justify-between items-center text-sm text-muted-foreground p-2 rounded-md hover:bg-white/5">
+                                                <div key={index} className="flex justify-between items-center text-sm text-muted-foreground p-2 rounded-md hover:bg-secondary">
                                                     <span>{item.name}</span>
                                                     <div className="flex items-center gap-1">
                                                         <span className="font-mono text-foreground">{item.price}</span>
