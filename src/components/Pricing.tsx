@@ -1,165 +1,169 @@
-import { Button } from "@/components/ui/button";
-import { 
-  Check, 
-  Star, 
-  Globe, 
-  Code2, 
-  Server,
-  ArrowRight,
-  Sparkles
-} from "lucide-react";
+'use client';
+import { Check, Star, Zap, Crown, Rocket } from "lucide-react";
+import { Button } from "./ui/button";
 import Link from "next/link";
 
-const pricingPlans = [
-  {
-    icon: Globe,
-    name: "Web Package",
-    price: 150,
-    description: "Perfect for small businesses and personal websites",
-    features: [
-      "Responsive Website Design",
-      "Up to 5 Pages",
-      "Contact Form",
-      "Social Media Integration",
-      "Basic SEO Setup",
-      "Mobile Friendly",
-      "Free Domain Setup Help",
-      "Lifetime Free Maintenance",
-    ],
-    popular: false,
-    cta: "Get Started",
-  },
-  {
-    icon: Code2,
-    name: "Web App",
-    price: 250,
-    description: "For businesses needing custom functionality",
-    features: [
-      "Everything in Web Package",
-      "Custom Web Application",
-      "User Authentication",
-      "Admin Dashboard",
-      "Database Integration",
-      "API Development",
-      "Real-time Features",
-      "Lifetime Free Maintenance",
-    ],
-    popular: true,
-    cta: "Most Popular",
-  },
-  {
-    icon: Server,
-    name: "Software System",
-    price: 500,
-    description: "Complete enterprise-grade solutions",
-    features: [
-      "Everything in Web App",
-      "Full System Development",
-      "Multi-user Support",
-      "Advanced Security",
-      "Custom Integrations",
-      "Data Analytics",
-      "Priority Support",
-      "Lifetime Free Maintenance",
-    ],
-    popular: false,
-    cta: "Contact Us",
-  },
-];
-
 const Pricing = () => {
+  const packages = [
+    {
+      icon: Star,
+      name: "Starter Website",
+      price: "150",
+      description: "Perfect for small businesses and personal projects",
+      popular: false,
+      features: [
+        "5-Page Responsive Website",
+        "Mobile Optimized",
+        "Contact Form",
+        "Basic SEO Setup",
+        "Social Media Links",
+        "1 Month Free Support",
+        "Free Lifetime Warranty",
+      ],
+    },
+    {
+      icon: Zap,
+      name: "Web Application",
+      price: "250",
+      description: "Ideal for businesses needing custom functionality",
+      popular: false,
+      features: [
+        "Custom Web App Development",
+        "User Authentication",
+        "Admin Dashboard",
+        "Database Integration",
+        "API Development",
+        "3 Months Free Support",
+        "Free Lifetime Warranty",
+      ],
+    },
+    {
+      icon: Crown,
+      name: "Software System",
+      price: "500",
+      description: "Enterprise-grade solutions for growing businesses",
+      popular: true,
+      features: [
+        "Full Software Development",
+        "Advanced Features",
+        "Multiple Integrations",
+        "Scalable Architecture",
+        "Security Implementation",
+        "Staff Training",
+        "6 Months Free Support",
+        "Free Lifetime Warranty",
+        "Priority Support",
+      ],
+    },
+    {
+      icon: Rocket,
+      name: "Enterprise",
+      price: "Custom",
+      description: "Tailored solutions for large organizations",
+      popular: false,
+      features: [
+        "Custom Enterprise Solution",
+        "Unlimited Features",
+        "Dedicated Team",
+        "24/7 Premium Support",
+        "SLA Agreement",
+        "On-Site Training",
+        "Continuous Updates",
+        "Free Lifetime Warranty",
+      ],
+    },
+  ];
+
   return (
     <section id="pricing" className="py-24 bg-background relative overflow-hidden">
-      {/* Background effects */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/3 rounded-full blur-3xl" />
+      {/* Background decoration */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl" />
 
       <div className="container mx-auto px-4 relative z-10">
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/5 mb-6 animate-fade-in opacity-0">
-            <Sparkles className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-primary">Transparent Pricing</span>
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary font-medium mb-4">
+            <Crown className="w-4 h-4" />
+            <span>Transparent Pricing</span>
           </div>
-          <h2 className="text-3xl md:text-5xl font-bold mb-6 animate-fade-in opacity-0 animation-delay-100">
-            Simple, Affordable Pricing
+          <h2 className="text-3xl md:text-5xl font-bold mb-4">
+            Affordable <span className="text-primary">Packages</span>
           </h2>
-          <p className="text-lg text-muted-foreground animate-fade-in opacity-0 animation-delay-200">
-            Choose the perfect package for your needs. All packages include lifetime free maintenance and support.
+          <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
+            Quality solutions at unbeatable prices. All packages include free lifetime service warranty!
           </p>
         </div>
 
-        {/* Pricing Cards */}
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {pricingPlans.map((plan, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {packages.map((pkg, index) => (
             <div
-              key={plan.name}
-              className={`relative bg-card border rounded-3xl p-8 transition-all duration-500 animate-fade-in opacity-0 ${
-                plan.popular
-                  ? "border-primary shadow-red-lg scale-105 z-10"
-                  : "border-border hover:border-primary/50 hover:shadow-red"
+              key={index}
+              className={`relative bg-card rounded-2xl p-6 border-2 flex flex-col transition-all duration-300 hover:-translate-y-2 ${
+                pkg.popular
+                  ? "border-primary shadow-red-lg scale-105"
+                  : "border-border hover:border-primary/50"
               }`}
-              style={{ animationDelay: `${(index + 3) * 100}ms` }}
             >
-              {/* Popular Badge */}
-              {plan.popular && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                  <div className="inline-flex items-center gap-1 px-4 py-1.5 rounded-full gradient-primary text-primary-foreground text-sm font-semibold shadow-red">
-                    <Star className="w-4 h-4" />
-                    Most Popular
-                  </div>
+              {pkg.popular && (
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 gradient-primary rounded-full text-primary-foreground text-sm font-semibold shadow-red">
+                  Most Popular
                 </div>
               )}
 
-              {/* Icon */}
-              <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-6 ${
-                plan.popular ? "gradient-primary shadow-red" : "bg-secondary border border-border"
-              }`}>
-                <plan.icon className={`w-7 h-7 ${plan.popular ? "text-primary-foreground" : "text-primary"}`} />
+              <div className="flex items-center gap-3 mb-4">
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                  pkg.popular ? "gradient-primary shadow-red" : "bg-primary/10"
+                }`}>
+                  <pkg.icon className={`w-6 h-6 ${pkg.popular ? "text-primary-foreground" : "text-primary"}`} />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">{pkg.name}</h3>
+                </div>
               </div>
 
-              {/* Plan Info */}
-              <h3 className="text-2xl font-bold text-foreground mb-2">{plan.name}</h3>
-              <p className="text-muted-foreground mb-6">{plan.description}</p>
-
-              {/* Price */}
-              <div className="flex items-baseline gap-1 mb-8">
-                <span className="text-4xl font-bold text-foreground">${plan.price}</span>
-                <span className="text-muted-foreground">starting</span>
+              <div className="mb-4">
+                <div className="flex items-baseline gap-1">
+                  {pkg.price !== "Custom" && <span className="text-2xl font-bold text-primary">$</span>}
+                  <span className="text-4xl font-bold">{pkg.price}</span>
+                  {pkg.price !== "Custom" && <span className="text-muted-foreground">/project</span>}
+                </div>
+                <p className="text-sm text-muted-foreground mt-2 h-10">{pkg.description}</p>
               </div>
 
-              {/* Features */}
-              <ul className="space-y-4 mb-8">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-3">
-                    <div className="mt-1 w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <Check className="w-3 h-3 text-primary" />
-                    </div>
-                    <span className="text-foreground">{feature}</span>
+              <ul className="space-y-3 mb-6 flex-grow">
+                {pkg.features.map((feature, idx) => (
+                  <li key={idx} className="flex items-start gap-2 text-sm">
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span>{feature}</span>
                   </li>
                 ))}
               </ul>
 
-              {/* CTA */}
-              <Button asChild
-                variant={plan.popular ? "hero" : "heroOutline"}
-                size="lg"
-                className="w-full gap-2 group"
+              <Button
+                asChild
+                variant={pkg.popular ? "hero" : "heroOutline"}
+                className="w-full mt-auto"
               >
                 <Link href="#contact">
-                  {plan.cta}
-                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                  {pkg.price === "Custom" ? "Contact Us" : "Get Started"}
                 </Link>
               </Button>
             </div>
           ))}
         </div>
 
-        {/* Terms Note */}
-        <p className="text-center text-muted-foreground mt-12 animate-fade-in opacity-0 animation-delay-700">
-          * All prices are starting prices. Final cost depends on project requirements.
-          <br />
-          Terms and conditions apply. Contact us for detailed quotations.
-        </p>
+        {/* Terms note */}
+        <div className="text-center mt-16 space-y-2">
+          <p className="text-muted-foreground text-sm">
+            * All packages include our exclusive{" "}
+            <span className="text-primary font-semibold">Free Lifetime Service Warranty</span>.
+            <a href="#contact" className="text-primary hover:underline ml-1">
+              Terms & Conditions apply.
+            </a>
+          </p>
+          <p className="text-muted-foreground text-xs">
+            ** Please note that these are starting prices. The final cost may vary based on project complexity.
+          </p>
+        </div>
       </div>
     </section>
   );
