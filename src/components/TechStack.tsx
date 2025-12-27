@@ -252,6 +252,21 @@ const technologies = [
     icon: <Database className="w-8 h-8 text-blue-500" />,
     category: "Database",
   },
+  {
+    name: "Vite",
+    icon: (
+      <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12.012 2.187L2.438 12l9.574 9.813L21.586 12L12.012 2.187zm0 0L7.225 12l4.787 4.906L16.8 12L12.012 2.187z" fill="url(#vite-gradient)"/>
+        <defs>
+          <linearGradient id="vite-gradient" x1="7.225" y1="2.187" x2="16.8" y2="16.906" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#41D1FF"/>
+            <stop offset="1" stopColor="#BD34FE"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    ),
+    category: "Build Tool",
+  },
 ];
 
 const TechStack = () => {
