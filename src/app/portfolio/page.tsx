@@ -1,6 +1,5 @@
 
 import PortfolioClient from './portfolio-client';
-import type { PortfolioItem } from '../admin/portfolio/actions';
 import { getPortfolioItems } from '../admin/portfolio/actions';
 
 export default async function PortfolioPage() {
