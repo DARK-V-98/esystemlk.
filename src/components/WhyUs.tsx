@@ -7,7 +7,8 @@ import {
   Zap, 
   Heart,
   RefreshCw,
-  Users
+  Users,
+  Server
 } from "lucide-react";
 
 const features = [
@@ -108,6 +109,22 @@ const WhyUs = () => {
               </p>
             </div>
           ))}
+        </div>
+
+        {/* Uptime Guarantee Section */}
+        <div className="mt-20 pt-16 border-t border-accent-foreground/10">
+            <div className="max-w-4xl mx-auto text-center bg-accent-foreground/5 p-8 rounded-3xl border border-accent-foreground/10">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 border-2 border-primary/20 mb-6">
+                    <Server className="w-8 h-8 text-primary" />
+                </div>
+                <h3 className="text-3xl font-bold text-primary mb-3">Uncompromising Reliability</h3>
+                <p className="text-2xl font-semibold text-accent-foreground mb-4">
+                    99% Uptime Guarantee
+                </p>
+                <p className="text-accent-foreground/70 text-lg">
+                    Since 2020, our robust infrastructure has ensured that no websites we manage have experienced downtime. We are committed to providing a stable and reliable online presence for all our clients.
+                </p>
+            </div>
         </div>
 
         {/* Stats */}
