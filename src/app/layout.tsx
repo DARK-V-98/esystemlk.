@@ -9,8 +9,7 @@ import { AuthProvider } from "@/hooks/use-auth";
 const dm_sans = DM_Sans({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-dm-sans',
-})
+});
 
 export const metadata: Metadata = {
   title: "ESystemLk",

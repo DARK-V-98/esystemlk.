@@ -1,20 +1,20 @@
-
 'use client';
-import { Cpu, Layers, Cloud, Database, React, Code, Wind, Server, Palette, Lock } from "lucide-react";
+import { Cpu, Layers, Cloud, Database, Code, Wind, Server, Palette, Lock, Laptop, Box, FileJson, Container, Figma } from "lucide-react";
+
 
 const TechStack = () => {
   const technologies = [
-    { icon: React, name: "React", href: "https://reactjs.org/" },
-    { icon: Code, name: "Next.js", href: "https://nextjs.org/" },
+    { icon: Laptop, name: "React", href: "https://reactjs.org/" },
+    { icon: Box, name: "Next.js", href: "https://nextjs.org/" },
     { icon: Wind, name: "Tailwind CSS", href: "https://tailwindcss.com/" },
-    { icon: Code, name: "TypeScript", href: "https://www.typescriptlang.org/" },
+    { icon: FileJson, name: "TypeScript", href: "https://www.typescriptlang.org/" },
     { icon: Server, name: "Node.js", href: "https://nodejs.org/" },
     { icon: Database, name: "MongoDB", href: "https://www.mongodb.com/" },
     { icon: Database, name: "PostgreSQL", href: "https://www.postgresql.org/" },
     { icon: Cloud, name: "Firebase", href: "https://firebase.google.com/" },
-    { icon: Cloud, name: "Docker", href: "https://www.docker.com/" },
+    { icon: Container, name: "Docker", href: "https://www.docker.com/" },
     { icon: Cloud, name: "AWS", href: "https://aws.amazon.com/" },
-    { icon: Palette, name: "Figma", href: "https://www.figma.com/" },
+    { icon: Figma, name: "Figma", href: "https://www.figma.com/" },
     { icon: Lock, name: "Auth", href: "#" },
   ];
 
