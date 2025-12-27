@@ -1,5 +1,4 @@
 
-
 import { Suspense } from 'react';
 import { getPortfolioItems } from './actions';
 import PortfolioManagementClient from './portfolio-management-client';
