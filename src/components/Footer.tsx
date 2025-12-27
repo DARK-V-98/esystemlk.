@@ -131,8 +131,8 @@ const Footer = () => {
             in Sri Lanka
           </p>
           <div className="flex items-center gap-6 text-sm text-accent-foreground/70">
-            <Link href="#" className="hover:text-primary transition-colors">Privacy Policy</Link>
-            <Link href="#" className="hover:text-primary transition-colors">Terms of Service</Link>
+            <Link href="/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link>
+            <Link href="/privacy-policy" className="hover:text-primary transition-colors">Terms of Service</Link>
           </div>
         </div>
       </div>

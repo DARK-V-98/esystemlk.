@@ -1,6 +1,9 @@
 'use client'
 
-import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import * as z from "zod"
+import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,26 +19,65 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { saveContactMessage } from "@/app/contact/actions"
+
+const formSchema = z.object({
+  name: z.string().min(2, {
+    message: "Name must be at least 2 characters.",
+  }),
+  email: z.string().email({
+    message: "Please enter a valid email address.",
+  }),
+  phone: z.string().min(10, { message: "Please enter a valid phone number." }),
+  subject: z.string().min(5, {
+    message: "Subject must be at least 5 characters.",
+  }),
+  message: z.string().min(10, {
+    message: "Message must be at least 10 characters.",
+  }).max(500, {
+      message: "Message cannot exceed 500 characters."
+  }),
+})
 
 const Contact = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { toast } = useToast();
+  const [isPending, startTransition] = useTransition();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-    toast({
-      title: "Message Sent!",
-      description: "We'll get back to you within 24 hours.",
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      subject: "New Inquiry",
+      message: "",
+    },
+  })
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    startTransition(async () => {
+        const result = await saveContactMessage(values);
+        if (result.success) {
+            form.reset();
+            setIsSubmitted(true);
+        }
+        toast({
+            title: result.success ? 'Success' : 'Error',
+            description: result.message,
+            variant: result.success ? 'default' : 'destructive',
+        });
     });
-  };
+  }
+
 
   return (
     <section id="contact" className="py-24 bg-secondary/30 relative overflow-hidden">
@@ -75,71 +117,90 @@ const Contact = () => {
                 </Button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid sm:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      Your Name
-                    </label>
-                    <Input
-                      placeholder="John Doe"
-                      required
-                      className="h-12 bg-secondary border-border focus:border-primary"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      Email Address
-                    </label>
-                    <Input
-                      type="email"
-                      placeholder="john@example.com"
-                      required
-                      className="h-12 bg-secondary border-border focus:border-primary"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Phone Number
-                  </label>
-                  <Input
-                    type="tel"
-                    placeholder="+94 77 123 4567"
-                    className="h-12 bg-secondary border-border focus:border-primary"
+             <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                 <div className="grid sm:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Full Name</FormLabel>
+                          <FormControl>
+                              <Input placeholder="Your Full Name" {...field} className="h-12 bg-secondary border-border focus:border-primary"/>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email Address</FormLabel>
+                          <FormControl>
+                              <Input type="email" placeholder="your.email@example.com" {...field} className="h-12 bg-secondary border-border focus:border-primary"/>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                    )}
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Project Type
-                  </label>
-                  <select className="w-full h-12 px-4 rounded-lg bg-secondary border border-border focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all">
-                    <option value="">Select a service</option>
-                    <option value="website">Website ($150+)</option>
-                    <option value="webapp">Web Application ($250+)</option>
-                    <option value="software">Software System ($500+)</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Project Details
-                  </label>
-                  <Textarea
-                    placeholder="Tell us about your project requirements..."
-                    rows={5}
-                    required
-                    className="bg-secondary border-border focus:border-primary resize-none"
-                  />
-                </div>
+
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Phone Number</FormLabel>
+                        <FormControl>
+                            <Input placeholder="Your Contact Number" {...field} className="h-12 bg-secondary border-border focus:border-primary"/>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                  )}
+                />
+                 <FormField
+                  control={form.control}
+                  name="subject"
+                  render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Subject</FormLabel>
+                        <FormControl>
+                            <Input placeholder="Subject of your message" {...field} className="h-12 bg-secondary border-border focus:border-primary"/>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                  )}
+                />
+                 <FormField
+                  control={form.control}
+                  name="message"
+                  render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Message</FormLabel>
+                        <FormControl>
+                            <Textarea
+                                placeholder="Please describe your inquiry in detail..."
+                                className="resize-none bg-secondary border-border focus:border-primary"
+                                rows={5}
+                                {...field}
+                            />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                  )}
+                />
+
                 <Button
                   type="submit"
                   variant="hero"
                   size="lg"
                   className="w-full gap-2"
-                  disabled={isSubmitting}
+                  disabled={isPending}
                 >
-                  {isSubmitting ? (
+                  {isPending ? (
                     <>
                       <div className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
                       Sending...
@@ -152,6 +213,7 @@ const Contact = () => {
                   )}
                 </Button>
               </form>
+              </Form>
             )}
           </div>
 

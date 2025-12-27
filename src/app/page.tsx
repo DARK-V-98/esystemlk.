@@ -1,16 +1,16 @@
 'use client';
-import Hero from "@/components/Hero";
+import { useEffect } from "react";
+import CTABanner from "@/components/CTABanner";
 import ClientLogos from "@/components/ClientLogos";
-import Services from "@/components/Services";
-import Process from "@/components/Process";
+import Contact from "@/components/Contact";
+import FAQ from "@/components/FAQ";
+import Hero from "@/components/Hero";
 import Pricing from "@/components/Pricing";
+import Process from "@/components/Process";
+import Services from "@/components/Services";
 import TechStack from "@/components/TechStack";
 import Testimonials from "@/components/Testimonials";
 import WhyUs from "@/components/WhyUs";
-import FAQ from "@/components/FAQ";
-import CTABanner from "@/components/CTABanner";
-import Contact from "@/components/Contact";
-import { useEffect } from "react";
 
 export default function Home() {
     useEffect(() => {
@@ -29,7 +29,6 @@ export default function Home() {
       });
     }, observerOptions);
 
-    // Observe elements with animation classes
     document.querySelectorAll(".animate-fade-in.opacity-0").forEach((el) => {
       observer.observe(el);
     });

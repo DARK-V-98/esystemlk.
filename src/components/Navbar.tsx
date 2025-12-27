@@ -18,10 +18,11 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: "Services", href: "#services" },
-    { name: "Pricing", href: "#pricing" },
-    { name: "Why Us", href: "#why-us" },
-    { name: "Contact", href: "#contact" },
+    { name: "Services", href: "/services" },
+    { name: "Pricing", href: "/pricing" },
+    { name: "Portfolio", href: "/portfolio" },
+    { name: "About", href: "/about" },
+    { name: "Contact", href: "/contact" },
   ];
 
   return (
@@ -48,20 +49,20 @@ const Navbar = () => {
 
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.name}
                 href={link.href}
                 className="text-muted-foreground hover:text-primary transition-colors duration-300 font-medium relative group"
               >
                 {link.name}
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
-              </a>
+              </Link>
             ))}
           </div>
 
           <div className="hidden md:block">
             <Button asChild variant="hero" size="lg" className="gap-2">
-              <Link href="#contact">
+              <Link href="/contact">
                 <Rocket className="w-5 h-5" />
                 Get Started
               </Link>
@@ -83,17 +84,17 @@ const Navbar = () => {
         >
           <div className="flex flex-col gap-4">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.name}
                 href={link.href}
                 className="text-muted-foreground hover:text-primary transition-colors duration-300 font-medium py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {link.name}
-              </a>
+              </Link>
             ))}
              <Button asChild variant="hero" size="lg" className="gap-2 mt-4">
-              <Link href="#contact">
+              <Link href="/contact">
                 <Rocket className="w-5 h-5" />
                 Get Started
               </Link>

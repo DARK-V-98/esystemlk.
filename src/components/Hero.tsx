@@ -1,4 +1,4 @@
-
+'use client';
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Code2, Globe, Sparkles, Zap, Shield, Rocket } from "lucide-react";
 import Link from "next/link";
@@ -54,7 +54,7 @@ const Hero = () => {
               </Link>
             </Button>
             <Button asChild variant="heroOutline" size="xl" className="gap-2">
-              <Link href="/portfolio">
+               <Link href="/portfolio">
                 <Globe className="w-5 h-5" />
                 View Our Work
               </Link>

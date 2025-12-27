@@ -18,9 +18,6 @@ const config: Config = {
       },
     },
     extend: {
-      fontFamily: {
-        sans: ['var(--font-dm-sans)'],
-      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -57,6 +54,7 @@ const config: Config = {
         },
          red: {
           dark: 'hsl(var(--red-dark))',
+          glow: 'hsl(var(--red-glow))',
         }
       },
       borderRadius: {
