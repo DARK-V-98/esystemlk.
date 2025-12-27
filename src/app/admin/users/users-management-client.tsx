@@ -24,7 +24,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Trash2 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { useAuth } from '@/hooks/use-auth';
+import { useAuthContext } from '@/hooks/use-auth';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 
@@ -34,7 +34,7 @@ export default function UsersManagementClient() {
   const [isPending, startTransition] = useTransition();
   const [userToDelete, setUserToDelete] = useState<ManagedUser | null>(null);
   const { toast } = useToast();
-  const { user: currentUser } = useAuth();
+  const { user: currentUser } = useAuthContext();
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState<UserRole | 'all'>('all');
 
@@ -229,5 +229,3 @@ export default function UsersManagementClient() {
     </AlertDialog>
   );
 }
-
-    

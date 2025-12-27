@@ -1,26 +1,131 @@
+
 'use client';
 
-import React, { useMemo, type ReactNode } from 'react';
-import { FirebaseProvider } from '@/firebase/provider';
+import React, { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { initializeFirebase } from '@/firebase';
+import { Auth, onAuthStateChanged, User as FirebaseAuthUser } from 'firebase/auth';
+import { doc, getDoc, getFirestore } from 'firebase/firestore';
+import { FirebaseApp } from 'firebase/app';
+import { Firestore } from 'firebase/firestore';
+import LoadingScreen from '@/components/LoadingScreen';
 
-interface FirebaseClientProviderProps {
-  children: ReactNode;
+// --- Type Definitions ---
+type UserRole = 'user' | 'admin' | 'developer';
+
+interface User {
+  uid: string;
+  email: string | null;
+  displayName: string | null;
+  photoURL: string | null;
+  role: UserRole;
 }
 
-export function FirebaseClientProvider({ children }: FirebaseClientProviderProps) {
-  const firebaseServices = useMemo(() => {
-    // Initialize Firebase on the client side, once per component mount.
-    return initializeFirebase();
-  }, []); // Empty dependency array ensures this runs only once on mount
+interface FirebaseContextType {
+  firebaseApp: FirebaseApp;
+  auth: Auth;
+  firestore: Firestore;
+  user: User | null;
+  loading: boolean;
+}
+
+// --- Context Creation ---
+const FirebaseContext = createContext<FirebaseContextType | undefined>(undefined);
+
+// --- Utility Function ---
+const formatUser = (user: FirebaseAuthUser, role: UserRole = 'user'): User => ({
+  uid: user.uid,
+  email: user.email,
+  displayName: user.displayName,
+  photoURL: user.photoURL,
+  role: role,
+});
+
+// --- Main Provider Component ---
+export function FirebaseClientProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isAppLoading, setIsAppLoading] = useState(true);
+
+  // Memoize Firebase services initialization
+  const { firebaseApp, auth, firestore } = useMemo(() => {
+    const services = initializeFirebase();
+    return {
+      firebaseApp: services.firebaseApp,
+      auth: services.auth,
+      firestore: services.firestore,
+    };
+  }, []);
+
+  // Effect for handling window load to hide loading screen
+  useEffect(() => {
+    const handleLoad = () => {
+      const loadingScreen = document.getElementById('loading-screen');
+      if (loadingScreen) {
+        loadingScreen.style.opacity = '0';
+        setTimeout(() => setIsAppLoading(false), 500);
+      }
+    };
+    
+    if (document.readyState === 'complete') {
+        handleLoad();
+    } else {
+        window.addEventListener('load', handleLoad);
+        return () => window.removeEventListener('load', handleLoad);
+    }
+  }, []);
+
+  // Effect for handling auth state changes
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      setLoading(true);
+      if (firebaseUser) {
+        const userRef = doc(firestore, 'users', firebaseUser.uid);
+        const userSnap = await getDoc(userRef);
+        
+        if (userSnap.exists()) {
+          const userData = userSnap.data();
+          setUser(formatUser(firebaseUser, userData.role));
+        } else {
+          // Create user document if it doesn't exist (e.g., first Google sign-in)
+          const newUserDoc = { 
+            email: firebaseUser.email, 
+            role: 'user', 
+            displayName: firebaseUser.displayName || 'New User',
+            photoURL: firebaseUser.photoURL
+          };
+          await setDoc(userRef, newUserDoc);
+          setUser(formatUser(firebaseUser, 'user'));
+        }
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [auth, firestore]);
+
+  const contextValue = useMemo(() => ({
+    firebaseApp,
+    auth,
+    firestore,
+    user,
+    loading
+  }), [firebaseApp, auth, firestore, user, loading]);
 
   return (
-    <FirebaseProvider
-      firebaseApp={firebaseServices.firebaseApp}
-      auth={firebaseServices.auth}
-      firestore={firebaseServices.firestore}
-    >
+    <FirebaseContext.Provider value={contextValue}>
+      {isAppLoading && <LoadingScreen />}
       {children}
-    </FirebaseProvider>
+    </FirebaseContext.Provider>
   );
 }
+
+// --- Custom Hook ---
+export const useAuthContext = (): FirebaseContextType => {
+  const context = useContext(FirebaseContext);
+  if (context === undefined) {
+    throw new Error('useAuthContext must be used within a FirebaseClientProvider');
+  }
+  return context;
+};

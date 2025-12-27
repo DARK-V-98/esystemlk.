@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/hooks/use-auth";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
@@ -25,7 +25,7 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
-  const { user, signInWithEmail, signInWithGoogle, loading } = useAuth();
+  const { user, signInWithEmail, signInWithGoogle, loading } = useAuthContext();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 

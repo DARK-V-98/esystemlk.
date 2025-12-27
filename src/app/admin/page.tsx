@@ -1,12 +1,12 @@
 "use client";
 
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/hooks/use-auth";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { Mail, Users, CreditCard, BarChart2, FileSignature } from "lucide-react";
 
 export default function AdminPage() {
-  const { user } = useAuth();
+  const { user } = useAuthContext();
 
   return (
     <div className="container mx-auto py-10 px-4 md:px-6">

@@ -1,13 +1,13 @@
 "use client";
 
 import { ReactNode } from 'react';
-import { useAuth } from '@/hooks/use-auth';
+import { useAuthContext } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuth();
+  const { user, loading } = useAuthContext();
   const router = useRouter();
   const allowedRoles = ['admin', 'developer'];
 

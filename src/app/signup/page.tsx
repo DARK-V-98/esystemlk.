@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/hooks/use-auth";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
@@ -33,7 +33,7 @@ const signupSchema = z.object({
 type SignupFormValues = z.infer<typeof signupSchema>;
 
 export default function SignupPage() {
-  const { user, signUpWithEmail, signInWithGoogle, loading } = useAuth();
+  const { user, signUpWithEmail, signInWithGoogle, loading } = useAuthContext();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -329,5 +329,3 @@ export default function SignupPage() {
     </div>
   );
 }
-
-    
