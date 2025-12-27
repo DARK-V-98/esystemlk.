@@ -33,6 +33,7 @@ export default function SignupPage() {
   const { user, signUpWithEmail, signInWithGoogle, loading } = useAuth();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const form = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
@@ -142,6 +143,23 @@ export default function SignupPage() {
                     </FormItem>
                   )}
                 />
+                 <FormField
+                    control={form.control}
+                    name="agreeTerms"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                        <FormControl>
+                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel>
+                             I agree with the <Link href="/privacy-policy" className="text-primary hover:underline">terms of use</Link>
+                          </FormLabel>
+                        </div>
+                         <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-full" size="lg" disabled={loading}>
                   {loading ? "Creating Account..." : "Sign Up"}
                 </Button>
@@ -184,12 +202,25 @@ export default function SignupPage() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
                 control={form.control}
+                name="displayName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Your Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter your full name" {...field} className="h-12 rounded-xl bg-secondary/50 border-border" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Your Email Address</FormLabel>
                     <FormControl>
-                      <Input type="email" {...field} className="h-12 rounded-xl bg-secondary/50 border-border" />
+                      <Input type="email" placeholder="Enter your email" {...field} className="h-12 rounded-xl bg-secondary/50 border-border" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -213,15 +244,34 @@ export default function SignupPage() {
                   </FormItem>
                 )}
               />
+               <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confirm Password</FormLabel>
+                    <FormControl>
+                       <div className="relative">
+                        <Input type={showConfirmPassword ? 'text' : 'password'} placeholder="Re-enter your password" {...field} className="h-12 rounded-xl bg-secondary/50 border-border pr-10" />
+                         <Button type="button" variant="ghost" size="icon" className="absolute right-1 top-1 h-10 w-10 text-muted-foreground" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                          {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                        </Button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="agreeTerms"
                 render={({ field }) => (
                   <FormItem className="flex justify-between items-center py-2">
-                    <FormLabel className="mb-0">I agree with terms of use</FormLabel>
+                    <FormLabel htmlFor="terms-mobile" className="mb-0 text-muted-foreground">I agree with <Link href="/privacy-policy" className="text-primary">terms of use</Link></FormLabel>
                     <FormControl>
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      <Switch id="terms-mobile" checked={field.value} onCheckedChange={field.onChange} />
                     </FormControl>
+                     <FormMessage />
                   </FormItem>
                 )}
               />
@@ -232,7 +282,7 @@ export default function SignupPage() {
           </Form>
         </div>
 
-        <div className="px-6 pb-6 text-center z-10 space-y-4">
+        <div className="px-6 pb-6 text-center z-10 space-y-4 flex-shrink-0">
             <div className="relative">
               <Separator />
               <span className="absolute left-1/2 -translate-x-1/2 -top-3 bg-background px-2 text-muted-foreground text-sm">OR</span>
@@ -240,6 +290,10 @@ export default function SignupPage() {
             <Button variant="outline" className="w-full h-14 rounded-xl text-base bg-secondary/50 border-border" onClick={signInWithGoogle} disabled={loading}>
                <GoogleIcon /> Sign up with Google
             </Button>
+             <p className="text-sm text-muted-foreground">
+              Already have an account?{' '}
+              <Link href="/login" className="font-semibold text-primary">Sign in</Link>
+            </p>
         </div>
       </div>
     </div>

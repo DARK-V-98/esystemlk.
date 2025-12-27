@@ -192,11 +192,18 @@ export default function LoginPage() {
           </Form>
         </div>
 
-        <div className="p-6 text-center z-10 flex-shrink-0">
-          <p className="text-sm text-muted-foreground">
-            Don't have an account?{' '}
-            <Link href="/signup" className="font-semibold text-primary">Sign up</Link>
-          </p>
+        <div className="p-6 text-center z-10 flex-shrink-0 space-y-4">
+            <div className="relative">
+              <Separator />
+              <span className="absolute left-1/2 -translate-x-1/2 -top-3 bg-background px-2 text-muted-foreground text-sm">OR</span>
+            </div>
+            <Button variant="outline" className="w-full h-14 rounded-xl text-base bg-secondary/50 border-border" onClick={signInWithGoogle} disabled={loading}>
+               <GoogleIcon /> Sign in with Google
+            </Button>
+            <p className="text-sm text-muted-foreground">
+              Don't have an account?{' '}
+              <Link href="/signup" className="font-semibold text-primary">Sign up</Link>
+            </p>
         </div>
       </div>
     </div>
