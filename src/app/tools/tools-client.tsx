@@ -47,7 +47,7 @@ const allTools: Tool[] = [
 
 const categories: ('All' | ToolCategory)[] = ['All', 'Converter', 'Image', 'Security', 'Utility', 'Design', 'SEO'];
 
-const whyUsItems = [
+const whyUsItems: { icon: keyof typeof Icons; title: string; description: string }[] = [
     { icon: 'Zap', title: 'Blazing Fast', description: 'All tools run instantly in your browser, with no waiting for uploads or server processing.' },
     { icon: 'ShieldCheck', title: '100% Private', description: 'Your files and data are never sent to a server. Everything stays on your device.' },
     { icon: 'WifiOff', title: 'Works Offline', description: 'After the initial page load, our tools work even without an internet connection.' },
