@@ -51,10 +51,8 @@ async function getPricingData() {
     return { pricingData, commonAddons: commonAddons || null };
 }
 
-
-export default function PricingPage() {
-  const promise = getPricingData();
-  const [{ pricingData, commonAddons }] = React.use(promise);
+export default async function PricingPage() {
+  const { pricingData, commonAddons } = await getPricingData();
 
   return (
     <>
