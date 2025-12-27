@@ -1,8 +1,9 @@
+
 "use client";
 
 import { useState, useEffect, useTransition, useMemo } from 'react';
 import { getUsers, updateUserRole, deleteUser, type ManagedUser, type UserRole } from './actions';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import {
   Table,
   TableBody,
@@ -228,3 +229,5 @@ export default function UsersManagementClient() {
     </AlertDialog>
   );
 }
+
+    

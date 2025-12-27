@@ -5,7 +5,7 @@ import { db } from '@/lib/firebase';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { updatePricingDocStatus, uploadPricingData, deletePricingDoc, updateServiceStatus, deleteServiceFromCategory, updatePricingItem, addPricingItem, type PricingItemPath, type PricingItemData, type AddItemContext, type AddItemData } from './actions';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
