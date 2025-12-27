@@ -139,7 +139,6 @@ export default function LoginPage() {
             <Button variant="ghost" size="icon" onClick={() => router.back()}>
               <ArrowLeft />
             </Button>
-            <Link href="#" className="text-sm font-medium text-primary">Forgot password?</Link>
           </div>
         </div>
 
@@ -182,8 +181,11 @@ export default function LoginPage() {
                 )}
               />
               <div className="flex justify-between items-center text-sm">
-                <label htmlFor="remember-me" className="text-muted-foreground">Remember me next time</label>
-                <Switch id="remember-me" />
+                <div className="flex items-center gap-2">
+                  <Switch id="remember-me" />
+                  <label htmlFor="remember-me" className="text-muted-foreground">Remember me</label>
+                </div>
+                <Link href="#" className="text-sm font-medium text-primary">Forgot password?</Link>
               </div>
               <Button type="submit" className="w-full h-14 rounded-xl text-base" variant="dark" disabled={loading}>
                 {loading ? "Logging In..." : "Login"}
