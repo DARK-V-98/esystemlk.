@@ -1,20 +1,22 @@
+
 "use client";
 
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Send } from 'lucide-react';
+import { ArrowLeft, Send, Plus, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 
 interface FormData {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   url: string;
   body: string;
+  headers: { key: string; value: string }[];
 }
 
 interface ResponseData {
@@ -29,12 +31,18 @@ export default function ApiTesterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { register, handleSubmit, control, watch } = useForm<FormData>({
+  const { register, control, handleSubmit, watch } = useForm<FormData>({
     defaultValues: {
       method: 'GET',
       url: '',
       body: '',
+      headers: [{ key: '', value: '' }],
     },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "headers"
   });
 
   const method = watch('method');
@@ -45,11 +53,20 @@ export default function ApiTesterPage() {
     setError(null);
 
     try {
+      const requestHeaders = new Headers();
+      data.headers.forEach(header => {
+        if (header.key && header.value) {
+          requestHeaders.append(header.key, header.value);
+        }
+      });
+      // Ensure Content-Type is set for methods with a body, if not already provided
+      if (data.method !== 'GET' && data.body && !requestHeaders.has('Content-Type')) {
+        requestHeaders.append('Content-Type', 'application/json');
+      }
+
       const options: RequestInit = {
         method: data.method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: requestHeaders,
       };
 
       if (data.method !== 'GET' && data.body) {
@@ -123,19 +140,43 @@ export default function ApiTesterPage() {
                 </Select>
                 <Input {...register('url')} placeholder="https://api.example.com/data" required />
               </div>
-
-              {method !== 'GET' && (
-                <div>
-                  <label htmlFor="body" className="text-sm font-medium">Body</label>
-                  <Textarea
-                    {...register('body')}
-                    id="body"
-                    placeholder='{ "key": "value" }'
-                    className="mt-1 font-mono"
-                    rows={8}
-                  />
-                </div>
-              )}
+              
+              <Tabs defaultValue="body">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="body">Body</TabsTrigger>
+                    <TabsTrigger value="headers">Headers</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="body" className="mt-4">
+                     {method !== 'GET' && (
+                        <Textarea
+                          {...register('body')}
+                          id="body"
+                          placeholder='{ "key": "value" }'
+                          className="font-mono"
+                          rows={8}
+                        />
+                      )}
+                      {method === 'GET' && (
+                        <div className="h-[200px] flex items-center justify-center text-muted-foreground text-sm bg-black/20 rounded-md">
+                          Request body is not used for GET requests.
+                        </div>
+                      )}
+                  </TabsContent>
+                  <TabsContent value="headers" className="mt-4 space-y-2">
+                      {fields.map((field, index) => (
+                        <div key={field.id} className="flex gap-2 items-center">
+                          <Input {...register(`headers.${index}.key`)} placeholder="Header Name" />
+                          <Input {...register(`headers.${index}.value`)} placeholder="Header Value" />
+                          <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)}>
+                            <Trash2 className="h-4 w-4 text-destructive"/>
+                          </Button>
+                        </div>
+                      ))}
+                      <Button type="button" variant="outline" size="sm" onClick={() => append({ key: '', value: '' })}>
+                        <Plus className="mr-2 h-4 w-4" /> Add Header
+                      </Button>
+                  </TabsContent>
+              </Tabs>
 
               <Button type="submit" disabled={isLoading} className="w-full">
                 {isLoading ? 'Sending...' : <><Send className="mr-2 h-4 w-4" /> Send Request</>}

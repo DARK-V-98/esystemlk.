@@ -9,15 +9,25 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Trash2, Plus, Download, Eye, Calendar as CalendarIcon } from 'lucide-react';
+import { Trash2, Plus, Download, Eye, Calendar as CalendarIcon, ChevronsUpDown, Check } from 'lucide-react';
 import { format } from 'date-fns';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { Skeleton } from '@/components/ui/skeleton';
 
+// Types from pricing page
+type Tier = { name: string; price: string };
+type Addon = { name: string; price: string };
+type Service = { name: string; tiers: Tier[]; addons?: Addon[]; enabled: boolean };
+type PricingCategory = { id: string; category: string; services: Service[]; enabled: boolean };
+type CommonAddons = { id: string; items: Addon[]; enabled: boolean };
 
 interface IQuotationItem {
   description: string;
@@ -42,15 +52,25 @@ interface IQuotationForm {
   isFullyPaid: boolean;
 }
 
-// Extend jsPDF with autoTable
 declare module 'jspdf' {
     interface jsPDF {
       autoTable: (options: any) => jsPDF;
     }
 }
 
+function parsePrice(priceString: string): number {
+    if (!priceString) return 0;
+    // Removes "Rs.", commas, and any non-numeric characters except for the decimal point.
+    const sanitizedString = priceString.replace(/Rs\.|,|\s/g, '').match(/[\d.]+/g)?.join('') || '0';
+    return parseFloat(sanitizedString) || 0;
+}
+
 export default function QuotationClient() {
   const [isClient, setIsClient] = useState(false);
+  const [pricingData, setPricingData] = useState<(PricingCategory | CommonAddons)[]>([]);
+  const [isPricingLoading, setIsPricingLoading] = useState(true);
+  const [isCommandPopoverOpen, setIsCommandPopoverOpen] = useState(false);
+
   const { register, control, handleSubmit, watch, setValue } = useForm<IQuotationForm>({
     defaultValues: {
       clientName: '',
@@ -69,15 +89,26 @@ export default function QuotationClient() {
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'items',
-  });
-  
-  const { fields: optionalFields, append: appendOptional, remove: removeOptional } = useFieldArray({
-    control,
-    name: 'optionalItems',
-  });
+  useEffect(() => {
+    async function getPricing() {
+        const pricingCollection = collection(db, 'pricing');
+        const q = query(pricingCollection, orderBy('order'));
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+            setIsPricingLoading(false);
+            return;
+        }
+
+        const allData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as (PricingCategory | CommonAddons)[];
+        setPricingData(allData);
+        setIsPricingLoading(false);
+    }
+    getPricing();
+  }, []);
+
+  const { fields, append, remove } = useFieldArray({ control, name: 'items' });
+  const { fields: optionalFields, append: appendOptional, remove: removeOptional } = useFieldArray({ control, name: 'optionalItems' });
 
   const watchedItems = watch('items');
   const watchedOptionalItems = watch('optionalItems');
@@ -86,12 +117,7 @@ export default function QuotationClient() {
   const advancePaid = watch('advancePaid');
   const isFullyPaid = watch('isFullyPaid');
 
-  const subtotal = watchedItems.reduce((acc, item) => {
-    const quantity = Number(item.quantity) || 0;
-    const unitPrice = Number(item.unitPrice) || 0;
-    return acc + quantity * unitPrice;
-  }, 0);
-
+  const subtotal = watchedItems.reduce((acc, item) => (acc + (Number(item.quantity) || 0) * (Number(item.unitPrice) || 0)), 0);
   const discountAmount = (subtotal * (Number(discount) || 0)) / 100;
   const subtotalAfterDiscount = subtotal - discountAmount;
   const taxAmount = (subtotalAfterDiscount * (Number(tax) || 0)) / 100;
@@ -110,17 +136,18 @@ export default function QuotationClient() {
     setValue('quotationNumber', `QUO-${Date.now()}`);
   }, [setValue]);
 
+  const onCommandSelect = (item: { name: string, price: string }) => {
+    const price = parsePrice(item.price);
+    append({ description: item.name, quantity: 1, unitPrice: price });
+    setIsCommandPopoverOpen(false);
+  }
+
   const generatePDF = (mode: 'download' | 'preview') => {
     const doc = new jsPDF();
     const formData = watch();
-
-    // Add Logo
     const img = document.getElementById('logo-for-pdf') as HTMLImageElement;
-    if (img) {
-      doc.addImage(img, 'PNG', 14, 12, 30, 30);
-    }
+    if (img) doc.addImage(img, 'PNG', 14, 12, 30, 30);
     
-    // Company Info
     doc.setFontSize(20);
     doc.setFont('helvetica', 'bold');
     doc.text('eSystemLK', 150, 20);
@@ -130,75 +157,42 @@ export default function QuotationClient() {
     doc.text('Website: www.esystemlk.xyz', 150, 31);
     doc.text('Email: esystemlk@gmail.com', 150, 36);
 
-    // Quotation Title
     doc.setFontSize(26);
     doc.setFont('helvetica', 'bold');
     doc.text('QUOTATION', 14, 60);
 
-    // Client Info
     let yPos = 80;
     doc.setFontSize(11);
     doc.setFont('helvetica', 'bold');
     doc.text('Bill To:', 14, 75);
     doc.setFont('helvetica', 'normal');
-    doc.text(formData.clientName, 14, yPos);
-    yPos += 5;
-    if(formData.companyName) {
-        doc.text(formData.companyName, 14, yPos);
-        yPos += 5;
-    }
-    if(formData.clientAddress) {
-        doc.text(formData.clientAddress, 14, yPos);
-        yPos += 5;
-    }
-    doc.text(formData.phoneNumber, 14, yPos);
-    yPos += 5;
-    if(formData.emailAddress) {
-        doc.text(formData.emailAddress, 14, yPos);
-    }
+    doc.text(formData.clientName, 14, yPos); yPos += 5;
+    if(formData.companyName) { doc.text(formData.companyName, 14, yPos); yPos += 5; }
+    if(formData.clientAddress) { doc.text(formData.clientAddress, 14, yPos); yPos += 5; }
+    doc.text(formData.phoneNumber, 14, yPos); yPos += 5;
+    if(formData.emailAddress) doc.text(formData.emailAddress, 14, yPos);
 
-    // Quotation Info
     doc.setFont('helvetica', 'bold');
     doc.text('Quotation #:', 130, 75);
     doc.text('Date:', 130, 80);
     doc.text('Expiry Date:', 130, 85);
-    if(formData.isFullyPaid) {
-        doc.text('Status:', 130, 90);
-    }
+    if(formData.isFullyPaid) doc.text('Status:', 130, 90);
+
     doc.setFont('helvetica', 'normal');
     doc.text(formData.quotationNumber, 160, 75);
     doc.text(format(formData.date, 'PPP'), 160, 80);
     doc.text(format(formData.expiryDate, 'PPP'), 160, 85);
     if (formData.isFullyPaid) {
         doc.setFont('helvetica', 'bold');
-        doc.setTextColor(0, 150, 0); // Green color
+        doc.setTextColor(0, 150, 0);
         doc.text('Paid in Full', 160, 90);
-        doc.setTextColor(0, 0, 0); // Reset color
+        doc.setTextColor(0, 0, 0);
     }
     
-    // Items Table
     const tableColumn = ["#", "Description", "Qty", "Unit Price", "Total"];
-    const tableRows = formData.items.map((item, index) => {
-        const quantity = Number(item.quantity) || 0;
-        const unitPrice = Number(item.unitPrice) || 0;
-        return [
-            index + 1,
-            item.description,
-            quantity.toString(),
-            `Rs. ${unitPrice.toFixed(2)}`,
-            `Rs. ${(quantity * unitPrice).toFixed(2)}`
-        ]
-    });
-
-    doc.autoTable({
-        head: [tableColumn],
-        body: tableRows,
-        startY: 110,
-        theme: 'striped',
-        headStyles: { fillColor: [0, 87, 163] } // Royal Blue
-    });
+    const tableRows = formData.items.map((item, index) => [index + 1, item.description, (Number(item.quantity) || 0).toString(), `Rs. ${(Number(item.unitPrice) || 0).toFixed(2)}`, `Rs. ${((Number(item.quantity) || 0) * (Number(item.unitPrice) || 0)).toFixed(2)}`]);
+    doc.autoTable({ head: [tableColumn], body: tableRows, startY: 110, theme: 'striped', headStyles: { fillColor: [0, 87, 163] } });
     
-    // Pricing Summary
     let finalY = (doc as any).lastAutoTable.finalY;
     const summaryX = 130;
     let summaryY = finalY + 10;
@@ -218,7 +212,6 @@ export default function QuotationClient() {
         doc.setFontSize(14);
         doc.text('Total Due:', summaryX, summaryY + 28);
     }
-
 
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(12);
@@ -240,39 +233,17 @@ export default function QuotationClient() {
         finalY = summaryY + 28;
     }
 
-
-    // Optional Items Table
     if (formData.optionalItems.length > 0 && formData.optionalItems[0].description) {
         doc.setFontSize(14);
         doc.setFont('helvetica', 'bold');
         doc.text('Optional Services / Add-ons', 14, finalY + 15);
-
-        const optionalTableRows = formData.optionalItems.map((item, index) => {
-             const quantity = Number(item.quantity) || 0;
-            const unitPrice = Number(item.unitPrice) || 0;
-            return [
-                index + 1,
-                item.description,
-                quantity.toString(),
-                `Rs. ${unitPrice.toFixed(2)}`,
-                `Rs. ${(quantity * unitPrice).toFixed(2)}`
-            ]
-        });
-
-        doc.autoTable({
-            head: [tableColumn],
-            body: optionalTableRows,
-            startY: finalY + 20,
-            theme: 'striped',
-            headStyles: { fillColor: [80, 80, 80] } // Gray
-        });
+        const optionalTableRows = formData.optionalItems.map((item, index) => [index + 1, item.description, (Number(item.quantity) || 0).toString(), `Rs. ${(Number(item.unitPrice) || 0).toFixed(2)}`, `Rs. ${((Number(item.quantity) || 0) * (Number(item.unitPrice) || 0)).toFixed(2)}`]);
+        doc.autoTable({ head: [tableColumn], body: optionalTableRows, startY: finalY + 20, theme: 'striped', headStyles: { fillColor: [80, 80, 80] } });
     }
 
-    // Footer
     doc.setFontSize(10);
     doc.text("Thank you for your business!", 14, 280);
     doc.text("eSystemLK - Clarity in Code. Power in Design.", 105, 290, { align: 'center' });
-
 
     if (mode === 'preview') {
       doc.output('dataurlnewwindow');
@@ -281,7 +252,7 @@ export default function QuotationClient() {
     }
   };
 
-  if (!isClient) return null; // Render nothing on the server
+  if (!isClient) return null;
 
   return (
     <form onSubmit={handleSubmit((data) => generatePDF('download'))}>
@@ -289,7 +260,6 @@ export default function QuotationClient() {
             <Image id="logo-for-pdf" src="/logo.png" alt="logo" width={100} height={100} />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Column - Client & Quote Info */}
             <div className="lg:col-span-2 space-y-6">
                 <Card className="bg-card border border-border rounded-2xl shadow-lg">
                     <CardHeader><CardTitle>Client Information</CardTitle></CardHeader>
@@ -301,46 +271,15 @@ export default function QuotationClient() {
                         <Textarea placeholder="Client Address (Optional)" {...register('clientAddress')} className="md:col-span-2" />
                     </CardContent>
                 </Card>
-
                 <Card className="bg-card border border-border rounded-2xl shadow-lg">
                     <CardHeader><CardTitle>Quotation Details</CardTitle></CardHeader>
                     <CardContent className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
                          <Input readOnly placeholder="Quotation Number" {...register('quotationNumber')} />
-                         <Controller
-                            control={control}
-                            name="date"
-                            render={({ field }) => (
-                               <Popover>
-                                <PopoverTrigger asChild>
-                                    <Button variant={"outline"} className={cn("justify-start text-left font-normal", !field.value && "text-muted-foreground")}>
-                                        <CalendarIcon className="mr-2 h-4 w-4" />
-                                        {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent>
-                            </Popover>
-                            )}
-                        />
-                         <Controller
-                            control={control}
-                            name="expiryDate"
-                            render={({ field }) => (
-                               <Popover>
-                                <PopoverTrigger asChild>
-                                    <Button variant={"outline"} className={cn("justify-start text-left font-normal", !field.value && "text-muted-foreground")}>
-                                        <CalendarIcon className="mr-2 h-4 w-4" />
-                                        {field.value ? format(field.value, "PPP") : <span>Pick an expiry date</span>}
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent>
-                            </Popover>
-                            )}
-                        />
+                         <Controller control={control} name="date" render={({ field }) => (<Popover><PopoverTrigger asChild><Button variant={"outline"} className={cn("justify-start text-left font-normal", !field.value && "text-muted-foreground")}><CalendarIcon className="mr-2 h-4 w-4" />{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}</Button></PopoverTrigger><PopoverContent className="w-auto p-0"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent></Popover>)} />
+                         <Controller control={control} name="expiryDate" render={({ field }) => (<Popover><PopoverTrigger asChild><Button variant={"outline"} className={cn("justify-start text-left font-normal", !field.value && "text-muted-foreground")}><CalendarIcon className="mr-2 h-4 w-4" />{field.value ? format(field.value, "PPP") : <span>Pick an expiry date</span>}</Button></PopoverTrigger><PopoverContent className="w-auto p-0"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent></Popover>)} />
                     </CardContent>
                 </Card>
             </div>
-
-             {/* Right Column - Summary & Actions */}
             <div className="lg:col-span-1 space-y-6">
                  <Card className="bg-card border border-border rounded-2xl shadow-lg">
                     <CardHeader><CardTitle>Summary & Actions</CardTitle></CardHeader>
@@ -356,8 +295,6 @@ export default function QuotationClient() {
                            <span className="font-bold">Balance Due</span>
                            <span className="font-bold">Rs. {balanceDue.toFixed(2)}</span>
                         </div>
-
-
                          <div className="pt-4 space-y-2">
                            <Button type="button" variant="outline" className="w-full" onClick={() => generatePDF('preview')}><Eye className="mr-2 h-4 w-4" /> Preview PDF</Button>
                            <Button type="submit" className="w-full"><Download className="mr-2 h-4 w-4" /> Generate & Download PDF</Button>
@@ -366,13 +303,11 @@ export default function QuotationClient() {
                 </Card>
             </div>
         </div>
-
-        {/* Items Table */}
         <div className="mt-8">
             <Card className="bg-card border border-border rounded-2xl shadow-lg">
                 <CardHeader>
                     <CardTitle>Products / Services</CardTitle>
-                    <CardDescription>Add the main items for this quotation.</CardDescription>
+                    <CardDescription>Add items manually or select from your existing services list.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="overflow-x-auto">
@@ -393,24 +328,66 @@ export default function QuotationClient() {
                                         <td><Input type="number" {...register(`items.${index}.quantity`, { valueAsNumber: true })} className="my-1" min="1" required /></td>
                                         <td><Input type="number" step="0.01" {...register(`items.${index}.unitPrice`, { valueAsNumber: true })} className="my-1" min="0" required /></td>
                                         <td><Input readOnly value={((Number(watchedItems[index]?.quantity) || 0) * (Number(watchedItems[index]?.unitPrice) || 0)).toFixed(2)} className="my-1 bg-secondary" /></td>
-                                        <td>
-                                            <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)}>
-                                                <Trash2 className="h-4 w-4 text-destructive" />
-                                            </Button>
-                                        </td>
+                                        <td><Button type="button" variant="ghost" size="icon" onClick={() => remove(index)}><Trash2 className="h-4 w-4 text-destructive" /></Button></td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     </div>
-                    <Button type="button" variant="outline" onClick={() => append({ description: '', quantity: 1, unitPrice: 0 })} className="mt-4">
-                        <Plus className="mr-2 h-4 w-4" /> Add Item
-                    </Button>
+                    <div className="flex gap-4 mt-4">
+                        <Button type="button" variant="outline" onClick={() => append({ description: '', quantity: 1, unitPrice: 0 })}>
+                            <Plus className="mr-2 h-4 w-4" /> Add Item Manually
+                        </Button>
+                        {isPricingLoading ? (
+                             <Skeleton className="h-10 w-48" />
+                        ) : (
+                            <Popover open={isCommandPopoverOpen} onOpenChange={setIsCommandPopoverOpen}>
+                                <PopoverTrigger asChild>
+                                    <Button variant="outline" role="combobox" aria-expanded={isCommandPopoverOpen} className="w-[200px] justify-between">
+                                        Add From Services
+                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-[300px] p-0">
+                                    <Command>
+                                        <CommandInput placeholder="Search service..." />
+                                        <CommandEmpty>No service found.</CommandEmpty>
+                                        <CommandGroup>
+                                            {pricingData.map((category) => (
+                                                'services' in category && category.enabled && category.services.map(service => (
+                                                    service.enabled && (
+                                                        <React.Fragment key={service.name}>
+                                                            {service.tiers.map(tier => (
+                                                                <CommandItem key={tier.name} onSelect={() => onCommandSelect(tier)}>
+                                                                    <Check className={cn("mr-2 h-4 w-4", "opacity-0")} />
+                                                                    {`${service.name} - ${tier.name}`}
+                                                                </CommandItem>
+                                                            ))}
+                                                            {service.addons?.map(addon => (
+                                                                 <CommandItem key={addon.name} onSelect={() => onCommandSelect(addon)}>
+                                                                    <Check className={cn("mr-2 h-4 w-4", "opacity-0")} />
+                                                                    {`${service.name} - ${addon.name}`}
+                                                                </CommandItem>
+                                                            ))}
+                                                        </React.Fragment>
+                                                    )
+                                                ))
+                                            ))}
+                                             {pricingData.filter(c => c.id === 'common-addons' && c.enabled).flatMap(c => 'items' in c ? c.items : []).map(item => (
+                                                <CommandItem key={item.name} onSelect={() => onCommandSelect(item)}>
+                                                    <Check className={cn("mr-2 h-4 w-4", "opacity-0")} />
+                                                    {item.name}
+                                                </CommandItem>
+                                            ))}
+                                        </CommandGroup>
+                                    </Command>
+                                </PopoverContent>
+                            </Popover>
+                        )}
+                    </div>
                 </CardContent>
             </Card>
         </div>
-        
-        {/* Optional Items Table */}
         <div className="mt-8">
             <Card className="bg-card border border-border rounded-2xl shadow-lg">
                 <CardHeader>
@@ -436,55 +413,26 @@ export default function QuotationClient() {
                                         <td><Input type="number" {...register(`optionalItems.${index}.quantity`, { valueAsNumber: true })} className="my-1" min="1" /></td>
                                         <td><Input type="number" step="0.01" {...register(`optionalItems.${index}.unitPrice`, { valueAsNumber: true })} className="my-1" min="0" /></td>
                                         <td><Input readOnly value={((Number(watchedOptionalItems[index]?.quantity) || 0) * (Number(watchedOptionalItems[index]?.unitPrice) || 0)).toFixed(2)} className="my-1 bg-secondary" /></td>
-                                        <td>
-                                            <Button type="button" variant="ghost" size="icon" onClick={() => removeOptional(index)}>
-                                                <Trash2 className="h-4 w-4 text-destructive" />
-                                            </Button>
-                                        </td>
+                                        <td><Button type="button" variant="ghost" size="icon" onClick={() => removeOptional(index)}><Trash2 className="h-4 w-4 text-destructive" /></Button></td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     </div>
-                    <Button type="button" variant="outline" onClick={() => appendOptional({ description: '', quantity: 1, unitPrice: 0 })} className="mt-4">
-                        <Plus className="mr-2 h-4 w-4" /> Add Optional Item
-                    </Button>
+                    <Button type="button" variant="outline" onClick={() => appendOptional({ description: '', quantity: 1, unitPrice: 0 })} className="mt-4"><Plus className="mr-2 h-4 w-4" /> Add Optional Item</Button>
                 </CardContent>
             </Card>
         </div>
-
-        {/* Totals Section */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
             <Card className="bg-card border border-border rounded-2xl shadow-lg lg:col-start-2 xl:col-start-3">
                  <CardHeader><CardTitle>Totals & Payment</CardTitle></CardHeader>
                  <CardContent className="space-y-4">
-                    <div>
-                        <Label className="text-sm font-medium">Discount (%)</Label>
-                        <Input type="number" step="0.01" placeholder="e.g. 5" {...register('discount', { valueAsNumber: true })} min="0" />
-                    </div>
-                    <div>
-                         <Label className="text-sm font-medium">Tax (%)</Label>
-                        <Input type="number" step="0.01" placeholder="e.g. 10" {...register('tax', { valueAsNumber: true })} min="0" />
-                    </div>
-                     <div>
-                         <Label className="text-sm font-medium">Advance Paid (Rs)</Label>
-                        <Input type="number" step="0.01" placeholder="e.g. 10000" {...register('advancePaid', { valueAsNumber: true })} min="0" disabled={isFullyPaid} />
-                    </div>
+                    <div><Label className="text-sm font-medium">Discount (%)</Label><Input type="number" step="0.01" placeholder="e.g. 5" {...register('discount', { valueAsNumber: true })} min="0" /></div>
+                    <div><Label className="text-sm font-medium">Tax (%)</Label><Input type="number" step="0.01" placeholder="e.g. 10" {...register('tax', { valueAsNumber: true })} min="0" /></div>
+                    <div><Label className="text-sm font-medium">Advance Paid (Rs)</Label><Input type="number" step="0.01" placeholder="e.g. 10000" {...register('advancePaid', { valueAsNumber: true })} min="0" disabled={isFullyPaid} /></div>
                     <div className="flex items-center space-x-2 pt-2">
-                        <Controller
-                            control={control}
-                            name="isFullyPaid"
-                            render={({ field }) => (
-                                <Checkbox
-                                    id="isFullyPaid"
-                                    checked={field.value}
-                                    onCheckedChange={field.onChange}
-                                />
-                            )}
-                        />
-                        <Label htmlFor="isFullyPaid" className="text-sm font-medium">
-                            Mark as Fully Paid
-                        </Label>
+                        <Controller control={control} name="isFullyPaid" render={({ field }) => (<Checkbox id="isFullyPaid" checked={field.value} onCheckedChange={field.onChange} />)} />
+                        <Label htmlFor="isFullyPaid" className="text-sm font-medium">Mark as Fully Paid</Label>
                     </div>
                  </CardContent>
             </Card>
