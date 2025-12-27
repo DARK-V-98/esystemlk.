@@ -47,9 +47,13 @@ const allTools: Tool[] = [
   { icon: 'Binary', title: 'Base64 Encoder / Decoder', description: 'Convert text or files to and from Base64 encoding for data transmission.', category: 'Converter', link: '/tools/base64-encoder', style: 'primary' },
   { icon: 'Clock', title: 'Unix Timestamp Converter', description: 'Convert Unix timestamps to human-readable dates and vice-versa. Handles seconds and ms.', category: 'Utility', link: '/tools/timestamp-converter', style: 'outline' },
   { icon: 'CaseSensitive', title: 'Case Converter', description: 'Transform text between different formats like camelCase, snake_case, and kebab-case.', category: 'Text', link: '/tools/case-converter', style: 'secondary' },
+  { icon: 'Fingerprint', title: 'Hash Generator', description: 'Generate MD5, SHA-1, SHA-256, and SHA-512 hashes from text or files.', category: 'Security', link: '/tools/hash-generator', style: 'primary' },
+  { icon: 'KeyRound', title: 'HMAC Generator', description: 'Create HMAC signatures for verifying data integrity and authenticity.', category: 'Security', link: '/tools/hmac-generator', style: 'secondary' },
+  { icon: 'Globe', title: 'My IP Information', description: 'Quickly check your public IP address and related network information.', category: 'Web', link: '/tools/my-ip', style: 'outline' },
+  { icon: 'Ticket', title: 'CSRF Token Generator', description: 'Generate secure, random tokens to protect against Cross-Site Request Forgery.', category: 'Security', link: '/tools/csrf-token-generator', style: 'outline' },
 ];
 
-const categories: ('All' | ToolCategory)[] = ['All', 'Converter', 'Image', 'Security', 'Utility', 'Design', 'Web', 'Text'];
+const categories: ('All' | ToolCategory)[] = ['All', 'Security', 'Converter', 'Image', 'Utility', 'Design', 'Web', 'Text'];
 
 const whyUsItems: { icon: keyof typeof Icons; title: string; description: string }[] = [
     { icon: 'Zap', title: 'Blazing Fast', description: 'All tools run instantly in your browser, with no waiting for uploads or server processing.' },
