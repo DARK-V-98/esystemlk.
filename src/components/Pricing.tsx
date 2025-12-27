@@ -1,3 +1,4 @@
+
 'use client';
 import { Check, Star, Zap, Crown, Rocket, Palette } from "lucide-react";
 import { Button } from "./ui/button";
@@ -23,18 +24,18 @@ const Pricing = () => {
     },
     {
       icon: Palette,
-      name: "Logo & Branding",
-      price: "40",
-      description: "Professional logos & branding for your business",
-      popular: true,
+      name: "Logo Only",
+      price: "20",
+      description: "A professional, high-quality logo for your brand",
+      popular: false,
       features: [
-        "Essential Logo Design",
-        "Business Starter Kit",
-        "Premium Branding Suite",
-        "Full Social Media Kit",
-        "Business Card Design",
-        "Animated Logo Intro",
-        "Unlimited Revisions",
+        "2-3 Custom Logo Concepts",
+        "High-Resolution Files",
+        "Vector Source Files (AI, SVG)",
+        "3 Rounds of Revisions",
+        "Full Ownership",
+        "Fast Turnaround",
+        "Satisfaction Guaranteed",
       ],
     },
     {
@@ -42,7 +43,7 @@ const Pricing = () => {
       name: "Web Application",
       price: "250",
       description: "Ideal for businesses needing custom functionality",
-      popular: false,
+      popular: true,
       features: [
         "Custom Web App Development",
         "User Authentication",
