@@ -1,4 +1,5 @@
 
+import React from 'react';
 import PricingClient from './pricing-client';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
@@ -51,8 +52,9 @@ async function getPricingData() {
 }
 
 
-export default async function PricingPage() {
-  const { pricingData, commonAddons } = await getPricingData();
+export default function PricingPage() {
+  const promise = getPricingData();
+  const [{ pricingData, commonAddons }] = React.use(promise);
 
   return (
     <>

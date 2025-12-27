@@ -5,8 +5,13 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
-export default async function AdminPortfolioPage() {
-  const portfolioItems = await getPortfolioItems();
+export default function AdminPortfolioPage() {
+  // This is a temporary workaround to fetch data in a Server Component
+  // and pass it to a Client Component. In a real app, you might use a library
+  // or a different pattern. This is a simplified approach.
+  const promise = getPortfolioItems();
+  const [initialItems] = React.use(promise);
+
 
   return (
     <div className="container mx-auto py-10 px-4 md:px-6">
@@ -26,7 +31,7 @@ export default async function AdminPortfolioPage() {
         </Button>
       </div>
 
-      <PortfolioManagementClient initialItems={portfolioItems} />
+      <PortfolioManagementClient initialItems={initialItems} />
     </div>
   );
 }
