@@ -136,8 +136,10 @@ export default function LoginPage() {
         <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-br from-primary/10 via-background to-background blur-2xl"></div>
         <div className="p-6 flex-shrink-0 z-10">
           <div className="flex justify-between items-center">
-            <Button variant="ghost" size="icon" onClick={() => router.back()}>
-              <ArrowLeft />
+            <Button asChild variant="ghost" size="icon">
+              <Link href="/">
+                <ArrowLeft />
+              </Link>
             </Button>
           </div>
         </div>
