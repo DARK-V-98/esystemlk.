@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from "react";
@@ -45,6 +46,7 @@ const Navbar = () => {
     { name: "Services", href: "/services" },
     { name: "Pricing", href: "/pricing" },
     { name: "Portfolio", href: "/portfolio" },
+    { name: "Tools", href: "/tools"},
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
   ];
