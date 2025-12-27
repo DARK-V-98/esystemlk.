@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, createContext, useContext, ReactNode } from 'react';
@@ -8,7 +9,8 @@ import {
   signInWithPopup, 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
-  signOut as firebaseSignOut 
+  signOut as firebaseSignOut,
+  updateProfile
 } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
@@ -28,7 +30,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
-  signUpWithEmail: (email: string, password: string) => Promise<void>;
+  signUpWithEmail: (email: string, password: string, displayName: string) => Promise<void>;
   signInWithEmail: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
@@ -60,17 +62,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const userData = userSnap.data();
           setUser(formatUser(firebaseUser, userData.role));
         } else {
-          const newUser = formatUser(firebaseUser);
-          const finalDisplayName = newUser.displayName || newUser.email?.split('@')[0] || 'New User';
-          const finalUser = { ...newUser, displayName: finalDisplayName };
-
+          // This case handles Google sign-in where user doc might not exist yet
+          const finalDisplayName = firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'New User';
+          
           await setDoc(userRef, { 
-            email: finalUser.email, 
+            email: firebaseUser.email, 
             role: 'user', 
-            displayName: finalUser.displayName,
-            photoURL: finalUser.photoURL
+            displayName: finalDisplayName,
+            photoURL: firebaseUser.photoURL
           });
-          setUser(finalUser);
+          
+          const updatedUser = formatUser({ ...firebaseUser, displayName: finalDisplayName });
+          setUser(updatedUser);
         }
       } else {
         setUser(null);
@@ -94,10 +97,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const signUpWithEmail = async (email: string, password: string) => {
+  const signUpWithEmail = async (email: string, password: string, displayName: string) => {
     setLoading(true);
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const firebaseUser = userCredential.user;
+      
+      // Update Firebase Auth profile
+      await updateProfile(firebaseUser, { displayName });
+
+      // Create user document in Firestore
+      const userRef = doc(db, 'users', firebaseUser.uid);
+      await setDoc(userRef, {
+        email: firebaseUser.email,
+        role: 'user',
+        displayName: displayName,
+        photoURL: firebaseUser.photoURL,
+      });
+
       router.push('/admin');
     } catch (error) {
       console.error("Error signing up:", error);

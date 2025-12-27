@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -15,8 +16,13 @@ import { useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const signupSchema = z.object({
+  displayName: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
   password: z.string().min(6, { message: "Password must be at least 6 characters." }),
+  confirmPassword: z.string(),
+}).refine(data => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
 });
 
 type SignupFormValues = z.infer<typeof signupSchema>;
@@ -28,8 +34,10 @@ export default function SignupPage() {
   const form = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
+      displayName: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
@@ -40,7 +48,7 @@ export default function SignupPage() {
   }, [user, loading, router]);
 
   const onSubmit = (data: SignupFormValues) => {
-    signUpWithEmail(data.email, data.password);
+    signUpWithEmail(data.email, data.password, data.displayName);
   };
 
   if (loading || user) {
@@ -59,6 +67,12 @@ export default function SignupPage() {
       );
   }
 
+  const GoogleIcon = () => (
+    <svg className="mr-2 h-5 w-5" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
+        <path fill="currentColor" d="M488 261.8C488 403.3 381.5 512 244 512 109.8 512 0 402.2 0 261.8S109.8 11.6 244 11.6c70.3 0 129.8 27.8 174.4 72.4l-64 64C320.5 112.2 284.1 91 244 91c-82.6 0-150.1 66.6-150.1 170.8s67.5 170.8 150.1 170.8c99.9 0 133-77.2 137.9-117.4H244V261.8h244z"></path>
+    </svg>
+  );
+
   return (
     <div className="container mx-auto flex items-center justify-center min-h-[calc(100vh-10rem)] py-12">
       <Card className="w-full max-w-md bg-card border-border shadow-2xl">
@@ -69,6 +83,24 @@ export default function SignupPage() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="displayName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Display Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Your Name"
+                        {...field}
+                        className="rounded-lg bg-background border-border focus:border-primary focus:ring-0"
+                        disabled={loading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="email"
@@ -107,6 +139,25 @@ export default function SignupPage() {
                   </FormItem>
                 )}
               />
+               <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confirm Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="••••••••"
+                        {...field}
+                        className="rounded-lg bg-background border-border focus:border-primary focus:ring-0"
+                        disabled={loading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-full" size="lg" disabled={loading}>
                 {loading ? "Creating Account..." : "Sign Up"}
               </Button>
@@ -127,6 +178,7 @@ export default function SignupPage() {
             onClick={signInWithGoogle}
             disabled={loading}
           >
+            <GoogleIcon />
             Sign Up with Google
           </Button>
 

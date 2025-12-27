@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "User": {
@@ -10,13 +11,9 @@
           "type": "string",
           "description": "Unique identifier for the User entity."
         },
-        "firstName": {
+        "displayName": {
           "type": "string",
-          "description": "The first name of the user."
-        },
-        "lastName": {
-          "type": "string",
-          "description": "The last name of the user."
+          "description": "The display name of the user."
         },
         "email": {
           "type": "string",
@@ -30,8 +27,7 @@
       },
       "required": [
         "id",
-        "firstName",
-        "lastName",
+        "displayName",
         "email",
         "role"
       ]
@@ -130,6 +126,6 @@
         }
       }
     ],
-    "reasoning": "This Firestore data structure is designed to support the ESystemLk application, focusing on user authentication, session management, and role-based access control for an admin dashboard. The structure prioritizes security, scalability, and debuggability by adhering to the core design principles, especially Authorization Independence. \n\n*   **User Data:** User profiles are stored in `/users/{userId}`. This path-based ownership model simplifies security rules. User documents contain essential information (firstName, lastName, email, role).  Having the `role` inside the document is critical for Authorization Independence; security rules can determine authorization based solely on the contents of the `user` document and the `request.auth.uid`, without needing to perform costly and limiting `get()` operations.\n*   **Session Data:** User session data are stored in `/users/{userId}/sessions/{sessionId}`. This hierarchical path establishes clear ownership (User 1:N Session) and facilitates secure session management.\n*   **Admin Roles:** Admin roles are managed via document existence in `/roles_admin/{userId}`.  This \"existence over content\" approach simplifies admin role checks in security rules.\n\n**Authorization Independence (Denormalization):**\n\n*   User roles are stored directly within the `/users/{userId}` document. This avoids the need for security rules to perform `get()` operations on other documents to determine a user's role.  All necessary authorization data is present within the document being accessed.\n\n**QAPs (Rules are not Filters):**\n\n*   The separation of concerns is achieved by storing user data and session data in distinct collections and subcollections. This enables efficient and secure `list` operations. Access to session data is restricted based on user ownership enforced through path-based rules.\n*   Admin access is granted based on the existence of a document in the `/roles_admin/{userId}` collection, not based on the *content* of any document. This enables secure `list` operations for admin-related data by simply checking for the existence of the role.\n\nThe design supports the integrity of ownership, timestamps, and denormalized data by using atomic operations (transactions/batches) and server-side timestamps. Data clarity and predictability are enhanced through explicit state modeling, predictable schema, and radical consistency in naming conventions."
+    "reasoning": "This Firestore data structure is designed to support the ESystemLk application, focusing on user authentication, session management, and role-based access control for an admin dashboard. The structure prioritizes security, scalability, and debuggability by adhering to the core design principles, especially Authorization Independence. \n\n*   **User Data:** User profiles are stored in `/users/{userId}`. This path-based ownership model simplifies security rules. User documents contain essential information (displayName, email, role).  Having the `role` inside the document is critical for Authorization Independence; security rules can determine authorization based solely on the contents of the `user` document and the `request.auth.uid`, without needing to perform costly and limiting `get()` operations.\n*   **Session Data:** User session data are stored in `/users/{userId}/sessions/{sessionId}`. This hierarchical path establishes clear ownership (User 1:N Session) and facilitates secure session management.\n*   **Admin Roles:** Admin roles are managed via document existence in `/roles_admin/{userId}`.  This \"existence over content\" approach simplifies admin role checks in security rules.\n\n**Authorization Independence (Denormalization):**\n\n*   User roles are stored directly within the `/users/{userId}` document. This avoids the need for security rules to perform `get()` operations on other documents to determine a user's role.  All necessary authorization data is present within the document being accessed.\n\n**QAPs (Rules are not Filters):**\n\n*   The separation of concerns is achieved by storing user data and session data in distinct collections and subcollections. This enables efficient and secure `list` operations. Access to session data is restricted based on user ownership enforced through path-based rules.\n*   Admin access is granted based on the existence of a document in the `/roles_admin/{userId}` collection, not based on the *content* of any document. This enables secure `list` operations for admin-related data by simply checking for the existence of the role.\n\nThe design supports the integrity of ownership, timestamps, and denormalized data by using atomic operations (transactions/batches) and server-side timestamps. Data clarity and predictability are enhanced through explicit state modeling, predictable schema, and radical consistency in naming conventions."
   }
 }
