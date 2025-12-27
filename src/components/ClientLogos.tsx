@@ -29,7 +29,7 @@ const ClientLogos = () => {
             <span className="text-sm font-medium text-primary">Trusted By</span>
           </div>
           <p className="text-muted-foreground">
-            Businesses across Sri Lanka and globally trust us with their digital presence
+            Businesses and government departments across Sri Lanka and globally trust us with their digital presence
           </p>
         </div>
       </div>
