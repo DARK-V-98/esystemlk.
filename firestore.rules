@@ -108,5 +108,18 @@ service cloud.firestore {
       allow update: if false;
       allow delete: if false;
     }
+
+    // Allow read access to public collections, but restrict writes.
+    match /pricing/{docId} {
+        allow read: if true;
+        allow write: if isAdmin(); // Only admins can modify pricing.
+    }
+
+    match /messages/{docId} {
+        allow read: if isAdmin();
+        allow list: if isAdmin();
+        allow create: if true;
+        allow update, delete: if isAdmin();
+    }
   }
 }
