@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
-import { Menu, X, Code, Rocket } from "lucide-react";
+import { Menu, X, Code, Rocket, LogIn } from "lucide-react";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -48,7 +48,7 @@ const Navbar = () => {
             </span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-6">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
@@ -61,11 +61,17 @@ const Navbar = () => {
             ))}
           </div>
 
-          <div className="hidden md:block">
-            <Button asChild variant="hero" size="lg" className="gap-2">
+          <div className="hidden md:flex items-center gap-4">
+             <Button asChild variant="hero" size="lg" className="gap-2">
               <Link href="/contact">
                 <Rocket className="w-5 h-5" />
                 Get Started
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="lg" className="gap-2">
+              <Link href="/login">
+                <LogIn className="w-5 h-5" />
+                Sign In
               </Link>
             </Button>
           </div>
@@ -80,7 +86,7 @@ const Navbar = () => {
 
         <div
           className={`md:hidden overflow-hidden transition-all duration-300 ${
-            isMobileMenuOpen ? "max-h-96 pb-6" : "max-h-0"
+            isMobileMenuOpen ? "max-h-[500px] pb-6" : "max-h-0"
           }`}
         >
           <div className="flex flex-col gap-4">
@@ -98,6 +104,12 @@ const Navbar = () => {
               <Link href="/contact">
                 <Rocket className="w-5 h-5" />
                 Get Started
+              </Link>
+            </Button>
+             <Button asChild variant="outline" size="lg" className="gap-2">
+              <Link href="/login">
+                <LogIn className="w-5 h-5" />
+                Sign In
               </Link>
             </Button>
           </div>
