@@ -44,6 +44,7 @@
     "lucide-react": "^0.417.0",
     "next": "14.2.5",
     "next-themes": "^0.3.0",
+    "papaparse": "^5.4.1",
     "qrcode": "^1.5.3",
     "react": "^18",
     "react-day-picker": "^8.10.1",
@@ -54,11 +55,13 @@
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7",
+    "terser": "^5.31.3",
     "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/jsbarcode": "^3.11.4",
     "@types/node": "^20",
+    "@types/papaparse": "^5.3.14",
     "@types/qrcode": "^1.5.5",
     "@types/react": "^18",
     "@types/react-dom": "^18",
