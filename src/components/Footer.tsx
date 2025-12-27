@@ -13,6 +13,7 @@ import {
   ArrowUp
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 const Footer = () => {
   const scrollToTop = () => {
@@ -28,9 +29,7 @@ const Footer = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div className="lg:col-span-2">
             <a href="#" className="flex items-center gap-2 mb-6 group">
-              <div className="w-10 h-10 gradient-primary rounded-lg flex items-center justify-center animate-pulse-glow">
-                <Code className="w-6 h-6 text-primary-foreground" />
-              </div>
+              <Image src="/logo.png" alt="ESystemLk Logo" width={40} height={40} className="rounded-lg" />
               <span className="text-2xl font-bold">
                 <span className="text-accent-foreground">esystem</span>
                 <span className="text-primary">lk</span>
@@ -46,7 +45,7 @@ const Footer = () => {
                 <a
                   key={index}
                   href="#"
-                  className="w-10 h-10 rounded-lg bg-accent-foreground/5 border border-accent-foreground/10 flex items-center justify-center hover:bg-primary hover:border-primary hover:text-primary-foreground transition-all duration-300 group"
+                  className="w-10 h-10 rounded-full bg-accent-foreground/5 border border-accent-foreground/10 flex items-center justify-center hover:bg-primary hover:border-primary hover:text-primary-foreground transition-all duration-300 group"
                 >
                   <Icon className="w-5 h-5" />
                 </a>
