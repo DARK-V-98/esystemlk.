@@ -3,11 +3,23 @@
 import { useState, useEffect } from "react";
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
-import { Menu, X, Code, Rocket, LogIn } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Menu, X, Code, Rocket, LogIn, LayoutGrid, User as UserIcon, LogOut } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
+import { Skeleton } from "./ui/skeleton";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user, loading, signOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,6 +28,16 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const getInitials = (name: string | null | undefined, email: string | null | undefined) => {
+    if (name) {
+      return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+    }
+    if (email) {
+      return email.substring(0, 2).toUpperCase();
+    }
+    return 'U';
+  };
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -68,12 +90,55 @@ const Navbar = () => {
                 Get Started
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="gap-2">
-              <Link href="/login">
-                <LogIn className="w-5 h-5" />
-                Sign In
-              </Link>
-            </Button>
+            {loading ? (
+              <Skeleton className="h-12 w-12 rounded-full" />
+            ) : user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-12 w-12 rounded-full">
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src={user.photoURL ?? ''} alt={user.displayName ?? ''} />
+                      <AvatarFallback>{getInitials(user.displayName, user.email)}</AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{user.displayName}</p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                     <Link href="/admin">
+                        <LayoutGrid className="mr-2 h-4 w-4" />
+                        <span>Dashboard</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                     <Link href="/admin/users">
+                        <UserIcon className="mr-2 h-4 w-4" />
+                        <span>Profile</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={signOut}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Sign out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button asChild variant="outline" size="lg" className="gap-2">
+                <Link href="/login">
+                  <LogIn className="w-5 h-5" />
+                  Sign In
+                </Link>
+              </Button>
+            )}
           </div>
 
           <button
@@ -106,12 +171,19 @@ const Navbar = () => {
                 Get Started
               </Link>
             </Button>
-             <Button asChild variant="outline" size="lg" className="gap-2">
-              <Link href="/login">
-                <LogIn className="w-5 h-5" />
-                Sign In
-              </Link>
-            </Button>
+            {user ? (
+               <Button onClick={signOut} variant="outline" size="lg" className="gap-2">
+                <LogOut className="w-5 h-5" />
+                Sign Out
+              </Button>
+            ) : (
+              <Button asChild variant="outline" size="lg" className="gap-2">
+                <Link href="/login">
+                  <LogIn className="w-5 h-5" />
+                  Sign In
+                </Link>
+              </Button>
+            )}
           </div>
         </div>
       </div>
