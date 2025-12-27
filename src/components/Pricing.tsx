@@ -121,6 +121,9 @@ const Pricing = () => {
               </div>
 
               <div className="mb-4">
+                {pkg.price !== "Custom" && (
+                    <p className="text-sm text-primary font-medium mb-1">Starting from</p>
+                )}
                 <div className="flex items-baseline gap-1">
                   {pkg.price !== "Custom" && <span className="text-2xl font-bold text-primary">$</span>}
                   <span className="text-4xl font-bold">{pkg.price}</span>
