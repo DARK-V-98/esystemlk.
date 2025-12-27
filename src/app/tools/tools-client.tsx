@@ -30,10 +30,10 @@ const allTools: Tool[] = [
   { icon: 'Terminal', title: 'API Tester', description: 'A lightweight, browser-based client to test your API endpoints. A mini Postman.', category: 'Utility', link: '/tools/api-tester', style: 'primary' },
   { icon: 'Barcode', title: 'Barcode Generator', description: 'Create standard barcodes (EAN, UPC, etc.) for products or inventory management.', category: 'Utility', link: '/tools/barcode-generator', style: 'outline' },
   { icon: 'FileCode', title: 'Code Minifier', description: 'Minify your CSS, JavaScript, and HTML code to reduce file size and improve load times.', category: 'Utility', link: '/tools/code-minifier', style: 'secondary' },
-  { icon: 'Palette', title: 'Color Palette Generator', description: 'Generate beautiful color palettes from a base color or randomly. Get HEX, RGB, and HSL values.', category: 'Design', link: '#', style: 'outline' },
+  { icon: 'Palette', title: 'Color Palette Generator', description: 'Generate beautiful color palettes from a base color or randomly. Get HEX, RGB, and HSL values.', category: 'Design', link: '/tools/color-palette-generator', style: 'outline' },
   { icon: 'Lock', title: 'File Encryption & Decryption', description: 'Secure any file with AES-256 encryption. Lock and unlock files with a password, client-side.', category: 'Security', link: '/tools/file-encryption', style: 'outline' },
   { icon: 'FileImage', title: 'Image Converter', description: 'Convert image files between different formats (e.g., JPG, PNG, WEBP).', category: 'Image', link: '/tools/image-converter', style: 'primary' },
-  { icon: 'Crop', title: 'Image Cropper', description: 'Crop specific areas of an image with an easy-to-use interface. Download only the selected part.', category: 'Image', link: '#', style: 'secondary' },
+  { icon: 'Crop', title: 'Image Cropper', description: 'Crop specific areas of an image with an easy-to-use interface. Download only the selected part.', category: 'Image', link: '/tools/image-cropper', style: 'secondary' },
   { icon: 'MoveHorizontal', title: 'Image Resizer', description: 'Resize images to custom dimensions. Perfect for web, social media, or documents.', category: 'Image', link: '/tools/image-resizer', style: 'outline' },
   { icon: 'Braces', title: 'JSON <> CSV Converter', description: 'Convert JSON files to CSV and vice-versa. Supports nested JSON and file uploads.', category: 'Converter', link: '/tools/json-csv-converter', style: 'outline' },
   { icon: 'Key', title: 'JWT Decoder', description: 'Decode and inspect JSON Web Tokens to view header and payload data securely.', category: 'Security', link: '/tools/jwt-decoder', style: 'outline' },
@@ -41,7 +41,7 @@ const allTools: Tool[] = [
   { icon: 'Shield', title: 'Password Generator', description: 'Create strong, secure passwords with custom length and character settings.', category: 'Security', link: '/tools/password-generator', style: 'outline' },
   { icon: 'FileArchive', title: 'PDF Suite', description: 'Convert images to PDF or extract pages from a PDF file into images.', category: 'Converter', link: '/tools/pdf-suite', style: 'primary' },
   { icon: 'QrCode', title: 'QR Code Generator', description: 'Generate QR codes from any text or URL. Download a high-quality PNG instantly.', category: 'Utility', link: '/tools/qr-code-generator', style: 'outline' },
-  { icon: 'Scan', title: 'QR Code Scanner', description: 'Scan QR codes using your camera or by uploading an image. Details and read code data securely.', category: 'Utility', link: '#', style: 'outline' },
+  { icon: 'Scan', title: 'QR Code Scanner', description: 'Scan QR codes using your camera or by uploading an image. Details and read code data securely.', category: 'Utility', link: '/tools/qr-code-scanner', style: 'outline' },
   { icon: 'Regex', title: 'Regex Tester', description: 'Test and debug your regular expressions with live matching, groups, and replacements.', category: 'Utility', link: '/tools/regex-tester', style: 'secondary' },
 ];
 
