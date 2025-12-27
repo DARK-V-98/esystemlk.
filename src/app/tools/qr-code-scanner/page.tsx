@@ -18,6 +18,7 @@ export default function QrCodeScannerPage() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
     const streamRef = useRef<MediaStream | null>(null);
+    const boundingBoxRef = useRef<HTMLDivElement>(null);
 
 
     const startScan = async () => {
@@ -50,14 +51,18 @@ export default function QrCodeScannerPage() {
         if (videoRef.current) {
             videoRef.current.srcObject = null;
         }
+        if (boundingBoxRef.current) {
+            boundingBoxRef.current.style.display = 'none';
+        }
         setIsScanning(false);
     };
 
     const tick = () => {
-        if (videoRef.current && videoRef.current.readyState === videoRef.current.HAVE_ENOUGH_DATA && canvasRef.current) {
+        if (videoRef.current && videoRef.current.readyState === videoRef.current.HAVE_ENOUGH_DATA && canvasRef.current && boundingBoxRef.current) {
             const video = videoRef.current;
             const canvas = canvasRef.current;
             const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            const boundingBox = boundingBoxRef.current;
             
             if (video.videoHeight === 0) {
                  if (isScanning) requestAnimationFrame(tick);
@@ -76,8 +81,21 @@ export default function QrCodeScannerPage() {
                 
                 if (code) {
                     setScanResult(code.data);
+                    
+                    const { x, y, width, height } = code.location;
+                    const videoRect = video.getBoundingClientRect();
+                    const scaleX = videoRect.width / video.videoWidth;
+                    const scaleY = videoRect.height / video.videoHeight;
+
+                    boundingBox.style.left = `${x * scaleX}px`;
+                    boundingBox.style.top = `${y * scaleY}px`;
+                    boundingBox.style.width = `${width * scaleX}px`;
+                    boundingBox.style.height = `${height * scaleY}px`;
+                    boundingBox.style.display = 'block';
+
                     stopScan();
                 } else if (isScanning) {
+                    if (boundingBox) boundingBox.style.display = 'none';
                     requestAnimationFrame(tick);
                 }
             }
@@ -174,6 +192,7 @@ export default function QrCodeScannerPage() {
                     <div className="bg-black/20 rounded-lg overflow-hidden relative aspect-video flex items-center justify-center">
                         <video ref={videoRef} className="w-full h-full object-cover" hidden={!isScanning} />
                         {!isScanning && <p className="text-muted-foreground">Camera is off</p>}
+                        <div ref={boundingBoxRef} className="absolute border-2 border-primary bg-primary/20" style={{ display: 'none' }} />
                     </div>
                     
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

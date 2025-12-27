@@ -45,8 +45,6 @@ export default function BarcodeGeneratorPage() {
       width: 2,
       height: 100,
       displayValue: true,
-      lineColor: '#ffffff',
-      background: '#00000000' // transparent
     },
   });
   
@@ -78,7 +76,7 @@ export default function BarcodeGeneratorPage() {
       width: data.width,
       height: data.height,
       displayValue: data.displayValue,
-      lineColor: data.lineColor,
+      lineColor: '#ffffff',
       background: 'transparent', // Keep preview background transparent
     });
     setBarcodeValue(data.content);
@@ -94,7 +92,7 @@ export default function BarcodeGeneratorPage() {
             ...barcodeOptions,
             background: '#ffffff', // Set white background for PNG
             lineColor: '#000000', // Set black lines for PNG
-            fontColor: '#000000', // Set black text for PNG
+            fontOptions: 'bold',
             font: "monospace",
             fontSize: 18,
             textMargin: 5
@@ -209,7 +207,7 @@ export default function BarcodeGeneratorPage() {
                 <CardDescription>Your generated barcode will appear below.</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="bg-black/20 p-8 rounded-lg flex flex-col items-center justify-center min-h-[250px]">
+                <div className="bg-white p-8 rounded-lg flex flex-col items-center justify-center min-h-[250px]">
                   {error ? (
                      <div className="text-center text-destructive">
                         <p className="font-bold">Error Generating Barcode</p>

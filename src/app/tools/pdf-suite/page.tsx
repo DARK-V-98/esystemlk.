@@ -66,7 +66,9 @@ export default function PdfSuitePage() {
   };
   
   const convertPdfToImages = async () => {
-    setError('PDF to Image conversion is not yet implemented.');
+    setError('PDF to Image conversion is coming soon!');
+    // PDF-to-image conversion logic would go here.
+    // This is more complex and often requires a library like pdf.js.
   }
 
   const handleProcess = () => {
