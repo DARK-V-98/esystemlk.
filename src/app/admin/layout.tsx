@@ -6,12 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
-interface PrivateRouteProps {
-  children: ReactNode;
-  allowedRoles?: string[];
-}
-
-export default function AdminLayout({ children }: PrivateRouteProps) {
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   const router = useRouter();
   const allowedRoles = ['admin', 'developer'];
@@ -25,7 +20,7 @@ export default function AdminLayout({ children }: PrivateRouteProps) {
     } else if (allowedRoles && !allowedRoles.includes(user.role)) {
       router.replace('/');
     }
-  }, [user, loading, router, allowedRoles]);
+  }, [user, loading, router]);
 
   if (loading || !user) {
     return (
