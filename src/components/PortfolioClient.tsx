@@ -16,52 +16,62 @@ export interface PortfolioItem {
 
 export default function PortfolioClient({ projects }: { projects: PortfolioItem[] }) {
   return (
-    <div>
-      {projects.length === 0 ? (
-        <div className="text-center py-16 bg-black/30 backdrop-blur-lg border border-white/10 rounded-3xl">
-          <h3 className="font-headline text-2xl font-bold">Our work is coming soon!</h3>
-          <p className="text-muted-foreground mt-2">Please check back later to see our amazing projects.</p>
+    <section className="w-full py-20 md:py-28">
+      <div className="container mx-auto px-4 md:px-6">
+        <div className="text-center mb-16">
+            <h2 className="font-headline text-3xl md:text-5xl font-bold tracking-tight">Our Work</h2>
+            <p className="max-w-[700px] mx-auto text-muted-foreground md:text-xl mt-4">
+                Explore a selection of projects that showcase our technical expertise and commitment to quality.
+            </p>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects.map((project) => (
-            <a 
-              href={project.link} 
-              key={project.id} 
-              target={project.link.startsWith('/') ? '_self' : '_blank'}
-              rel="noopener noreferrer" 
-              className="block group"
-            >
-              <Card className="overflow-hidden h-full flex flex-col transition-all duration-300 hover:shadow-xl hover:-translate-y-2 bg-black/30 backdrop-blur-lg border border-white/10 hover:border-white/30 rounded-2xl shadow-lg">
-                {project.imageUrl && (
-                  <div className="overflow-hidden relative">
-                      <Image
-                        src={project.imageUrl}
-                        alt={project.name}
-                        width={600}
-                        height={400}
-                        className="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-110"
-                        data-ai-hint={project.hint}
-                      />
-                      <div className="absolute top-3 right-3 bg-black/50 p-2 rounded-full backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <ArrowUpRight className="w-5 h-5 text-white" />
-                      </div>
-                  </div>
-                )}
-                <CardContent className="p-6 flex flex-col flex-grow">
-                  <h3 className="font-headline text-xl font-semibold mb-2">{project.name}</h3>
-                   {project.description && (
-                    <p className="text-muted-foreground mb-4 flex-grow">{project.description}</p>
-                  )}
-                  <p className="text-sm text-primary hover:underline break-all mt-auto">
-                    {project.link.startsWith('/') ? "View Offering" : project.link.replace(/^https?:\/\//, '')}
-                  </p>
-                </CardContent>
-              </Card>
-            </a>
-          ))}
+        <div>
+        {projects.length === 0 ? (
+            <div className="text-center py-16 bg-black/30 backdrop-blur-lg border border-white/10 rounded-3xl">
+            <h3 className="font-headline text-2xl font-bold">Our work is coming soon!</h3>
+            <p className="text-muted-foreground mt-2">Please check back later to see our amazing projects.</p>
+            </div>
+        ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {projects.map((project) => (
+                <a 
+                href={project.link} 
+                key={project.id} 
+                target={project.link.startsWith('/') ? '_self' : '_blank'}
+                rel="noopener noreferrer" 
+                className="block group"
+                >
+                <Card className="overflow-hidden h-full flex flex-col transition-all duration-300 hover:shadow-xl hover:-translate-y-2 bg-black/30 backdrop-blur-lg border border-white/10 hover:border-white/30 rounded-2xl shadow-lg">
+                    {project.imageUrl && (
+                    <div className="overflow-hidden relative">
+                        <Image
+                            src={project.imageUrl}
+                            alt={project.name}
+                            width={600}
+                            height={400}
+                            className="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-110"
+                            data-ai-hint={project.hint}
+                        />
+                        <div className="absolute top-3 right-3 bg-black/50 p-2 rounded-full backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <ArrowUpRight className="w-5 h-5 text-white" />
+                        </div>
+                    </div>
+                    )}
+                    <CardContent className="p-6 flex flex-col flex-grow">
+                    <h3 className="font-headline text-xl font-semibold mb-2">{project.name}</h3>
+                    {project.description && (
+                        <p className="text-muted-foreground mb-4 flex-grow">{project.description}</p>
+                    )}
+                    <p className="text-sm text-primary hover:underline break-all mt-auto">
+                        {project.link.startsWith('/') ? "View Offering" : project.link.replace(/^https?:\/\//, '')}
+                    </p>
+                    </CardContent>
+                </Card>
+                </a>
+            ))}
+            </div>
+        )}
         </div>
-      )}
-    </div>
+      </div>
+    </section>
   );
 }
