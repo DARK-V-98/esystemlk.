@@ -2,18 +2,21 @@
 import { Building2 } from "lucide-react";
 
 const clients = [
-  "TechVentures",
-  "StyleBoutique",
-  "SilvaExports",
-  "GreenLeaf Cafe",
-  "AutoParts LK",
-  "EduLearn Academy",
-  "BlueSky Hotels",
-  "FreshMart",
-  "MediCare Plus",
-  "BuildRight Construction",
-  "Swift Logistics",
-  "CeylonSpice",
+  "bigcosta constructions",
+  "joshtours",
+  "aaryahardware",
+  "Ceylon Export & Tourism Hub",
+  "flycargolanka",
+  "smartlabs",
+  "colombo district election department of sri lanka",
+  "blindbless",
+  "skillhub",
+  "Pixel Pulse",
+  "Code Catalyst",
+  "Byte Brigade",
+  "Cloud Nexus",
+  "Data Dynamo",
+  "Quantum Leap",
 ];
 
 const ClientLogos = () => {
