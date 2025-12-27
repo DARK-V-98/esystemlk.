@@ -12,7 +12,7 @@ type AnimatedStatProps = {
 
 export default function AnimatedStat({ value, label, animationDelay = 0 }: AnimatedStatProps) {
   const numberRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(numberRef, { once: true, margin: '-50px' });
+  const isInView = useInView(numberRef, { margin: '-50px' });
   
   const numericValue = parseInt(value.replace('+', ''), 10);
   const suffix = value.includes('+') ? '+' : '';
@@ -21,7 +21,7 @@ export default function AnimatedStat({ value, label, animationDelay = 0 }: Anima
     if (isInView && numberRef.current) {
       const node = numberRef.current;
       const controls = animate(0, numericValue, {
-        duration: 2,
+        duration: 3, // Increased duration for a slower animation
         delay: animationDelay,
         ease: 'easeOut',
         onUpdate(value) {
