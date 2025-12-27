@@ -113,7 +113,7 @@ export default function CurrencyConverterPage() {
             </div>
            ) : error ? (
              <div className="text-center text-destructive bg-destructive/10 p-4 rounded-md">
-                <p>Could not load live rates. Using placeholder data.</p>
+                <p>Could not load live rates. Please try again later.</p>
                 <p className="text-xs">{error}</p>
              </div>
            ) : (
