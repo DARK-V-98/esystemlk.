@@ -39,12 +39,12 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       <Hero />
-      <ClientLogos />
       <Services />
       <Process />
       <Pricing />
       <TechStack />
       <Testimonials />
+      <ClientLogos />
       <WhyUs />
       <FAQ />
       <CTABanner />
