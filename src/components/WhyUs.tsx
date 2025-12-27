@@ -130,7 +130,7 @@ const WhyUs = () => {
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-20 pt-16 border-t border-accent-foreground/10">
           {[
-            { value: "500+", label: "Happy Clients" },
+            { value: "400+", label: "Happy Clients" },
             { value: "25+", label: "Websites" },
             { value: "20+", label: "Software Systems" },
             { value: "5+", label: "Web Apps" },
