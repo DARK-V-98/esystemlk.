@@ -1,9 +1,7 @@
-import Link from 'next/link';
-import Image from 'next/image';
+import { Link } from 'react-router-dom';
 import { Facebook, MessageCircle } from 'lucide-react';
-import type { PageVisibility } from '@/app/admin/pages/actions';
 
-export function Footer({ pageSettings }: { pageSettings: PageVisibility }) {
+export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
@@ -11,8 +9,8 @@ export function Footer({ pageSettings }: { pageSettings: PageVisibility }) {
       <div className="container mx-auto px-4 md:px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="flex flex-col items-start">
-            <Link href="/" className="mb-4">
-              <Image src="/logo.png" alt="ESystemLk Logo" width={50} height={50} className="rounded-full" />
+            <Link to="/" className="mb-4">
+              <img src="/logo.png" alt="ESystemLk Logo" width={50} height={50} className="rounded-full" />
             </Link>
             <p className="text-muted-foreground text-sm">
               Your trusted partner for innovative technology solutions.
@@ -21,16 +19,16 @@ export function Footer({ pageSettings }: { pageSettings: PageVisibility }) {
           <div>
             <h4 className="font-headline font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
-              {pageSettings?.showServices && <li><Link href="/services" className="text-sm text-muted-foreground hover:text-primary">Services</Link></li>}
-              <li><Link href="/portfolio" className="text-sm text-muted-foreground hover:text-primary">Portfolio</Link></li>
-              {pageSettings?.showPricing && <li><Link href="/pricing" className="text-sm text-muted-foreground hover:text-primary">Pricing</Link></li>}
-              <li><Link href="/contact" className="text-sm text-muted-foreground hover:text-primary">Contact</Link></li>
+              <li><Link to="/services" className="text-sm text-muted-foreground hover:text-primary">Services</Link></li>
+              <li><Link to="/portfolio" className="text-sm text-muted-foreground hover:text-primary">Portfolio</Link></li>
+              <li><Link to="/pricing" className="text-sm text-muted-foreground hover:text-primary">Pricing</Link></li>
+              <li><Link to="/contact" className="text-sm text-muted-foreground hover:text-primary">Contact</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="font-headline font-semibold mb-4">Legal</h4>
             <ul className="space-y-2">
-              <li><Link href="/privacy-policy" className="text-sm text-muted-foreground hover:text-primary">Policies</Link></li>
+              <li><Link to="/privacy-policy" className="text-sm text-muted-foreground hover:text-primary">Policies</Link></li>
             </ul>
           </div>
           <div>

@@ -2,37 +2,32 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
+import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Menu, X, User, LogOut, LayoutDashboard } from 'lucide-react';
-import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/use-auth';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '../ui/skeleton';
-import type { PageVisibility } from '@/app/admin/pages/actions';
 
-const allNavLinks = [
-  { href: '/', label: 'Home', key: 'showHome' },
-  { href: '/about', label: 'About', key: 'showAbout' },
-  { href: '/services', label: 'Services', key: 'showServices' },
-  { href: '/portfolio', label: 'Portfolio', key: 'showPortfolio' },
-  { href: '/pricing', label: 'Pricing', key: 'showPricing' },
-  { href: '/testimonials', label: 'Testimonials', key: 'showTestimonials' },
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/about', label: 'About' },
+  { href: '/services', label: 'Services' },
+  { href: '/portfolio', label: 'Portfolio' },
+  { href: '/pricing', label: 'Pricing' },
+  { href: '/testimonials', label: 'Testimonials' },
+  { href: '/contact', label: 'Contact' },
 ];
 
-export function Header({ pageSettings }: { pageSettings: PageVisibility }) {
+export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const pathname = usePathname();
+  const location = useLocation();
+  const pathname = location.pathname;
   const { user, loading, signOut } = useAuth();
 
-  const navLinks = allNavLinks.filter(link => {
-    if (link.key === 'showHome' || link.key === 'showAbout' || link.key === 'showPortfolio') return true;
-    return pageSettings[link.key as keyof PageVisibility] !== false;
-  });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -71,7 +66,7 @@ export function Header({ pageSettings }: { pageSettings: PageVisibility }) {
             <DropdownMenuSeparator />
             {['admin', 'developer'].includes(user.role) && (
               <DropdownMenuItem asChild>
-                <Link href="/admin">
+                <Link to="/admin">
                   <LayoutDashboard className="mr-2 h-4 w-4" />
                   <span>Dashboard</span>
                 </Link>
@@ -87,7 +82,7 @@ export function Header({ pageSettings }: { pageSettings: PageVisibility }) {
     }
     return (
       <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full">
-        <Link href="/login">Login</Link>
+        <Link to="/login">Login</Link>
       </Button>
     );
   };
@@ -99,15 +94,15 @@ export function Header({ pageSettings }: { pageSettings: PageVisibility }) {
     )}>
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex h-20 items-center justify-between">
-          <Link href="/" className="flex items-center">
-            <Image src="/logo.png" alt="ESystemLk Logo" width={50} height={50} priority className="rounded-full" />
+          <Link to="/" className="flex items-center">
+            <img src="/logo.png" alt="ESystemLk Logo" width={50} height={50} className="rounded-full" />
           </Link>
 
           <nav className="hidden md:flex items-center gap-6">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
-                href={link.href}
+                to={link.href}
                 className={cn(
                   "text-sm font-medium transition-colors hover:text-primary",
                   pathname === link.href ? "text-primary font-semibold" : "text-muted-foreground"
@@ -136,7 +131,7 @@ export function Header({ pageSettings }: { pageSettings: PageVisibility }) {
             {navLinks.map((link) => (
               <Link
                 key={link.href}
-                href={link.href}
+                to={link.href}
                 className={cn(
                   "text-lg font-medium transition-colors hover:text-primary w-full text-center py-2 rounded-md",
                   pathname === link.href ? "text-primary" : "text-foreground"

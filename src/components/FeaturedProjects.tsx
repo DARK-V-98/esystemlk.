@@ -2,8 +2,7 @@
 "use client";
 
 import { useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -58,7 +57,7 @@ export default function FeaturedProjects({ items }: FeaturedProjectsProps) {
                 exit={{ opacity: 0, x: 50 }}
                 transition={{ duration: 0.5 }}
               >
-                <Image
+                <img
                   src={currentItem.imageUrl}
                   alt={currentItem.name}
                   width={800}
@@ -82,7 +81,7 @@ export default function FeaturedProjects({ items }: FeaturedProjectsProps) {
                 ))}
               </div>
               <Button asChild size="lg" variant="link" className="text-white text-lg px-0 justify-start w-fit group">
-                <Link href="/portfolio">View Full Portfolio <ArrowRight className="ml-2 transition-transform duration-300 group-hover:translate-x-2" /></Link>
+                <Link to="/portfolio">View Full Portfolio <ArrowRight className="ml-2 transition-transform duration-300 group-hover:translate-x-2" /></Link>
               </Button>
             </div>
           </div>

@@ -1,10 +1,10 @@
 import { Outlet } from "react-router-dom";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 
 const MainLayout = () => (
   <div className="min-h-screen bg-background flex flex-col">
-    <Navbar />
+    <Header />
     <main className="flex-grow">
       <Outlet />
     </main>

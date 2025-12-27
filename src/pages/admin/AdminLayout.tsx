@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { useAuth } from '@/hooks/use-auth';
 import { Navigate, Outlet } from 'react-router-dom';
 import { Skeleton } from '@/components/ui/skeleton';
-import Navbar from '@/components/Navbar';
+import { Header } from '@/components/layout/Header';
 
 const AdminLayout = () => {
   const { user, loading } = useAuth();
@@ -38,7 +38,7 @@ const AdminLayout = () => {
 
   return (
     <>
-      <Navbar />
+      <Header />
       <div className="pt-20">
         <Outlet />
       </div>
