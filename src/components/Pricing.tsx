@@ -1,4 +1,3 @@
-
 'use client';
 import { Check, Star, Zap, Crown, Rocket, Palette } from "lucide-react";
 import { Button } from "./ui/button";
@@ -59,6 +58,22 @@ const Pricing = () => {
         "Lifetime Free Maintenance",
       ],
       cta: "Contact Us",
+    },
+     {
+      icon: Rocket,
+      name: "Enterprise Pack",
+      price: "Custom",
+      description: "For large-scale, mission-critical applications.",
+      popular: false,
+      features: [
+        "Everything in Software System",
+        "Dedicated Development Team",
+        "Advanced CI/CD & DevOps",
+        "Service Level Agreement (SLA)",
+        "On-premise Deployment Option",
+        "Scalability & Performance Architecture",
+        "24/7 Enterprise Support",
+      ],
     },
   ];
 
@@ -198,7 +213,7 @@ const Pricing = () => {
         </div>
 
         <h3 className="text-2xl md:text-3xl font-bold text-center mb-10">Software & Web Development</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {softwarePackages.map(renderPackage)}
         </div>
 
