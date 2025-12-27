@@ -1,3 +1,4 @@
+
 import { 
   Shield, 
   Clock, 
@@ -112,10 +113,14 @@ const WhyUs = () => {
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-20 pt-16 border-t border-accent-foreground/10">
           {[
-            { value: "100+", label: "Happy Clients" },
-            { value: "150+", label: "Projects Completed" },
-            { value: "5+", label: "Years Experience" },
-            { value: "24/7", label: "Support Available" },
+            { value: "500+", label: "Happy Clients" },
+            { value: "15+", label: "Websites" },
+            { value: "10+", label: "Software Systems" },
+            { value: "5+", label: "Web Apps" },
+            { value: "100+", label: "Logo Designs" },
+            { value: "100+", label: "IT Services" },
+            { value: "10+", label: "On-Site Managements" },
+            { value: "6+", label: "Years Experience" },
           ].map((stat, index) => (
             <div
               key={stat.label}
