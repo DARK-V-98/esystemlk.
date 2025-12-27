@@ -8,7 +8,7 @@ export default function ContactPage() {
       <section className="w-full py-20 md:py-28">
         <div className="container mx-auto px-4 md:px-6 text-center bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl py-12">
           <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">Get in Touch</h1>
-          <p className="max-w-[700px] mx-auto text-muted-foreground md:text-xl mt-4">
+          <p className="max-w-[700px] mx-auto text-white/80 md:text-xl mt-4">
             We'd love to hear from you. Whether you have a question about our services or want to start a project, our team is ready to answer all your questions.
           </p>
         </div>
@@ -29,7 +29,7 @@ export default function ContactPage() {
                                 <Mail className="w-8 h-8 text-primary" />
                                 <div>
                                     <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">Email</h3>
-                                    <p className="text-muted-foreground">esystemlk@gmail.com</p>
+                                    <p className="text-white/80">esystemlk@gmail.com</p>
                                 </div>
                             </a>
                         </CardContent>
@@ -40,7 +40,7 @@ export default function ContactPage() {
                                 <MessageCircle className="w-8 h-8 text-primary" />
                                 <div>
                                     <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">WhatsApp</h3>
-                                    <p className="text-muted-foreground">+94 76 571 1396</p>
+                                    <p className="text-white/80">+94 76 571 1396</p>
                                 </div>
                             </a>
                         </CardContent>
@@ -51,7 +51,7 @@ export default function ContactPage() {
                                 <Phone className="w-8 h-8 text-primary" />
                                 <div>
                                     <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">Phone</h3>
-                                    <p className="text-muted-foreground">+94 76 571 1396</p>
+                                    <p className="text-white/80">+94 76 571 1396</p>
                                 </div>
                             </a>
                         </CardContent>
