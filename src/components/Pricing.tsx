@@ -86,7 +86,7 @@ const Pricing = () => {
             <span>Transparent Pricing</span>
           </div>
           <h2 className="text-3xl md:text-5xl font-bold mb-4">
-            Affordable <span className="text-primary">Packages</span>
+            Affordable <span className="text-gradient">Packages</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
             Quality solutions at unbeatable prices. All packages include free lifetime service warranty!
@@ -155,7 +155,7 @@ const Pricing = () => {
         </div>
 
         {/* Terms note */}
-        <div className="text-center mt-16 space-y-2">
+        <div className="text-center mt-12 space-y-2">
           <p className="text-muted-foreground text-sm">
             * All packages include our exclusive{" "}
             <span className="text-primary font-semibold">Free Lifetime Service Warranty</span>.

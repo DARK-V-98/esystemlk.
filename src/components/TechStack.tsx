@@ -17,25 +17,24 @@ import { Cpu, Layers, Cloud, Database } from "lucide-react";
 
 const TechStack = () => {
   const technologies = [
-    { icon: SiReact, name: "React", color: "#61DAFB", isSimple: true, href: "https://reactjs.org/" },
-    { icon: SiNextdotjs, name: "Next.js", color: "var(--foreground)", isSimple: true, href: "https://nextjs.org/" },
-    { icon: SiVite, name: "Vite", color: "#646CFF", isSimple: true, href: "https://vitejs.dev/" },
-    { icon: SiTypescript, name: "TypeScript", color: "#3178C6", isSimple: true, href: "https://www.typescriptlang.org/" },
-    { icon: SiTailwindcss, name: "Tailwind CSS", color: "#06B6D4", isSimple: true, href: "https://tailwindcss.com/" },
-    { icon: SiNodedotjs, name: "Node.js", color: "#339933", isSimple: true, href: "https://nodejs.org/" },
-    { icon: SiMongodb, name: "MongoDB", color: "#47A248", isSimple: true, href: "https://www.mongodb.com/" },
-    { icon: SiPostgresql, name: "PostgreSQL", color: "#4169E1", isSimple: true, href: "https://www.postgresql.org/" },
-    { icon: SiFirebase, name: "Firebase", color: "#FFCA28", isSimple: true, href: "https://firebase.google.com/" },
-    { icon: SiDocker, name: "Docker", color: "#2496ED", isSimple: true, href: "https://www.docker.com/" },
-    { icon: Cloud, name: "AWS", color: "#FF9900", isSimple: false, href: "https://aws.amazon.com/" },
-    { icon: SiFigma, name: "Figma", color: "#F24E1E", isSimple: true, href: "https://www.figma.com/" },
-    { icon: SiWordpress, name: "WordPress", color: "#21759B", isSimple: true, href: "https://wordpress.org/" },
-    { icon: Database, name: "SQL", color: "#4479A1", isSimple: false, href: "#" },
+    { icon: SiReact, name: "React", color: "#61DAFB", href: "https://reactjs.org/" },
+    { icon: SiNextdotjs, name: "Next.js", color: "var(--foreground)", href: "https://nextjs.org/" },
+    { icon: SiVite, name: "Vite", color: "#646CFF", href: "https://vitejs.dev/" },
+    { icon: SiTypescript, name: "TypeScript", color: "#3178C6", href: "https://www.typescriptlang.org/" },
+    { icon: SiTailwindcss, name: "Tailwind CSS", color: "#06B6D4", href: "https://tailwindcss.com/" },
+    { icon: SiNodedotjs, name: "Node.js", color: "#339933", href: "https://nodejs.org/" },
+    { icon: SiMongodb, name: "MongoDB", color: "#47A248", href: "https://www.mongodb.com/" },
+    { icon: SiPostgresql, name: "PostgreSQL", color: "#4169E1", href: "https://www.postgresql.org/" },
+    { icon: SiFirebase, name: "Firebase", color: "#FFCA28", href: "https://firebase.google.com/" },
+    { icon: SiDocker, name: "Docker", color: "#2496ED", href: "https://www.docker.com/" },
+    { icon: Cloud, name: "AWS", color: "#FF9900", href: "https://aws.amazon.com/" },
+    { icon: SiFigma, name: "Figma", color: "#F24E1E", href: "https://www.figma.com/" },
+    { icon: SiWordpress, name: "WordPress", color: "#21759B", href: "https://wordpress.org/" },
+    { icon: Database, name: "SQL", color: "#4479A1", href: "#" },
   ];
 
   return (
     <section id="tech" className="py-24 bg-background relative overflow-hidden">
-      {/* Background decoration */}
       <div className="absolute inset-0 opacity-5">
         <div
           className="absolute inset-0"

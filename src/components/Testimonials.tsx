@@ -59,6 +59,7 @@ const Testimonials = () => {
   useEffect(() => {
     const interval = setInterval(nextSlide, 5000);
     return () => clearInterval(interval);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAnimating]);
 
   return (
@@ -77,7 +78,7 @@ const Testimonials = () => {
             <span>Client Stories</span>
           </div>
           <h2 className="text-3xl md:text-5xl font-bold mb-4">
-            What Our <span className="text-primary">Clients Say</span>
+            What Our <span className="text-gradient">Clients Say</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
             Real feedback from real clients who trusted us with their digital projects.
