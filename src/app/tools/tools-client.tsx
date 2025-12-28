@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
@@ -45,7 +44,6 @@ const allTools: Tool[] = [
   { icon: 'Key', title: 'JWT Decoder', description: 'Decode and inspect JSON Web Tokens to view header and payload data securely.', category: 'Security', link: '/tools/jwt-decoder', style: 'outline' },
   { icon: 'FileText', title: 'Markdown to HTML', description: 'Convert Markdown text into clean HTML with a live preview and copy-to-clipboard functionality.', category: 'Converter', link: '/tools/markdown-to-html', style: 'outline' },
   { icon: 'Shield', title: 'Password Generator', description: 'Create strong, secure passwords with custom length and character settings.', category: 'Security', link: '/tools/password-generator', style: 'outline' },
-  { icon: 'FileArchive', title: 'PDF Suite', description: 'Merge, split, compress, and convert images to PDF, all in one place.', category: 'Documents', link: '/tools/pdf-suite', style: 'primary' },
   { icon: 'QrCode', title: 'QR Code Generator', description: 'Generate QR codes from any text or URL. Download a high-quality PNG instantly.', category: 'Utility', link: '/tools/qr-code-generator', style: 'outline' },
   { icon: 'Scan', title: 'QR Code Scanner', description: 'Scan QR codes using your camera or by uploading an image. Details and read code data securely.', category: 'Utility', link: '/tools/qr-code-scanner', style: 'outline' },
   { icon: 'Regex', title: 'Regex Tester', description: 'Test and debug your regular expressions with live matching, groups, and replacements.', category: 'Web', link: '/tools/regex-tester', style: 'secondary' },

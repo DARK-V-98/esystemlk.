@@ -4,7 +4,6 @@ import {
   CandlestickChart,
   Server,
   FileImage,
-  FileArchive,
   ShieldCheck,
   Wrench,
   ArrowRight,
@@ -39,16 +38,16 @@ const featuredTools = [
     link: "/tools/image-compressor",
   },
   {
-    icon: FileArchive,
-    title: "PDF Suite",
-    description: "Merge, split, and convert images to PDF, all in one place.",
-    link: "/tools/pdf-suite",
-  },
-  {
     icon: ShieldCheck,
     title: "SSL Checker",
     description: "Check a domain's SSL certificate for expiry and issuer details.",
     link: "/tools/ssl-checker",
+  },
+  {
+    icon: Wrench,
+    title: "More Tools",
+    description: "Explore over 25 free, secure, and browser-based utilities.",
+    link: "/tools",
   },
 ];
 
