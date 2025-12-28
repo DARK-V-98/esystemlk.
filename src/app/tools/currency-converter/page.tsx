@@ -1,12 +1,14 @@
 
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Repeat, Loader2 } from 'lucide-react';
+import { ArrowLeft, Repeat, Loader2, Info } from 'lucide-react';
 import Link from 'next/link';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 interface Currency {
     symbol: string;
@@ -18,93 +20,202 @@ interface Currency {
     name_plural: string;
 }
 
+interface FreeApiRates {
+    [key: string]: number;
+}
+
+interface PrimaryApiRates {
+    [key: string]: { value: number };
+}
+
+type ApiSource = 'primary' | 'free';
+
+// --- Sub-components for better organization ---
+
+const CurrencyInput = ({ amount, onAmountChange, currency, onCurrencyChange, currencies, isDisabled = false }: {
+    amount: string;
+    onAmountChange: (value: string) => void;
+    currency: string;
+    onCurrencyChange: (value: string) => void;
+    currencies: Currency[];
+    isDisabled?: boolean;
+}) => (
+    <div className="w-full space-y-2">
+        <Input 
+            type="number" 
+            value={amount} 
+            onChange={(e) => onAmountChange(e.target.value)} 
+            className="text-lg h-12" 
+            disabled={isDisabled}
+        />
+        <select 
+            value={currency} 
+            onChange={(e) => onCurrencyChange(e.target.value)} 
+            className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
+            disabled={isDisabled}
+        >
+            {currencies.map(c => <option key={c.code} value={c.code}>{c.code} - {c.name}</option>)}
+        </select>
+    </div>
+);
+
+const LoadingState = () => (
+    <div className="flex items-center justify-center h-48">
+      <Loader2 className="w-8 h-8 animate-spin text-primary" />
+    </div>
+);
+
+const ErrorState = ({ message, onRetry }: { message: string, onRetry: () => void }) => (
+    <div className="text-center text-destructive bg-destructive/10 p-4 rounded-md">
+        <p>Could not load live rates.</p>
+        <p className="text-xs">{message}</p>
+        <Button onClick={onRetry} variant="destructive" size="sm" className="mt-4">Retry</Button>
+    </div>
+);
+
+// --- Main Page Component ---
+
 export default function CurrencyConverterPage() {
+  // State for API selection
+  const [apiSource, setApiSource] = useState<ApiSource>('primary');
+  
+  // State for Primary API
+  const [primaryRates, setPrimaryRates] = useState<PrimaryApiRates | null>(null);
+  const [primaryCurrencies, setPrimaryCurrencies] = useState<Record<string, Currency> | null>(null);
+  const [isPrimaryLoading, setIsPrimaryLoading] = useState(false);
+  const [primaryError, setPrimaryError] = useState<string | null>(null);
+  
+  // State for Free API
+  const [freeRates, setFreeRates] = useState<FreeApiRates | null>(null);
+  const [isFreeLoading, setIsFreeLoading] = useState(false);
+  const [freeError, setFreeError] = useState<string | null>(null);
+
+  // State for Converter UI
   const [amount, setAmount] = useState('1');
+  const [convertedAmount, setConvertedAmount] = useState('');
   const [fromCurrency, setFromCurrency] = useState('USD');
   const [toCurrency, setToCurrency] = useState('EUR');
-  const [convertedAmount, setConvertedAmount] = useState('');
-  const [rates, setRates] = useState<Record<string, number> | null>(null);
-  const [currencies, setCurrencies] = useState<Record<string, Currency> | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [lastChanged, setLastChanged] = useState<'amount' | 'converted'>('amount');
 
-  useEffect(() => {
-    async function fetchRates() {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const response = await fetch('/api/currency-rates');
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to fetch exchange rates.');
-        }
-        const result = await response.json();
-        if (result.rates && result.currencies) {
-            setRates(result.rates);
-            setCurrencies(result.currencies);
-        } else {
-             throw new Error('Invalid data from currency API.');
-        }
-      } catch (e) {
-        setError(e instanceof Error ? e.message : 'An unknown error occurred.');
-      } finally {
-        setIsLoading(false);
+  // Fetch data from Primary API
+  const fetchPrimaryData = async () => {
+    setIsPrimaryLoading(true);
+    setPrimaryError(null);
+    try {
+      const response = await fetch('/api/currency-rates');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to fetch exchange rates.');
       }
-    }
-    fetchRates();
-  }, []);
-
-  const calculateConversion = () => {
-    if (!rates) return;
-
-    if (lastChanged === 'amount') {
-        const amountNum = parseFloat(amount);
-        if (isNaN(amountNum)) {
-            setConvertedAmount('');
-            return;
-        }
-        const fromRate = rates[fromCurrency];
-        const toRate = rates[toCurrency];
-        
-        if (!fromRate || !toRate) {
-            setConvertedAmount('N/A');
-            return;
-        }
-        const baseAmount = amountNum / fromRate; // Convert input amount to base currency (USD)
-        const finalAmount = baseAmount * toRate;
-
-        setConvertedAmount(finalAmount.toFixed(4));
-    } else { // lastChanged === 'converted'
-        const convertedNum = parseFloat(convertedAmount);
-        if (isNaN(convertedNum)) {
-            setAmount('');
-            return;
-        }
-        const fromRate = rates[fromCurrency];
-        const toRate = rates[toCurrency];
-        
-        if (!fromRate || !toRate) {
-            setAmount('N/A');
-            return;
-        }
-        const baseAmount = convertedNum / toRate; // Convert output amount to base currency (USD)
-        const finalAmount = baseAmount * fromRate;
-        setAmount(finalAmount.toFixed(4));
+      const result = await response.json();
+      if (result.rates && result.currencies) {
+          setPrimaryRates(result.rates);
+          setPrimaryCurrencies(result.currencies);
+      } else {
+           throw new Error('Invalid data from primary currency API.');
+      }
+    } catch (e) {
+      setPrimaryError(e instanceof Error ? e.message : 'An unknown error occurred.');
+    } finally {
+      setIsPrimaryLoading(false);
     }
   };
 
+  // Fetch data from Free API
+  const fetchFreeData = async () => {
+    setIsFreeLoading(true);
+    setFreeError(null);
+    try {
+        const response = await fetch('/api/free-currency-rates');
+        if (!response.ok) throw new Error('Failed to fetch free rates.');
+        const result = await response.json();
+        setFreeRates(result.rates);
+    } catch (e) {
+        setFreeError(e instanceof Error ? e.message : 'An unknown error occurred.');
+    } finally {
+        setIsFreeLoading(false);
+    }
+  };
+
+  // Determine current active state based on selected API
+  const isLoading = apiSource === 'primary' ? isPrimaryLoading : isFreeLoading;
+  const error = apiSource === 'primary' ? primaryError : freeError;
+  const rates = apiSource === 'primary' ? primaryRates : freeRates;
+
+  const currencyOptions = useMemo(() => {
+    if (primaryCurrencies) {
+      return Object.values(primaryCurrencies).sort((a,b) => a.name.localeCompare(b.name));
+    }
+    // Fallback for free API if primary currencies aren't available
+    if (freeRates) {
+       return Object.keys(freeRates).map(code => ({ code, name: code } as Currency)).sort((a,b) => a.name.localeCompare(b.name));
+    }
+    return [];
+  }, [primaryCurrencies, freeRates]);
+  
+  // Effect to fetch data when component mounts or API source changes
   useEffect(() => {
-    calculateConversion();
+    if (apiSource === 'primary' && !primaryRates) {
+      fetchPrimaryData();
+    } else if (apiSource === 'free' && !freeRates) {
+      fetchFreeData();
+    }
+  }, [apiSource, primaryRates, freeRates]);
+
+  // Conversion calculation logic
+  useEffect(() => {
+    if (!rates) return;
+
+    const fromRate = apiSource === 'primary' ? (rates as PrimaryApiRates)?.[fromCurrency]?.value : (rates as FreeApiRates)?.[fromCurrency];
+    const toRate = apiSource === 'primary' ? (rates as PrimaryApiRates)?.[toCurrency]?.value : (rates as FreeApiRates)?.[toCurrency];
+
+    if (fromRate === undefined || toRate === undefined) {
+      setConvertedAmount('');
+      setAmount('');
+      return;
+    }
+    
+    // Determine base currency for calculations
+    const primaryBase = 'USD'; // currencyapi.com base
+    const freeBase = 'USD'; // exchangerate-api.com base
+    const baseCurrency = apiSource === 'primary' ? primaryBase : freeBase;
+    
+    const rateOfFrom = fromRate;
+    const rateOfTo = toRate;
+
+    if (lastChanged === 'amount') {
+        const amountNum = parseFloat(amount);
+        if (isNaN(amountNum)) return setConvertedAmount('');
+        
+        // Convert to base currency first, then to target currency
+        const amountInBase = amountNum / rateOfFrom;
+        const finalAmount = amountInBase * rateOfTo;
+        setConvertedAmount(finalAmount.toFixed(4));
+
+    } else { // lastChanged === 'converted'
+        const convertedNum = parseFloat(convertedAmount);
+        if (isNaN(convertedNum)) return setAmount('');
+        
+        // Convert to base currency first, then to target currency
+        const amountInBase = convertedNum / rateOfTo;
+        const finalAmount = amountInBase * rateOfFrom;
+        setAmount(finalAmount.toFixed(4));
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [amount, convertedAmount, fromCurrency, toCurrency, rates, lastChanged]);
+  }, [amount, convertedAmount, fromCurrency, toCurrency, rates, lastChanged, apiSource]);
   
   const handleSwap = () => {
     setFromCurrency(toCurrency);
     setToCurrency(fromCurrency);
   };
   
-  const currencyOptions = currencies ? Object.values(currencies).sort((a,b) => a.name.localeCompare(b.name)) : [];
+  const handleRetry = () => {
+    if (apiSource === 'primary') {
+      fetchPrimaryData();
+    } else {
+      fetchFreeData();
+    }
+  }
 
   return (
     <div className="container mx-auto py-10 px-4 md:px-6">
@@ -124,45 +235,56 @@ export default function CurrencyConverterPage() {
         </Button>
       </div>
 
-      <Card className="max-w-2xl mx-auto bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
+      <Card className="max-w-4xl mx-auto bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
         <CardHeader>
-          <CardTitle>Convert Currency</CardTitle>
-          <CardDescription>Enter an amount and select your currencies.</CardDescription>
+          <div className="flex justify-between items-center">
+            <div>
+              <CardTitle>Convert Currency</CardTitle>
+              <CardDescription>Enter an amount and select your currencies.</CardDescription>
+            </div>
+            <div className="flex items-center space-x-2">
+                <Label htmlFor="api-switch" className={apiSource === 'free' ? 'text-primary' : 'text-muted-foreground'}>Free Rates</Label>
+                <Switch 
+                  id="api-switch" 
+                  checked={apiSource === 'primary'} 
+                  onCheckedChange={(checked) => setApiSource(checked ? 'primary' : 'free')}
+                />
+                <Label htmlFor="api-switch" className={apiSource === 'primary' ? 'text-primary' : 'text-muted-foreground'}>Live Rates</Label>
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="space-y-6">
-           {isLoading ? (
-            <div className="flex items-center justify-center h-48">
-              <Loader2 className="w-8 h-8 animate-spin text-primary" />
-            </div>
-           ) : error ? (
-             <div className="text-center text-destructive bg-destructive/10 p-4 rounded-md">
-                <p>Could not load live rates. Please try again later.</p>
-                <p className="text-xs">{error}</p>
-             </div>
-           ) : (
-            <div className="flex flex-col sm:flex-row gap-4 items-center">
-              <div className="w-full space-y-2">
-                  <label className="text-sm font-medium">From</label>
-                  <Input type="number" value={amount} onChange={(e) => { setAmount(e.target.value); setLastChanged('amount'); }} className="text-lg h-12" />
-                  <select value={fromCurrency} onChange={(e) => setFromCurrency(e.target.value)} className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm">
-                      {currencyOptions.map(c => <option key={c.code} value={c.code}>{c.code} - {c.name}</option>)}
-                  </select>
-              </div>
-              <Button variant="ghost" size="icon" onClick={handleSwap} className="shrink-0 mt-8">
-                <Repeat className="w-5 h-5 text-primary"/>
-              </Button>
-              <div className="w-full space-y-2">
-                  <label className="text-sm font-medium">To</label>
-                  <Input type="number" value={convertedAmount} onChange={(e) => { setConvertedAmount(e.target.value); setLastChanged('converted'); }} className="text-lg h-12" />
-                   <select value={toCurrency} onChange={(e) => setToCurrency(e.target.value)} className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm">
-                      {currencyOptions.map(c => <option key={c.code} value={c.code}>{c.code} - {c.name}</option>)}
-                  </select>
-              </div>
-            </div>
+           {isLoading ? <LoadingState /> : error ? <ErrorState message={error} onRetry={handleRetry} /> : (
+            <>
+                <div className="flex flex-col sm:flex-row gap-4 items-center">
+                  <CurrencyInput 
+                      amount={amount}
+                      onAmountChange={(value) => { setAmount(value); setLastChanged('amount'); }}
+                      currency={fromCurrency}
+                      onCurrencyChange={setFromCurrency}
+                      currencies={currencyOptions}
+                      isDisabled={currencyOptions.length === 0}
+                  />
+                  <Button variant="ghost" size="icon" onClick={handleSwap} className="shrink-0 mt-8">
+                    <Repeat className="w-5 h-5 text-primary"/>
+                  </Button>
+                  <CurrencyInput 
+                      amount={convertedAmount}
+                      onAmountChange={(value) => { setConvertedAmount(value); setLastChanged('converted'); }}
+                      currency={toCurrency}
+                      onCurrencyChange={setToCurrency}
+                      currencies={currencyOptions}
+                      isDisabled={currencyOptions.length === 0}
+                  />
+                </div>
+                <div className="text-center text-muted-foreground text-xs p-4 rounded-md bg-black/20 flex items-center justify-center gap-2">
+                  <Info className="w-4 h-4" />
+                  {apiSource === 'primary' 
+                    ? 'Using live rates provided by currencyapi.com.' 
+                    : 'Using free-tier rates. Data may be less frequent.'}
+                </div>
+            </>
            )}
-          <p className="text-xs text-muted-foreground text-center">
-            Rates are updated periodically and provided by currencyapi.com.
-          </p>
         </CardContent>
       </Card>
     </div>
