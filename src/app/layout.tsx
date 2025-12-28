@@ -10,7 +10,7 @@ import { FirebaseClientProvider } from "@/firebase/client-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 const siteConfig = {
-  name: "ESystemLk",
+  name: "esystemlk",
   url: "https://www.esystemlk.xyz",
   ogImage: "https://www.esystemlk.xyz/logo.png",
   description: "ESystemLk is a leading software company in Sri Lanka, specializing in custom web development, web applications, and software systems with lifetime free maintenance.",

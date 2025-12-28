@@ -20,6 +20,7 @@ import { useAuthContext, useAuth } from "@/hooks/use-auth";
 import { Skeleton } from "./ui/skeleton";
 import { cn } from "@/lib/utils";
 import { Separator } from "./ui/separator";
+import { ScrollArea } from "./ui/scroll-area";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -58,7 +59,7 @@ const Navbar = () => {
   
   const MobileMenu = () => (
     <div className="flex flex-col h-full">
-        <SheetHeader className="p-6 border-b">
+        <SheetHeader className="p-6 border-b flex-shrink-0">
           <SheetTitle asChild>
             <Link href="/" className="flex items-center gap-2 group" onClick={() => setIsMobileMenuOpen(false)}>
               <Image src="/logo.png" alt="ESystemLk Logo" width={30} height={30} className="rounded-lg" />
@@ -69,49 +70,54 @@ const Navbar = () => {
             </Link>
           </SheetTitle>
         </SheetHeader>
-
-        {user && (
-          <div className="p-6 border-b">
-            <div className="flex items-center gap-4 mb-4">
-              <Avatar className="h-12 w-12">
-                <AvatarImage src={user.photoURL ?? ''} alt={user.displayName ?? ''} />
-                <AvatarFallback>{getInitials(user.displayName, user.email)}</AvatarFallback>
-              </Avatar>
-              <div className="truncate">
-                <p className="font-semibold truncate">{user.displayName}</p>
-                <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+        
+        <ScrollArea className="flex-grow">
+          <div className="p-6">
+            {user && (
+              <div className="pb-6 border-b mb-6">
+                <div className="flex items-center gap-4 mb-4">
+                  <Avatar className="h-12 w-12">
+                    <AvatarImage src={user.photoURL ?? ''} alt={user.displayName ?? ''} />
+                    <AvatarFallback>{getInitials(user.displayName, user.email)}</AvatarFallback>
+                  </Avatar>
+                  <div className="truncate">
+                    <p className="font-semibold truncate">{user.displayName}</p>
+                    <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2">
+                   <Button asChild variant="ghost" className="justify-start">
+                      <Link href="/admin" onClick={() => setIsMobileMenuOpen(false)}>
+                        <LayoutGrid className="mr-2 h-4 w-4" />
+                        <span>Dashboard</span>
+                      </Link>
+                  </Button>
+                   <Button asChild variant="ghost" className="justify-start">
+                      <Link href="/admin/users" onClick={() => setIsMobileMenuOpen(false)}>
+                        <UserIcon className="mr-2 h-4 w-4" />
+                        <span>Profile</span>
+                      </Link>
+                  </Button>
+                </div>
               </div>
-            </div>
-            <div className="flex flex-col gap-2">
-               <Button asChild variant="ghost" className="justify-start">
-                  <Link href="/admin" onClick={() => setIsMobileMenuOpen(false)}>
-                    <LayoutGrid className="mr-2 h-4 w-4" />
-                    <span>Dashboard</span>
-                  </Link>
-              </Button>
-               <Button asChild variant="ghost" className="justify-start">
-                  <Link href="/admin/users" onClick={() => setIsMobileMenuOpen(false)}>
-                    <UserIcon className="mr-2 h-4 w-4" />
-                    <span>Profile</span>
-                  </Link>
-              </Button>
+            )}
+
+            <div className="flex flex-col gap-4">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className="text-muted-foreground hover:text-primary transition-colors duration-300 font-medium text-lg py-2 rounded-md"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {link.name}
+                </Link>
+              ))}
             </div>
           </div>
-        )}
+        </ScrollArea>
 
-        <div className="flex flex-col gap-4 p-6 flex-grow">
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              href={link.href}
-              className="text-muted-foreground hover:text-primary transition-colors duration-300 font-medium text-lg py-2 rounded-md"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {link.name}
-            </Link>
-          ))}
-        </div>
-        <div className="p-6 border-t border-border flex flex-col gap-4">
+        <div className="p-6 border-t border-border flex-shrink-0 flex flex-col gap-4">
           {user ? (
              <Button variant="outline" size="lg" className="gap-2 w-full" onClick={() => { signOut(); setIsMobileMenuOpen(false); }}>
                 <LogOut className="w-5 h-5" />
