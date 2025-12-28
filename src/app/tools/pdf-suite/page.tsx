@@ -97,7 +97,12 @@ export default function PdfSuitePage() {
         copiedPages.forEach(page => mergedPdf.addPage(page));
       }
       const mergedPdfBytes = await mergedPdf.save();
-      const blob = new Blob([mergedPdfBytes.buffer.slice(0)], { type: 'application/pdf' });
+      const arrayBuffer = mergedPdfBytes instanceof Uint8Array
+  ? mergedPdfBytes.buffer.slice(mergedPdfBytes.byteOffset, mergedPdfBytes.byteOffset + mergedPdfBytes.byteLength)
+  : mergedPdfBytes;
+
+const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+
 
 
       const url = URL.createObjectURL(blob);
