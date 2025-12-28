@@ -242,7 +242,7 @@ const Navbar = () => {
                   <Menu className="w-6 h-6" />
                 </button>
               </SheetTrigger>
-              <SheetContent side="right" className="p-0">
+              <SheetContent side="right" className="p-0 w-[80vw] sm:max-w-sm">
                 <MobileMenu />
               </SheetContent>
             </Sheet>
