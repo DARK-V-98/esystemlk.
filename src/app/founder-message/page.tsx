@@ -61,12 +61,11 @@ const FounderMessagePage = () => {
                 transition={{ type: "spring", stiffness: 300 }}
               >
                 <Image
-                  src="https://placehold.co/400x400.png"
+                  src="/va.jpg"
                   alt="R.M.T. Vishwa Vidarshana"
                   width={400}
                   height={400}
-                  className="rounded-full w-48 h-48 mx-auto mb-6 border-4 border-primary shadow-lg"
-                  data-ai-hint="male founder portrait"
+                  className="rounded-full w-48 h-48 mx-auto mb-6 border-4 border-primary shadow-lg object-cover"
                 />
               </motion.div>
               <h2 className="font-headline text-2xl font-bold">R.M.T. Vishwa Vidarshana</h2>
