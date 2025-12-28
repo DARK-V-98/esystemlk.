@@ -139,7 +139,7 @@ export default function AboutPage() {
             </div>
             <div className="order-1 md:order-2 overflow-hidden rounded-2xl">
               <Image
-                src="https://placehold.co/600x400.png"
+                src="/r.jpg"
                 alt="Our team collaborating"
                 width={600}
                 height={400}
