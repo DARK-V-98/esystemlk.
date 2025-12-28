@@ -45,7 +45,10 @@ export default function QrCodeScannerPage() {
                 if (code) {
                     setScanResult(code.data);
                     
-                    const { x, y, width, height } = code.location.topLeftCorner; // Corrected property access
+                    const { x, y } = code.location.topLeftCorner;
+                    const width = code.location.topRightCorner.x - x;
+                    const height = code.location.bottomLeftCorner.y - y;
+                    
                     const videoRect = video.getBoundingClientRect();
                     
                     if (videoRect.width > 0 && video.videoWidth > 0) {
@@ -54,8 +57,8 @@ export default function QrCodeScannerPage() {
 
                         boundingBox.style.left = `${x * scaleX}px`;
                         boundingBox.style.top = `${y * scaleY}px`;
-                        boundingBox.style.width = `${(code.location.topRightCorner.x - x) * scaleX}px`;
-                        boundingBox.style.height = `${(code.location.bottomLeftCorner.y - y) * scaleY}px`;
+                        boundingBox.style.width = `${width * scaleX}px`;
+                        boundingBox.style.height = `${height * scaleY}px`;
                         boundingBox.style.display = 'block';
                     }
 
