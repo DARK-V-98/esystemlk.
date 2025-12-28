@@ -15,13 +15,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Menu, X, Code, Rocket, LogIn, LayoutGrid, User as UserIcon, LogOut } from "lucide-react";
-import { useAuthContext } from "@/hooks/use-auth";
+import { useAuthContext, useAuth } from "@/hooks/use-auth";
 import { Skeleton } from "./ui/skeleton";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { user, loading, signOut } = useAuthContext();
+  const { user, loading } = useAuthContext();
+  const { signOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
