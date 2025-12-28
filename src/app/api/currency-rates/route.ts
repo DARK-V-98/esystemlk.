@@ -7,27 +7,31 @@ export async function GET() {
     return NextResponse.json({ error: 'API key is not configured.' }, { status: 500 });
   }
 
-  // Use the v1 endpoint as per the provided documentation.
-  const url = `https://api.currencyapi.com/v1/latest`;
+  const headers = { 'apikey': apiKey };
 
   try {
-    // Send the API key in the 'apikey' header for better security.
-    const response = await fetch(url, {
-      headers: {
-        'apikey': apiKey
-      },
-      next: {
-        revalidate: 3600 // Revalidate every hour
-      }
-    });
+    // Fetch both latest rates and currencies list in parallel
+    const [ratesResponse, currenciesResponse] = await Promise.all([
+      fetch('https://api.currencyapi.com/v1/latest', { headers, next: { revalidate: 3600 } }),
+      fetch('https://api.currencyapi.com/v1/currencies', { headers, next: { revalidate: 86400 } }) // Currencies list doesn't change often
+    ]);
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to fetch from currency API');
+    if (!ratesResponse.ok) {
+      const errorData = await ratesResponse.json();
+      throw new Error(`Failed to fetch rates: ${errorData.message || ratesResponse.statusText}`);
+    }
+     if (!currenciesResponse.ok) {
+      const errorData = await currenciesResponse.json();
+      throw new Error(`Failed to fetch currencies: ${errorData.message || currenciesResponse.statusText}`);
     }
     
-    const data = await response.json();
-    return NextResponse.json(data);
+    const ratesData = await ratesResponse.json();
+    const currenciesData = await currenciesResponse.json();
+    
+    return NextResponse.json({
+        rates: ratesData.data,
+        currencies: currenciesData.data
+    });
 
   } catch (error) {
     const message = error instanceof Error ? error.message : 'An unknown error occurred';

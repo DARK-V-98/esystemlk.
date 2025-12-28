@@ -8,16 +8,15 @@ import { Input } from '@/components/ui/input';
 import { ArrowLeft, Repeat, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 
-const currencies = [
-  { code: 'USD', name: 'US Dollar' },
-  { code: 'EUR', name: 'Euro' },
-  { code: 'LKR', name: 'Sri Lankan Rupee' },
-  { code: 'INR', name: 'Indian Rupee' },
-  { code: 'GBP', name: 'British Pound' },
-  { code: 'JPY', name: 'Japanese Yen' },
-  { code: 'AUD', name: 'Australian Dollar' },
-  { code: 'CAD', name: 'Canadian Dollar' },
-];
+interface Currency {
+    symbol: string;
+    name: string;
+    symbol_native: string;
+    decimal_digits: number;
+    rounding: number;
+    code: string;
+    name_plural: string;
+}
 
 export default function CurrencyConverterPage() {
   const [amount, setAmount] = useState('1');
@@ -25,6 +24,7 @@ export default function CurrencyConverterPage() {
   const [toCurrency, setToCurrency] = useState('LKR');
   const [convertedAmount, setConvertedAmount] = useState('');
   const [rates, setRates] = useState<Record<string, { value: number }> | null>(null);
+  const [currencies, setCurrencies] = useState<Record<string, Currency> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastChanged, setLastChanged] = useState<'amount' | 'converted'>('amount');
@@ -36,13 +36,15 @@ export default function CurrencyConverterPage() {
       try {
         const response = await fetch('/api/currency-rates');
         if (!response.ok) {
-          throw new Error('Failed to fetch exchange rates.');
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to fetch exchange rates.');
         }
         const result = await response.json();
-        if (result.data) {
-            setRates(result.data);
+        if (result.rates && result.currencies) {
+            setRates(result.rates);
+            setCurrencies(result.currencies);
         } else {
-             throw new Error(result.message || 'Invalid data from currency API.');
+             throw new Error('Invalid data from currency API.');
         }
       } catch (e) {
         setError(e instanceof Error ? e.message : 'An unknown error occurred.');
@@ -62,7 +64,7 @@ export default function CurrencyConverterPage() {
             setConvertedAmount('');
             return;
         }
-        // Conversion: (amount / fromRate) * toRate
+        const baseRate = rates['USD']?.value ?? 1;
         const fromRate = rates[fromCurrency]?.value ?? 0;
         const toRate = rates[toCurrency]?.value ?? 0;
         
@@ -70,8 +72,10 @@ export default function CurrencyConverterPage() {
             setConvertedAmount('N/A');
             return;
         }
-        const rate = toRate / fromRate;
-        setConvertedAmount((amountNum * rate).toFixed(2));
+        const rateInUsd = amountNum / fromRate;
+        const finalAmount = rateInUsd * toRate;
+
+        setConvertedAmount(finalAmount.toFixed(4));
     } else { // lastChanged === 'converted'
         const convertedNum = parseFloat(convertedAmount);
         if (isNaN(convertedNum)) {
@@ -85,19 +89,23 @@ export default function CurrencyConverterPage() {
             setAmount('N/A');
             return;
         }
-        const rate = fromRate / toRate;
-        setAmount((convertedNum * rate).toFixed(2));
+        const rateInUsd = convertedNum / toRate;
+        const finalAmount = rateInUsd * fromRate;
+        setAmount(finalAmount.toFixed(4));
     }
   };
 
   useEffect(() => {
     calculateConversion();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [amount, convertedAmount, fromCurrency, toCurrency, rates, lastChanged]);
   
   const handleSwap = () => {
     setFromCurrency(toCurrency);
     setToCurrency(fromCurrency);
   };
+  
+  const currencyOptions = currencies ? Object.values(currencies).sort((a,b) => a.name.localeCompare(b.name)) : [];
 
   return (
     <div className="container mx-auto py-10 px-4 md:px-6">
@@ -138,7 +146,7 @@ export default function CurrencyConverterPage() {
                   <label className="text-sm font-medium">From</label>
                   <Input type="number" value={amount} onChange={(e) => { setAmount(e.target.value); setLastChanged('amount'); }} className="text-lg h-12" />
                   <select value={fromCurrency} onChange={(e) => setFromCurrency(e.target.value)} className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm">
-                      {currencies.map(c => <option key={c.code} value={c.code}>{c.name} ({c.code})</option>)}
+                      {currencyOptions.map(c => <option key={c.code} value={c.code}>{c.code} - {c.name}</option>)}
                   </select>
               </div>
               <Button variant="ghost" size="icon" onClick={handleSwap} className="shrink-0 mt-8">
@@ -148,7 +156,7 @@ export default function CurrencyConverterPage() {
                   <label className="text-sm font-medium">To</label>
                   <Input type="number" value={convertedAmount} onChange={(e) => { setConvertedAmount(e.target.value); setLastChanged('converted'); }} className="text-lg h-12" />
                    <select value={toCurrency} onChange={(e) => setToCurrency(e.target.value)} className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm">
-                      {currencies.map(c => <option key={c.code} value={c.code}>{c.name} ({c.code})</option>)}
+                      {currencyOptions.map(c => <option key={c.code} value={c.code}>{c.code} - {c.name}</option>)}
                   </select>
               </div>
             </div>
