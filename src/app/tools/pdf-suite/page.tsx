@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from 'react';
@@ -97,7 +96,7 @@ export default function PdfSuitePage() {
         copiedPages.forEach(page => mergedPdf.addPage(page));
       }
       const mergedPdfBytes = await mergedPdf.save();
-      const blob = new Blob([mergedPdfBytes.buffer], { type: 'application/pdf' });
+      const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
 
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
