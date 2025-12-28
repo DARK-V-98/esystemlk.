@@ -9,7 +9,11 @@ import { ArrowLeft, Loader2, FileImage, Image as ImageIcon, Download } from 'luc
 import Link from 'next/link';
 import jsPDF from 'jspdf';
 import { PDFDocument } from 'pdf-lib';
+import * as pdfjs from 'pdfjs-dist/legacy/build/pdf';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+
 
 export default function PdfSuitePage() {
   const [mode, setMode] = useState<'img-to-pdf' | 'pdf-to-img'>('img-to-pdf');
@@ -86,10 +90,6 @@ export default function PdfSuitePage() {
 
     try {
       const pdfBytes = await files[0].arrayBuffer();
-      const pdfDoc = await PDFDocument.load(pdfBytes);
-      const { default: pdfjs } = await import('pdfjs-dist/build/pdf');
-      pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
-
       const pdf = await pdfjs.getDocument({ data: pdfBytes }).promise;
 
       for (let i = 0; i < pdf.numPages; i++) {
