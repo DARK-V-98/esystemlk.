@@ -121,7 +121,7 @@ export default function PdfSuitePage() {
       copiedPages.forEach(page => newPdf.addPage(page));
 
       const newPdfBytes = await newPdf.save();
-      const blob = new Blob([newPdfBytes], { type: 'application/pdf' });
+      const blob = new Blob([new Uint8Array(newPdfBytes.buffer, newPdfBytes.byteOffset, newPdfBytes.length)], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -185,7 +185,7 @@ export default function PdfSuitePage() {
 
       <Card className="max-w-2xl mx-auto bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
         <CardHeader>
-          <Tabs value={mode} onValueChange={(v) => setMode(v as any)} className="w-full">
+          <Tabs value={mode} onValueChange={(v) => { setMode(v as any); setFiles([]); setError(null); }} className="w-full">
             <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="img-to-pdf"><ImageIcon className="mr-2 h-4 w-4" /> Images to PDF</TabsTrigger>
                 <TabsTrigger value="split"><Split className="mr-2 h-4 w-4" /> Split</TabsTrigger>
@@ -231,5 +231,3 @@ export default function PdfSuitePage() {
     </div>
   );
 }
-
-    
