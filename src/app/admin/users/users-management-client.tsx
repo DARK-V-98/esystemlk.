@@ -54,7 +54,7 @@ export default function UsersManagementClient({ initialUsers }: { initialUsers: 
 
   const handleRoleChange = (uid: string, role: UserRole) => {
     startTransition(() => {
-      updateUserRole(firestore, uid, role).then(result => {
+      updateUserRole(uid, role).then(result => {
         if (result.success) {
           setUsers(prev => prev.map(u => u.uid === uid ? { ...u, role } : u));
         }
@@ -70,7 +70,7 @@ export default function UsersManagementClient({ initialUsers }: { initialUsers: 
   const handleDeleteUser = () => {
     if (!userToDelete) return;
     startTransition(() => {
-        deleteUser(firestore, userToDelete.uid).then(result => {
+        deleteUser(userToDelete.uid).then(result => {
             if (result.success) {
                 setUsers(prev => prev.filter(u => u.uid !== userToDelete.uid));
             }
