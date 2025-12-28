@@ -1,5 +1,7 @@
 
 import ToolsClient from './tools-client';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Sparkles } from "lucide-react";
 
 export default function ToolsPage() {
   return (
@@ -18,6 +20,13 @@ export default function ToolsPage() {
       
       <section className="w-full pb-20 md:pb-28">
         <div className="container mx-auto px-4 md:px-6">
+            <Alert className="mb-12 bg-primary/5 border-primary/20">
+                <Sparkles className="h-4 w-4 text-primary" />
+                <AlertTitle className="font-bold text-primary">Constant Improvement!</AlertTitle>
+                <AlertDescription className="text-muted-foreground">
+                    Heads up! We're busy upgrading some of our tools to bring you even better versions in the future. While we work our magic, you might notice some features are simplified for now. Thanks for your patience—we're excited to give you the best experience possible, completely free!
+                </AlertDescription>
+            </Alert>
           <ToolsClient />
         </div>
       </section>
