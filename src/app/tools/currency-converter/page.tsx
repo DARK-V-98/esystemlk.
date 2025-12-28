@@ -25,7 +25,7 @@ interface FreeApiRates {
 }
 
 interface PrimaryApiRates {
-    [key: string]: number;
+    [key: string]: { value: number };
 }
 interface PrimaryApiCurrencies {
      [key: string]: Currency;
@@ -102,6 +102,7 @@ export default function CurrencyConverterPage() {
 
   // Fetch data from Primary API
   const fetchPrimaryData = async () => {
+    if (isPrimaryLoading || primaryRates) return;
     setIsPrimaryLoading(true);
     setPrimaryError(null);
     try {
@@ -126,6 +127,7 @@ export default function CurrencyConverterPage() {
 
   // Fetch data from Free API
   const fetchFreeData = async () => {
+    if (isFreeLoading || freeRates) return;
     setIsFreeLoading(true);
     setFreeError(null);
     try {
@@ -133,12 +135,30 @@ export default function CurrencyConverterPage() {
         if (!response.ok) throw new Error('Failed to fetch free rates.');
         const result = await response.json();
         setFreeRates(result.rates);
-    } catch (e) => {
+    } catch (e) {
         setFreeError(e instanceof Error ? e.message : 'An unknown error occurred.');
     } finally {
         setIsFreeLoading(false);
     }
   };
+  
+  useEffect(() => {
+    // Always fetch primary data first for the full currency list
+    if (!primaryCurrencies && !isPrimaryLoading && !primaryError) {
+      fetchPrimaryData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Effect to fetch data when API source changes
+  useEffect(() => {
+    if (apiSource === 'primary' && !primaryRates && !primaryError) {
+      fetchPrimaryData();
+    } else if (apiSource === 'free' && !freeRates && !freeError) {
+      fetchFreeData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [apiSource]);
 
   // Determine current active state based on selected API
   const isLoading = apiSource === 'primary' ? isPrimaryLoading : isFreeLoading;
@@ -151,37 +171,23 @@ export default function CurrencyConverterPage() {
     }
     return [];
   }, [primaryCurrencies]);
-  
-  // Effect to fetch data when component mounts or API source changes
-  useEffect(() => {
-    if (apiSource === 'primary' && !primaryRates && !primaryError) {
-      fetchPrimaryData();
-    } else if (apiSource === 'free' && !freeRates && !freeError) {
-      // Always fetch primary first for the currency list if it's not there
-      if (!primaryCurrencies) {
-        fetchPrimaryData();
-      }
-      fetchFreeData();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [apiSource]);
 
   // Conversion calculation logic
   useEffect(() => {
     if (!rates) return;
 
-    let fromRate: number | undefined;
-    let toRate: number | undefined;
+    let fromRateValue: number | undefined;
+    let toRateValue: number | undefined;
     
     if (apiSource === 'primary' && primaryRates) {
-        fromRate = primaryRates[fromCurrency];
-        toRate = primaryRates[toCurrency];
+        fromRateValue = primaryRates[fromCurrency]?.value;
+        toRateValue = primaryRates[toCurrency]?.value;
     } else if (apiSource === 'free' && freeRates) {
-        fromRate = freeRates[fromCurrency];
-        toRate = freeRates[toCurrency];
+        fromRateValue = freeRates[fromCurrency];
+        toRateValue = freeRates[toCurrency];
     }
-
-    if (fromRate === undefined || toRate === undefined) {
+    
+    if (fromRateValue === undefined || toRateValue === undefined) {
         if (lastChanged === 'amount') setConvertedAmount('');
         else setAmount('');
         return;
@@ -193,8 +199,8 @@ export default function CurrencyConverterPage() {
             setConvertedAmount('');
             return;
         }
-        const amountInBase = amountNum / fromRate;
-        const finalAmount = amountInBase * toRate;
+        const amountInBase = amountNum / fromRateValue;
+        const finalAmount = amountInBase * toRateValue;
         setConvertedAmount(finalAmount.toFixed(4));
 
     } else { // lastChanged === 'converted'
@@ -203,12 +209,12 @@ export default function CurrencyConverterPage() {
             setAmount('');
             return;
         }
-        const amountInBase = convertedNum / toRate;
-        const finalAmount = amountInBase * fromRate;
+        const amountInBase = convertedNum / toRateValue;
+        const finalAmount = amountInBase * fromRateValue;
         setAmount(finalAmount.toFixed(4));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [amount, convertedAmount, fromCurrency, toCurrency, rates, lastChanged, apiSource, primaryRates, freeRates]);
+  }, [amount, convertedAmount, fromCurrency, toCurrency, rates, lastChanged, apiSource]);
   
   const handleSwap = () => {
     setFromCurrency(toCurrency);
@@ -223,8 +229,9 @@ export default function CurrencyConverterPage() {
     }
   }
 
+  const isFormDisabled = !primaryCurrencies;
   const isInputDisabled = isLoading || !rates || currencyOptions.length === 0;
-  const isFormDisabled = isPrimaryLoading || !primaryCurrencies;
+
 
   return (
     <div className="container mx-auto py-10 px-4 md:px-6">
@@ -257,6 +264,7 @@ export default function CurrencyConverterPage() {
                   id="api-switch" 
                   checked={apiSource === 'primary'} 
                   onCheckedChange={(checked) => setApiSource(checked ? 'primary' : 'free')}
+                  disabled={isFormDisabled}
                 />
                 <Label htmlFor="api-switch" className={apiSource === 'primary' ? 'text-primary' : 'text-muted-foreground'}>Live Rates</Label>
             </div>
