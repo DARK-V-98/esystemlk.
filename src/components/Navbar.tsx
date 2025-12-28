@@ -19,6 +19,7 @@ import { Menu, X, Code, Rocket, LogIn, LayoutGrid, User as UserIcon, LogOut } fr
 import { useAuthContext, useAuth } from "@/hooks/use-auth";
 import { Skeleton } from "./ui/skeleton";
 import { cn } from "@/lib/utils";
+import { Separator } from "./ui/separator";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -68,6 +69,36 @@ const Navbar = () => {
             </Link>
           </SheetTitle>
         </SheetHeader>
+
+        {user && (
+          <div className="p-6 border-b">
+            <div className="flex items-center gap-4 mb-4">
+              <Avatar className="h-12 w-12">
+                <AvatarImage src={user.photoURL ?? ''} alt={user.displayName ?? ''} />
+                <AvatarFallback>{getInitials(user.displayName, user.email)}</AvatarFallback>
+              </Avatar>
+              <div className="truncate">
+                <p className="font-semibold truncate">{user.displayName}</p>
+                <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+              </div>
+            </div>
+            <div className="flex flex-col gap-2">
+               <Button asChild variant="ghost" className="justify-start">
+                  <Link href="/admin" onClick={() => setIsMobileMenuOpen(false)}>
+                    <LayoutGrid className="mr-2 h-4 w-4" />
+                    <span>Dashboard</span>
+                  </Link>
+              </Button>
+               <Button asChild variant="ghost" className="justify-start">
+                  <Link href="/admin/users" onClick={() => setIsMobileMenuOpen(false)}>
+                    <UserIcon className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </Link>
+              </Button>
+            </div>
+          </div>
+        )}
+
         <div className="flex flex-col gap-4 p-6 flex-grow">
           {navLinks.map((link) => (
             <Link
@@ -81,19 +112,18 @@ const Navbar = () => {
           ))}
         </div>
         <div className="p-6 border-t border-border flex flex-col gap-4">
-          <Button asChild variant="hero" size="lg" className="gap-2 w-full">
-            <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)}>
-              <Rocket className="w-5 h-5" />
-              Get Started
-            </Link>
-          </Button>
-          {!user && !loading && (
-            <Button asChild variant="outline" size="lg" className="gap-2 w-full">
-              <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                <LogIn className="w-5 h-5" />
-                Sign In
-              </Link>
-            </Button>
+          {user ? (
+             <Button variant="outline" size="lg" className="gap-2 w-full" onClick={() => { signOut(); setIsMobileMenuOpen(false); }}>
+                <LogOut className="w-5 h-5" />
+                Sign Out
+              </Button>
+          ) : (
+             <Button asChild variant="hero" size="lg" className="gap-2 w-full">
+                <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                  <LogIn className="w-5 h-5" />
+                  Sign In
+                </Link>
+              </Button>
           )}
         </div>
       </div>
@@ -191,48 +221,6 @@ const Navbar = () => {
 
           {/* Mobile Menu */}
           <div className="md:hidden flex items-center gap-2">
-             {loading ? (
-              <Skeleton className="h-10 w-10 rounded-full" />
-            ) : user ? (
-               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                    <Avatar className="h-9 w-9">
-                      <AvatarImage src={user.photoURL ?? ''} alt={user.displayName ?? ''} />
-                      <AvatarFallback>{getInitials(user.displayName, user.email)}</AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end" forceMount>
-                  <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">{user.displayName}</p>
-                      <p className="text-xs leading-none text-muted-foreground">
-                        {user.email}
-                      </p>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                   <DropdownMenuItem asChild>
-                     <Link href="/admin" onClick={() => setIsMobileMenuOpen(false)}>
-                        <LayoutGrid className="mr-2 h-4 w-4" />
-                        <span>Dashboard</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                     <Link href="/admin/users" onClick={() => setIsMobileMenuOpen(false)}>
-                        <UserIcon className="mr-2 h-4 w-4" />
-                        <span>Profile</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => { signOut(); setIsMobileMenuOpen(false); }}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Sign out</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : null }
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
                  <button
