@@ -73,7 +73,7 @@ const allTools: Tool[] = [
   { icon: 'Sitemap', title: 'sitemap.xml Generator', description: 'Generate an XML sitemap from a list of URLs to improve your site\'s SEO.', category: 'Web', link: '/tools/sitemap-xml-generator', style: 'outline' },
 ];
 
-const categories: ('All' | ToolCategory)[] = ['All', 'Business', 'Web', 'Security', 'Converter', 'Image', 'Documents', 'Utility', 'Design', 'Text'];
+const categories: ToolCategory[] = ['Business', 'Web', 'Security', 'Converter', 'Image', 'Documents', 'Utility', 'Design', 'Text'];
 
 const whyUsItems: { icon: keyof typeof Icons; title: string; description: string }[] = [
     { icon: 'Zap', title: 'Blazing Fast', description: 'All tools run instantly in your browser, with no waiting for uploads or server processing.' },
@@ -98,17 +98,25 @@ const Icon = ({ name, className }: { name: keyof typeof Icons; className?: strin
 
 export default function ToolsClient() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeFilter, setActiveFilter] = useState<'All' | ToolCategory>('All');
 
-  const filteredTools = useMemo(() => {
-    return allTools.filter(tool => {
-      const matchesCategory = activeFilter === 'All' || tool.category === activeFilter;
-      const matchesSearch = searchTerm === '' || 
-        tool.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-        tool.description.toLowerCase().includes(searchTerm.toLowerCase());
-      return matchesCategory && matchesSearch;
-    }).sort((a, b) => a.title.localeCompare(b.title));
-  }, [searchTerm, activeFilter]);
+  const filteredAndGroupedTools = useMemo(() => {
+    const filtered = allTools.filter(tool => 
+      searchTerm === '' || 
+      tool.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      tool.description.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    if (searchTerm.trim() === '') {
+        // Group by category if no search term
+        return categories.map(category => ({
+          category,
+          tools: filtered.filter(tool => tool.category === category).sort((a, b) => a.title.localeCompare(b.title)),
+        })).filter(group => group.tools.length > 0);
+    } else {
+        // Return a single group for search results
+        return [{ category: 'Search Results' as ToolCategory | 'Search Results', tools: filtered }];
+    }
+  }, [searchTerm]);
 
   return (
     <div className="space-y-16">
@@ -124,82 +132,81 @@ export default function ToolsClient() {
             className="w-full h-14 pl-12 pr-4 rounded-full text-lg bg-card border-border shadow-sm"
           />
         </div>
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          {categories.map(category => (
-            <Button
-              key={category}
-              variant={activeFilter === category ? 'hero' : 'outline'}
-              className="rounded-full"
-              onClick={() => setActiveFilter(category)}
-            >
-              {category}
-            </Button>
-          ))}
-        </div>
       </div>
 
       {/* Tools Grid */}
-       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredTools.map(tool => (
-          <Card key={tool.title} className={cn(
-            "group overflow-hidden rounded-2xl flex flex-col transition-all duration-300 hover:-translate-y-2",
-            {
-              'bg-card border-border': tool.style === 'outline',
-              'bg-accent text-accent-foreground border-accent-foreground/20': tool.style === 'secondary',
-              'gradient-primary text-primary-foreground border-transparent': tool.style === 'primary'
-            }
-          )}>
-            <CardContent className="p-6 flex-grow flex flex-col">
-              <div className="flex justify-between items-start mb-4">
-                <div className={cn(
-                  "w-12 h-12 rounded-lg flex items-center justify-center",
-                  {
-                    'bg-primary/10 text-primary': tool.style === 'outline',
-                    'bg-accent-foreground/10 text-accent-foreground': tool.style === 'secondary',
-                    'bg-primary-foreground/20 text-primary-foreground': tool.style === 'primary'
-                  }
-                )}>
-                  <Icon name={tool.icon} className="w-6 h-6" />
-                </div>
-                <div className={cn(
-                  "px-2 py-0.5 rounded-full text-xs font-medium",
-                  {
-                    'bg-secondary text-secondary-foreground': tool.style === 'outline',
-                     'bg-accent-foreground/10 text-accent-foreground': tool.style === 'secondary',
-                    'bg-primary-foreground/20 text-primary-foreground': tool.style === 'primary'
-                  }
-                )}>
-                  {tool.category}
-                </div>
-              </div>
-              <h3 className="text-xl font-bold mb-2">{tool.title}</h3>
-              <p className={cn("text-sm flex-grow", {
-                'text-muted-foreground': tool.style === 'outline',
-                'text-accent-foreground/80': tool.style === 'secondary',
-                'text-primary-foreground/80': tool.style === 'primary'
-              })}>{tool.description}</p>
-              <Button asChild variant="default" className={cn(
-                "w-full mt-6 gap-2 group/btn",
-                 {
-                    'bg-primary text-primary-foreground hover:bg-primary/90': tool.style === 'outline',
-                    'bg-accent-foreground text-accent hover:bg-accent-foreground/90': tool.style === 'secondary',
-                    'bg-primary-foreground text-primary hover:bg-primary-foreground/90': tool.style === 'primary'
-                  }
-              )}>
-                <Link href={tool.link}>
-                  Open Tool <Icons.ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
+       <Accordion type="multiple" defaultValue={categories} className="space-y-8">
+        {filteredAndGroupedTools.map(({ category, tools }) => (
+            <AccordionItem key={category} value={category} className="border-none">
+                <AccordionTrigger className="text-2xl font-bold hover:no-underline hover:text-primary transition-colors px-4 py-3 rounded-2xl bg-card border-border">
+                  {category}
+                </AccordionTrigger>
+                <AccordionContent className="pt-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {tools.map(tool => (
+                          <Card key={tool.title} className={cn(
+                            "group overflow-hidden rounded-2xl flex flex-col transition-all duration-300 hover:-translate-y-2",
+                            {
+                              'bg-card border-border': tool.style === 'outline',
+                              'bg-accent text-accent-foreground border-accent-foreground/20': tool.style === 'secondary',
+                              'gradient-primary text-primary-foreground border-transparent': tool.style === 'primary'
+                            }
+                          )}>
+                            <CardContent className="p-6 flex-grow flex flex-col">
+                              <div className="flex justify-between items-start mb-4">
+                                <div className={cn(
+                                  "w-12 h-12 rounded-lg flex items-center justify-center",
+                                  {
+                                    'bg-primary/10 text-primary': tool.style === 'outline',
+                                    'bg-accent-foreground/10 text-accent-foreground': tool.style === 'secondary',
+                                    'bg-primary-foreground/20 text-primary-foreground': tool.style === 'primary'
+                                  }
+                                )}>
+                                  <Icon name={tool.icon} className="w-6 h-6" />
+                                </div>
+                                <div className={cn(
+                                  "px-2 py-0.5 rounded-full text-xs font-medium",
+                                  {
+                                    'bg-secondary text-secondary-foreground': tool.style === 'outline',
+                                     'bg-accent-foreground/10 text-accent-foreground': tool.style === 'secondary',
+                                    'bg-primary-foreground/20 text-primary-foreground': tool.style === 'primary'
+                                  }
+                                )}>
+                                  {tool.category}
+                                </div>
+                              </div>
+                              <h3 className="text-xl font-bold mb-2">{tool.title}</h3>
+                              <p className={cn("text-sm flex-grow", {
+                                'text-muted-foreground': tool.style === 'outline',
+                                'text-accent-foreground/80': tool.style === 'secondary',
+                                'text-primary-foreground/80': tool.style === 'primary'
+                              })}>{tool.description}</p>
+                              <Button asChild variant="default" className={cn(
+                                "w-full mt-6 gap-2 group/btn",
+                                 {
+                                    'bg-primary text-primary-foreground hover:bg-primary/90': tool.style === 'outline',
+                                    'bg-accent-foreground text-accent hover:bg-accent-foreground/90': tool.style === 'secondary',
+                                    'bg-primary-foreground text-primary hover:bg-primary-foreground/90': tool.style === 'primary'
+                                  }
+                              )}>
+                                <Link href={tool.link}>
+                                  Open Tool <Icons.ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
+                                </Link>
+                              </Button>
+                            </CardContent>
+                          </Card>
+                        ))}
+                    </div>
+                </AccordionContent>
+            </AccordionItem>
         ))}
-      </div>
+       </Accordion>
 
-       {filteredTools.length === 0 && (
+       {filteredAndGroupedTools.length === 0 && (
           <div className="text-center py-16 text-muted-foreground">
             <Icons.SearchX className="mx-auto w-12 h-12 mb-4" />
             <h3 className="text-xl font-semibold">No Tools Found</h3>
-            <p>Try adjusting your search or filter.</p>
+            <p>Try adjusting your search term.</p>
           </div>
         )}
 
