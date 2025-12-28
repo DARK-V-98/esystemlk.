@@ -100,23 +100,24 @@ export default function ToolsClient() {
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredAndGroupedTools = useMemo(() => {
+    const lowercasedSearchTerm = searchTerm.toLowerCase();
     const filtered = allTools.filter(tool => 
-      searchTerm === '' || 
-      tool.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      tool.description.toLowerCase().includes(searchTerm.toLowerCase())
+      !searchTerm || 
+      tool.title.toLowerCase().includes(lowercasedSearchTerm) || 
+      tool.description.toLowerCase().includes(lowercasedSearchTerm)
     );
 
-    if (searchTerm.trim() === '') {
-        // Group by category if no search term
+    if (!searchTerm) {
         return categories.map(category => ({
           category,
           tools: filtered.filter(tool => tool.category === category).sort((a, b) => a.title.localeCompare(b.title)),
         })).filter(group => group.tools.length > 0);
     } else {
-        // Return a single group for search results
-        return [{ category: 'Search Results' as ToolCategory | 'Search Results', tools: filtered }];
+        return [{ category: 'Search Results', tools: filtered }];
     }
   }, [searchTerm]);
+
+  const accordionDefaultValue = searchTerm ? ['Search Results'] : categories;
 
   return (
     <div className="space-y-16">
@@ -132,12 +133,19 @@ export default function ToolsClient() {
             className="w-full h-14 pl-12 pr-4 rounded-full text-lg bg-card border-border shadow-sm"
           />
         </div>
+         <div className="flex flex-wrap items-center justify-center gap-2">
+            {categories.map(category => (
+                <Button key={category} variant="outline" size="sm" asChild>
+                    <a href={`#category-${category.toLowerCase()}`}>{category}</a>
+                </Button>
+            ))}
+         </div>
       </div>
 
       {/* Tools Grid */}
-       <Accordion type="multiple" defaultValue={categories} className="space-y-8">
+       <Accordion type="multiple" defaultValue={accordionDefaultValue} className="space-y-8">
         {filteredAndGroupedTools.map(({ category, tools }) => (
-            <AccordionItem key={category} value={category} className="border-none">
+            <AccordionItem key={category} value={category} id={`category-${category.toLowerCase()}`} className="border-none">
                 <AccordionTrigger className="text-2xl font-bold hover:no-underline hover:text-primary transition-colors px-4 py-3 rounded-2xl bg-card border-border">
                   {category}
                 </AccordionTrigger>
