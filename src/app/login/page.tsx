@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -7,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useAuthContext } from "@/hooks/use-auth";
+import { useAuth, useAuthContext } from "@/hooks/use-auth";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
@@ -25,7 +26,8 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
-  const { user, signInWithEmail, signInWithGoogle, loading } = useAuthContext();
+  const { user, loading } = useAuthContext();
+  const { signInWithEmail, signInWithGoogle } = useAuth();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
