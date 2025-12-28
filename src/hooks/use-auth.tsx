@@ -7,16 +7,54 @@ import {
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
   signOut as firebaseSignout,
-  updateProfile
+  updateProfile,
+  type AuthError
 } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import { useAuthContext as useAuthContextFromProvider } from '@/firebase/client-provider';
+import { useToast } from './use-toast';
 
 // This hook provides methods for authentication, consuming the main context.
 export const useAuth = () => {
   const { auth, firestore } = useAuthContextFromProvider();
   const router = useRouter();
+  const { toast } = useToast();
+
+  const handleAuthError = (error: AuthError) => {
+    console.error("Authentication error:", error.code, error.message);
+    let description = "An unexpected error occurred. Please try again.";
+    switch (error.code) {
+        case 'auth/invalid-email':
+            description = "The email address is not valid. Please check and try again.";
+            break;
+        case 'auth/user-disabled':
+            description = "This user account has been disabled.";
+            break;
+        case 'auth/user-not-found':
+        case 'auth/wrong-password':
+        case 'auth/invalid-credential':
+            description = "Invalid email or password. Please try again.";
+            break;
+        case 'auth/email-already-in-use':
+            description = "An account with this email address already exists.";
+            break;
+        case 'auth/weak-password':
+            description = "The password is too weak. Please use at least 6 characters.";
+            break;
+        case 'auth/popup-closed-by-user':
+            description = "The sign-in window was closed. Please try again.";
+            break;
+        case 'auth/cancelled-popup-request':
+            description = "Multiple sign-in windows were opened. Please try again.";
+            break;
+    }
+    toast({
+        title: "Authentication Failed",
+        description: description,
+        variant: "destructive",
+    });
+  };
 
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
@@ -24,8 +62,7 @@ export const useAuth = () => {
       await signInWithPopup(auth, provider);
       router.push('/admin');
     } catch (error) {
-      console.error("Error signing in with Google:", error);
-      // Here you might want to use a toast notification for the user
+      handleAuthError(error as AuthError);
     }
   };
 
@@ -37,7 +74,6 @@ export const useAuth = () => {
       await updateProfile(firebaseUser, { displayName });
 
       const userRef = doc(firestore, 'users', firebaseUser.uid);
-      // Use setDoc with merge:true to avoid overwriting the doc if it was created by onAuthStateChanged
       await setDoc(userRef, {
         email: firebaseUser.email,
         role: 'user',
@@ -47,7 +83,7 @@ export const useAuth = () => {
 
       router.push('/admin');
     } catch (error) {
-      console.error("Error signing up:", error);
+      handleAuthError(error as AuthError);
     }
   };
   
@@ -56,13 +92,22 @@ export const useAuth = () => {
       await signInWithEmailAndPassword(auth, email, password);
       router.push('/admin');
     } catch (error) {
-      console.error("Error signing in:", error);
+      handleAuthError(error as AuthError);
     }
   };
 
   const signOut = async () => {
-    await firebaseSignout(auth);
-    router.push('/');
+    try {
+      await firebaseSignout(auth);
+      router.push('/');
+    } catch(error) {
+       console.error("Error signing out:", error);
+        toast({
+            title: "Sign Out Failed",
+            description: "Could not sign out. Please try again.",
+            variant: "destructive",
+        });
+    }
   };
 
   return {
