@@ -21,9 +21,9 @@ interface Currency {
 export default function CurrencyConverterPage() {
   const [amount, setAmount] = useState('1');
   const [fromCurrency, setFromCurrency] = useState('USD');
-  const [toCurrency, setToCurrency] = useState('LKR');
+  const [toCurrency, setToCurrency] = useState('EUR');
   const [convertedAmount, setConvertedAmount] = useState('');
-  const [rates, setRates] = useState<Record<string, { value: number }> | null>(null);
+  const [rates, setRates] = useState<Record<string, number> | null>(null);
   const [currencies, setCurrencies] = useState<Record<string, Currency> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -64,16 +64,15 @@ export default function CurrencyConverterPage() {
             setConvertedAmount('');
             return;
         }
-        const baseRate = rates['USD']?.value ?? 1;
-        const fromRate = rates[fromCurrency]?.value ?? 0;
-        const toRate = rates[toCurrency]?.value ?? 0;
+        const fromRate = rates[fromCurrency];
+        const toRate = rates[toCurrency];
         
-        if(fromRate === 0) {
+        if (!fromRate || !toRate) {
             setConvertedAmount('N/A');
             return;
         }
-        const rateInUsd = amountNum / fromRate;
-        const finalAmount = rateInUsd * toRate;
+        const baseAmount = amountNum / fromRate; // Convert input amount to base currency (USD)
+        const finalAmount = baseAmount * toRate;
 
         setConvertedAmount(finalAmount.toFixed(4));
     } else { // lastChanged === 'converted'
@@ -82,15 +81,15 @@ export default function CurrencyConverterPage() {
             setAmount('');
             return;
         }
-        const fromRate = rates[fromCurrency]?.value ?? 0;
-        const toRate = rates[toCurrency]?.value ?? 0;
+        const fromRate = rates[fromCurrency];
+        const toRate = rates[toCurrency];
         
-        if (toRate === 0) {
+        if (!fromRate || !toRate) {
             setAmount('N/A');
             return;
         }
-        const rateInUsd = convertedNum / toRate;
-        const finalAmount = rateInUsd * fromRate;
+        const baseAmount = convertedNum / toRate; // Convert output amount to base currency (USD)
+        const finalAmount = baseAmount * fromRate;
         setAmount(finalAmount.toFixed(4));
     }
   };
