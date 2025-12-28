@@ -1,9 +1,13 @@
-import { MetadataRoute } from 'next'
- 
-export default function sitemap(): MetadataRoute.Sitemap {
+
+import { MetadataRoute } from 'next';
+import { getFirestoreAdmin } from '@/firebase/admin';
+import { collection, getDocs } from 'firebase/firestore';
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://www.esystemlk.xyz';
  
-  const pages = [
+  // Static pages
+  const staticPages = [
     '/',
     '/about',
     '/contact',
@@ -13,10 +17,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/services',
     '/testimonials',
     '/founder-message',
+    '/tools',
   ];
 
-  return pages.map((page) => ({
+  const staticUrls = staticPages.map((page) => ({
     url: `${baseUrl}${page}`,
     lastModified: new Date(),
+    changeFrequency: 'monthly' as const,
+    priority: page === '/' ? 1 : 0.8,
   }));
+
+  // Dynamic blog posts
+  const firestore = getFirestoreAdmin();
+  const blogCollection = collection(firestore, 'blog');
+  const blogSnapshot = await getDocs(blogCollection);
+  const blogUrls = blogSnapshot.docs.map(doc => ({
+    url: `${baseUrl}/blog/${doc.data().slug}`,
+    lastModified: doc.data().updatedAt?.toDate() || doc.data().createdAt.toDate(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }));
+
+  return [...staticUrls, ...blogUrls];
 }

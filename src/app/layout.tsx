@@ -9,33 +9,53 @@ import { FirebaseClientProvider } from "@/firebase/client-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
+const siteConfig = {
+  name: "ESystemLk",
+  url: "https://www.esystemlk.xyz",
+  ogImage: "https://www.esystemlk.xyz/logo.png",
+  description: "ESystemLk is a leading software company in Sri Lanka, specializing in custom web development, web applications, and software systems with lifetime free maintenance.",
+  keywords: ["software company sri lanka", "web development sri lanka", "web application development", "custom software solutions", "esystemlk", "pos system sri lanka", "ecommerce website", "mobile app development"],
+};
+
 export const metadata: Metadata = {
-  title: "ESystemLk - Custom Software & Web Solutions",
-  description: "eSystemLK is a leading software company in Sri Lanka, specializing in custom web development, web applications, and software systems. We offer lifetime free maintenance.",
-  keywords: "software company sri lanka, web development, web application, custom software, esystemlk, POS system",
-  authors: [{ name: "ESystemLk" }],
+  metadataBase: new URL(siteConfig.url),
+  title: {
+    default: `${siteConfig.name} - Custom Software & Web Solutions`,
+    template: `%s | ${siteConfig.name}`,
+  },
+  description: siteConfig.description,
+  keywords: siteConfig.keywords,
+  authors: [{ name: "ESystemLk", url: siteConfig.url }],
+  creator: "ESystemLk",
   openGraph: {
-    title: "ESystemLk - Custom Software & Web Solutions",
-    description: "Transform your business with premium software solutions. We build stunning websites, powerful web applications, and comprehensive software systems.",
-    url: "https://www.esystemlk.xyz",
-    siteName: "ESystemLk",
+    type: "website",
+    locale: "en_US",
+    url: siteConfig.url,
+    title: siteConfig.name,
+    description: siteConfig.description,
+    siteName: siteConfig.name,
     images: [
       {
-        url: 'https://www.esystemlk.xyz/logo.png', // Replace with a link to your logo or a relevant image
+        url: siteConfig.ogImage,
         width: 800,
         height: 600,
-        alt: 'ESystemLk Logo',
+        alt: `${siteConfig.name} Logo`,
       },
     ],
-    locale: 'en_US',
-    type: 'website',
   },
   twitter: {
-    card: 'summary_large_image',
-    title: 'ESystemLk - Custom Software & Web Solutions',
-    description: 'Custom web development, web applications, and software systems with lifetime free maintenance.',
-    images: ['https://www.esystemlk.xyz/logo.png'], // Replace with your image
+    card: "summary_large_image",
+    title: siteConfig.name,
+    description: siteConfig.description,
+    images: [siteConfig.ogImage],
+    creator: "@esystemlk",
   },
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon-16x16.png",
+    apple: "/apple-touch-icon.png",
+  },
+  manifest: `${siteConfig.url}/manifest.json`,
 };
 
 

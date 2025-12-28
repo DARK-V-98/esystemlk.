@@ -140,7 +140,7 @@ export default function AboutPage() {
             <div className="order-1 md:order-2 overflow-hidden rounded-2xl">
               <Image
                 src="/r.jpg"
-                alt="Our team collaborating"
+                alt="Our team collaborating on a project in a modern office"
                 width={600}
                 height={400}
                 className="rounded-2xl shadow-lg transition-transform duration-500 hover:scale-110"

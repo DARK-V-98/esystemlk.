@@ -62,7 +62,7 @@ const FounderMessagePage = () => {
               >
                 <Image
                   src="/va.jpg"
-                  alt="R.M.T. Vishwa Vidarshana"
+                  alt="R.M.T. Vishwa Vidarshana, Founder and CEO of ESystemLk"
                   width={400}
                   height={400}
                   className="rounded-full w-48 h-48 mx-auto mb-6 border-4 border-primary shadow-lg object-cover"
