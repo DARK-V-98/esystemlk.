@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -98,6 +98,7 @@ const Icon = ({ name, className }: { name: keyof typeof Icons; className?: strin
 
 export default function ToolsClient() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [openAccordionItems, setOpenAccordionItems] = useState<string[]>(categories);
 
   const filteredAndGroupedTools = useMemo(() => {
     const lowercasedSearchTerm = searchTerm.toLowerCase();
@@ -117,7 +118,14 @@ export default function ToolsClient() {
     }
   }, [searchTerm]);
 
-  const accordionDefaultValue = searchTerm ? ['Search Results'] : categories;
+  useEffect(() => {
+    if (searchTerm) {
+      setOpenAccordionItems(['Search Results']);
+    } else {
+      setOpenAccordionItems(categories);
+    }
+  }, [searchTerm]);
+
 
   return (
     <div className="space-y-16">
@@ -143,7 +151,12 @@ export default function ToolsClient() {
       </div>
 
       {/* Tools Grid */}
-       <Accordion type="multiple" defaultValue={accordionDefaultValue} className="space-y-8">
+       <Accordion 
+        type="multiple" 
+        value={openAccordionItems}
+        onValueChange={setOpenAccordionItems}
+        className="space-y-8"
+       >
         {filteredAndGroupedTools.map(({ category, tools }) => (
             <AccordionItem key={category} value={category} id={`category-${category.toLowerCase()}`} className="border-none">
                 <AccordionTrigger className="text-2xl font-bold hover:no-underline hover:text-primary transition-colors px-4 py-3 rounded-2xl bg-card border-border">
