@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -113,7 +114,7 @@ export default function PdfSuitePage() {
         }
       });
       
-      const uniqueIndices = [...new Set(pageIndicesToCopy)].sort((a,b) => a-b);
+      const uniqueIndices = Array.from(new Set(pageIndicesToCopy)).sort((a,b) => a-b);
       if (uniqueIndices.length === 0) throw new Error("Invalid page range specified.");
       
       const copiedPages = await newPdf.copyPages(pdfDoc, uniqueIndices);
@@ -169,7 +170,7 @@ export default function PdfSuitePage() {
       <div className="bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl py-8 text-center mb-10">
         <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">PDF Suite</h1>
         <p className="text-white/80 md:text-xl mt-4 max-w-3xl mx-auto">
-          Merge, split, compress, and convert PDFs, all within your browser.
+          A collection of tools to manage your PDF files, all within your browser.
         </p>
       </div>
 
@@ -195,7 +196,7 @@ export default function PdfSuitePage() {
         <CardContent className="space-y-6">
             <div className="space-y-2">
                 <label htmlFor="file-upload" className="text-sm font-medium">
-                  {mode === 'img-to-pdf' ? 'Select Image(s)' : 'Select PDF(s)'}
+                  {mode === 'img-to-pdf' ? 'Select Image(s)' : 'Select PDF File'}
                 </label>
                 <Input 
                   id="file-upload" 
@@ -230,3 +231,5 @@ export default function PdfSuitePage() {
     </div>
   );
 }
+
+    
