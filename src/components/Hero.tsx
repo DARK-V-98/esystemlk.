@@ -137,7 +137,7 @@ const Hero = () => {
           >
             <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-secondary border border-border">
               <Shield className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-foreground">Lifetime Support</span>
+              <span className="text-sm font-medium text-foreground">Lifetime Warranty</span>
             </div>
             <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-secondary border border-border">
               <Zap className="w-4 h-4 text-primary" />
@@ -174,11 +174,11 @@ const Hero = () => {
       </div>
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce-subtle">
+      <a href="#tools" className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce-subtle">
         <div className="w-6 h-10 rounded-full border-2 border-muted-foreground/30 flex items-start justify-center p-2">
           <div className="w-1 h-2 rounded-full bg-primary animate-pulse" />
         </div>
-      </div>
+      </a>
     </section>
   );
 };

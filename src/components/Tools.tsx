@@ -1,4 +1,3 @@
-
 'use client';
 import {
   FileSignature,
@@ -90,7 +89,7 @@ const Tools = () => {
         <div className="mt-16 text-center">
             <Button asChild variant="hero" size="xl">
                 <Link href="/tools">
-                    Explore All {'>'}
+                    Explore All Tools ({'>'}25)
                 </Link>
             </Button>
         </div>
