@@ -30,8 +30,9 @@ export default function HashGeneratorPage() {
   const generateHashes = async () => {
     setIsProcessing(true);
 
-    const dataToHash = file ? await file.arrayBuffer() : input;
-    const wordArray = CryptoJS.lib.WordArray.create(dataToHash);
+    const wordArray = file
+      ? CryptoJS.lib.WordArray.create(await file.arrayBuffer())
+      : CryptoJS.enc.Utf8.parse(input);
 
     const generatedHashes = {
       MD5: CryptoJS.MD5(wordArray).toString(),
