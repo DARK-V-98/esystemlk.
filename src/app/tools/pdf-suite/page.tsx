@@ -1,18 +1,17 @@
-
 "use client";
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Loader2, FileImage, Image as ImageIcon, Book, Download, Merge, Split, Shrink } from 'lucide-react';
+import { ArrowLeft, Loader2, FileImage, Image as ImageIcon, Book, Download, Split, Shrink } from 'lucide-react';
 import Link from 'next/link';
 import jsPDF from 'jspdf';
 import { PDFDocument } from 'pdf-lib';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function PdfSuitePage() {
-  const [mode, setMode] = useState<'img-to-pdf' | 'merge' | 'split' | 'compress'>('img-to-pdf');
+  const [mode, setMode] = useState<'img-to-pdf' | 'split' | 'compress'>('img-to-pdf');
   const [files, setFiles] = useState<File[]>([]);
   const [splitRange, setSplitRange] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -76,48 +75,6 @@ export default function PdfSuitePage() {
     doc.save('converted.pdf');
     setIsProcessing(false);
   };
-
-  const mergePdfs = async () => {
-    if (files.length < 2) {
-      setError('Please select at least two PDF files to merge.');
-      return;
-    }
-    setIsProcessing(true);
-    setError(null);
-    try {
-      const mergedPdf = await PDFDocument.create();
-      for (const file of files) {
-        if (file.type !== 'application/pdf') {
-            console.warn(`Skipping non-PDF file: ${file.name}`);
-            continue;
-        }
-        const pdfBytes = await file.arrayBuffer();
-        const pdfDoc = await PDFDocument.load(pdfBytes);
-        const copiedPages = await mergedPdf.copyPages(pdfDoc, pdfDoc.getPageIndices());
-        copiedPages.forEach(page => mergedPdf.addPage(page));
-      }
-      const mergedPdfBytes = await mergedPdf.save();
-      const arrayBuffer = mergedPdfBytes instanceof Uint8Array
-  ? mergedPdfBytes.buffer.slice(mergedPdfBytes.byteOffset, mergedPdfBytes.byteOffset + mergedPdfBytes.byteLength)
-  : mergedPdfBytes;
-
-const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
-
-
-
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'merged.pdf';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } catch(e) {
-      setError("Failed to merge PDFs. Please ensure all files are valid PDFs.");
-    }
-    setIsProcessing(false);
-  }
 
   const splitPdf = async () => {
     if (files.length !== 1) {
@@ -188,9 +145,6 @@ const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
       case 'img-to-pdf':
         convertImagesToPdf();
         break;
-      case 'merge':
-        mergePdfs();
-        break;
       case 'split':
         splitPdf();
         break;
@@ -203,7 +157,6 @@ const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
   const getAcceptType = () => {
     switch(mode) {
         case 'img-to-pdf': return 'image/*';
-        case 'merge':
         case 'split':
         case 'compress':
             return '.pdf';
@@ -232,9 +185,8 @@ const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
       <Card className="max-w-2xl mx-auto bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
         <CardHeader>
           <Tabs value={mode} onValueChange={(v) => setMode(v as any)} className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="img-to-pdf"><ImageIcon className="mr-2 h-4 w-4" /> Images to PDF</TabsTrigger>
-                <TabsTrigger value="merge"><Merge className="mr-2 h-4 w-4" /> Merge</TabsTrigger>
                 <TabsTrigger value="split"><Split className="mr-2 h-4 w-4" /> Split</TabsTrigger>
                 <TabsTrigger value="compress"><Shrink className="mr-2 h-4 w-4" /> Compress</TabsTrigger>
             </TabsList>
@@ -249,7 +201,7 @@ const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
                   id="file-upload" 
                   type="file" 
                   onChange={handleFileChange} 
-                  multiple={mode === 'img-to-pdf' || mode === 'merge'}
+                  multiple={mode === 'img-to-pdf'}
                   accept={getAcceptType()}
                 />
             </div>
