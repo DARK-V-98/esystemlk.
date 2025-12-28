@@ -1,3 +1,4 @@
+
 import { NextResponse } from 'next/server';
 
 export async function GET() {
@@ -6,13 +7,18 @@ export async function GET() {
     return NextResponse.json({ error: 'API key is not configured.' }, { status: 500 });
   }
 
-  const url = `https://api.currencyapi.com/v3/latest?apikey=${apiKey}`;
+  // Use the v1 endpoint as per the provided documentation.
+  const url = `https://api.currencyapi.com/v1/latest`;
 
   try {
+    // Send the API key in the 'apikey' header for better security.
     const response = await fetch(url, {
-        next: {
-            revalidate: 3600 // Revalidate every hour
-        }
+      headers: {
+        'apikey': apiKey
+      },
+      next: {
+        revalidate: 3600 // Revalidate every hour
+      }
     });
 
     if (!response.ok) {
