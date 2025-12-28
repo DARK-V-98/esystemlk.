@@ -34,18 +34,10 @@ export function initializeFirebase() {
   return { firebaseApp, auth, firestore, storage };
 }
 
-export function getFirestoreAdmin() {
-  initializeFirebase();
-  return firestore;
-}
-export function getStorageAdmin() {
-  initializeFirebase();
-  return storage;
-}
-
 export * from './client-provider';
 export * from './firestore/use-collection';
 export * from './firestore/use-doc';
 export * from './errors';
 export * from './error-emitter';
+
 

@@ -4,7 +4,7 @@ import { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, serverTime
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
-import { getFirestoreAdmin, getStorageAdmin } from '@/firebase';
+import { getFirestoreAdmin, getStorageAdmin } from '@/firebase/admin';
 
 export interface PortfolioItem {
     id: string;

@@ -10,26 +10,16 @@ import Services from "@/components/Services";
 import TechStack from "@/components/TechStack";
 import Testimonials from "@/components/Testimonials";
 import WhyUs from "@/components/WhyUs";
-import { getPortfolioItems } from "./admin/portfolio/actions";
 import PortfolioClient from "@/components/PortfolioClient";
 
-export default async function Home() {
-  const portfolioItems = await getPortfolioItems();
-
-  const featuredProjects = portfolioItems.map(item => ({
-    id: item.id,
-    name: item.name,
-    link: item.link,
-    imageUrl: item.imageUrl,
-    hint: 'featured project',
-  }));
+export default function Home() {
 
   return (
     <>
         <Hero />
         <Services />
         <Process />
-        {featuredProjects.length > 0 && <PortfolioClient projects={featuredProjects} />}
+        <PortfolioClient />
         <Pricing />
         <TechStack />
         <Testimonials />

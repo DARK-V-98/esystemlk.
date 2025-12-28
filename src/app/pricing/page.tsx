@@ -2,7 +2,7 @@
 import React from 'react';
 import PricingClient from './pricing-client';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
-import { getFirestoreAdmin } from '@/firebase';
+import { getFirestoreAdmin } from '@/firebase/admin';
 
 // Define types based on Firestore structure
 type Tier = { name: string; price: string };

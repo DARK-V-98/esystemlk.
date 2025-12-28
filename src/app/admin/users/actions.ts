@@ -2,7 +2,7 @@
 'use server';
 
 import { collection, getDocs, doc, updateDoc, deleteDoc, query, orderBy } from 'firebase/firestore';
-import { getFirestoreAdmin } from '@/firebase';
+import { getFirestoreAdmin } from '@/firebase/admin';
 
 export type UserRole = 'user' | 'admin' | 'developer';
 

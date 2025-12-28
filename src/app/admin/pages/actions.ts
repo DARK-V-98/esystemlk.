@@ -1,7 +1,7 @@
 'use server';
 
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-import { getFirestoreAdmin } from '@/firebase';
+import { getFirestoreAdmin } from '@/firebase/admin';
 
 export type PageVisibility = {
     showServices: boolean;

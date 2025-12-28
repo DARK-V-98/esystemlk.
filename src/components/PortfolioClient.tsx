@@ -4,6 +4,9 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowUpRight } from 'lucide-react';
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { getPortfolioItems } from "@/app/admin/portfolio/actions";
+import { Skeleton } from "./ui/skeleton";
 
 export interface PortfolioItem {
   id: string;
@@ -14,7 +17,53 @@ export interface PortfolioItem {
   description?: string;
 }
 
-export default function PortfolioClient({ projects }: { projects: PortfolioItem[] }) {
+export default function PortfolioClient() {
+  const [projects, setProjects] = useState<PortfolioItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadProjects() {
+      try {
+        const items = await getPortfolioItems();
+        const featuredProjects = items.map(item => ({
+          id: item.id,
+          name: item.name,
+          link: item.link,
+          imageUrl: item.imageUrl,
+          hint: 'featured project',
+        }));
+        setProjects(featuredProjects);
+      } catch (error) {
+        console.error("Failed to fetch portfolio items", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadProjects();
+  }, []);
+
+  if (loading) {
+    return (
+       <section className="w-full py-20 md:py-28">
+        <div className="container mx-auto px-4 md:px-6">
+            <div className="text-center mb-16">
+                <Skeleton className="h-10 w-1/3 mx-auto mb-4" />
+                <Skeleton className="h-6 w-2/3 mx-auto" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <Skeleton className="h-80 w-full rounded-2xl" />
+                <Skeleton className="h-80 w-full rounded-2xl" />
+                <Skeleton className="h-80 w-full rounded-2xl" />
+            </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (projects.length === 0) {
+    return null; // Don't render the section if there are no projects
+  }
+
   return (
     <section className="w-full py-20 md:py-28">
       <div className="container mx-auto px-4 md:px-6">
@@ -25,12 +74,6 @@ export default function PortfolioClient({ projects }: { projects: PortfolioItem[
             </p>
         </div>
         <div>
-        {projects.length === 0 ? (
-            <div className="text-center py-16 bg-black/30 backdrop-blur-lg border border-white/10 rounded-3xl">
-            <h3 className="font-headline text-2xl font-bold">Our work is coming soon!</h3>
-            <p className="text-muted-foreground mt-2">Please check back later to see our amazing projects.</p>
-            </div>
-        ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((project) => (
                 <a 
@@ -69,7 +112,6 @@ export default function PortfolioClient({ projects }: { projects: PortfolioItem[
                 </a>
             ))}
             </div>
-        )}
         </div>
       </div>
     </section>

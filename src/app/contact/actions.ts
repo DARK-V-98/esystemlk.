@@ -2,7 +2,7 @@
 
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { z } from 'zod';
-import { getFirestoreAdmin } from '@/firebase';
+import { getFirestoreAdmin } from '@/firebase/admin';
 
 const formSchema = z.object({
   name: z.string().min(2),
