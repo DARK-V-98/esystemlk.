@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
@@ -19,8 +19,8 @@ import Image from 'next/image';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useAuthContext } from '@/hooks/use-auth';
 
 // Types from pricing page
 type Tier = { name: string; price: string };
@@ -66,6 +66,7 @@ function parsePrice(priceString: string): number {
 }
 
 export default function QuotationClient() {
+  const { firestore } = useAuthContext();
   const [isClient, setIsClient] = useState(false);
   const [pricingData, setPricingData] = useState<(PricingCategory | CommonAddons)[]>([]);
   const [isPricingLoading, setIsPricingLoading] = useState(true);
@@ -91,7 +92,7 @@ export default function QuotationClient() {
 
   useEffect(() => {
     async function getPricing() {
-        const pricingCollection = collection(db, 'pricing');
+        const pricingCollection = collection(firestore, 'pricing');
         const q = query(pricingCollection, orderBy('order'));
         const snapshot = await getDocs(q);
 
@@ -105,7 +106,7 @@ export default function QuotationClient() {
         setIsPricingLoading(false);
     }
     getPricing();
-  }, []);
+  }, [firestore]);
 
   const { fields, append, remove } = useFieldArray({ control, name: 'items' });
   const { fields: optionalFields, append: appendOptional, remove: removeOptional } = useFieldArray({ control, name: 'optionalItems' });

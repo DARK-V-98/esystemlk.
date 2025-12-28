@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useTransition } from 'react';
-import { db } from '@/lib/firebase';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { updatePricingDocStatus, uploadPricingData, deletePricingDoc, updateServiceStatus, deleteServiceFromCategory, updatePricingItem, addPricingItem, type PricingItemPath, type PricingItemData, type AddItemContext, type AddItemData } from './actions';
@@ -18,6 +17,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { useAuthContext } from '@/hooks/use-auth';
 
 // Define types for better readability
 type Tier = { name: string; price: string };
@@ -59,6 +59,7 @@ const Icon = ({ name, className }: { name: keyof typeof Icons; className?: strin
 };
 
 export default function PricingManagementClient() {
+    const { firestore } = useAuthContext();
     const [pricingData, setPricingData] = useState<(PricingCategory | CommonAddons)[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isPending, startTransition] = useTransition();
@@ -82,7 +83,7 @@ export default function PricingManagementClient() {
     });
 
     useEffect(() => {
-        const q = query(collection(db, 'pricing'), orderBy('order'));
+        const q = query(collection(firestore, 'pricing'), orderBy('order'));
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as (PricingCategory | CommonAddons)[];
             setPricingData(data);
@@ -93,11 +94,11 @@ export default function PricingManagementClient() {
             setIsLoading(false);
         });
         return () => unsubscribe();
-    }, [toast]);
+    }, [firestore, toast]);
 
     const handleUpload = () => {
         startTransition(() => {
-            uploadPricingData().then(result => {
+            uploadPricingData(firestore).then(result => {
                 toast({
                     title: result.success ? 'Success' : 'Error',
                     description: result.message,
@@ -111,9 +112,9 @@ export default function PricingManagementClient() {
         startTransition(() => {
             let promise;
             if (type === 'category') {
-                promise = updatePricingDocStatus(id, status);
+                promise = updatePricingDocStatus(firestore, id, status);
             } else if (type === 'service' && serviceName) {
-                promise = updateServiceStatus(id, serviceName, status);
+                promise = updateServiceStatus(firestore, id, serviceName, status);
             }
             promise?.then(result => {
                 toast({
@@ -131,9 +132,9 @@ export default function PricingManagementClient() {
         startTransition(() => {
             let promise;
             if (itemToDelete.type === 'category') {
-                promise = deletePricingDoc(itemToDelete.categoryId);
+                promise = deletePricingDoc(firestore, itemToDelete.categoryId);
             } else if (itemToDelete.type === 'service' && itemToDelete.serviceName) {
-                promise = deleteServiceFromCategory(itemToDelete.categoryId, itemToDelete.serviceName);
+                promise = deleteServiceFromCategory(firestore, itemToDelete.categoryId, itemToDelete.serviceName);
             }
             promise?.then(result => {
                 toast({
@@ -180,7 +181,7 @@ export default function PricingManagementClient() {
                 }
             }
 
-            updatePricingItem(currentItem.path, dataToUpdate).then(result => {
+            updatePricingItem(firestore, currentItem.path, dataToUpdate).then(result => {
                 toast({
                     title: result.success ? 'Success' : 'Error',
                     description: result.message,
@@ -209,7 +210,7 @@ export default function PricingManagementClient() {
             if (priceRequired) data.price = values.price;
             if (addItemContext.type === 'category') data.icon = values.icon;
             
-            addPricingItem(addItemContext, data).then(result => {
+            addPricingItem(firestore, addItemContext, data).then(result => {
                 toast({
                     title: result.success ? 'Success' : 'Error',
                     description: result.message,

@@ -1,8 +1,8 @@
 'use server';
 
-import { db } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { z } from 'zod';
+import { getFirestoreAdmin } from '@/firebase';
 
 const formSchema = z.object({
   name: z.string().min(2),
@@ -13,9 +13,10 @@ const formSchema = z.object({
 });
 
 export async function saveContactMessage(formData: z.infer<typeof formSchema>) {
+    const firestore = getFirestoreAdmin();
     try {
         const validatedData = formSchema.parse(formData);
-        await addDoc(collection(db, 'messages'), {
+        await addDoc(collection(firestore, 'messages'), {
             ...validatedData,
             createdAt: serverTimestamp(),
             read: false,

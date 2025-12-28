@@ -1,8 +1,7 @@
 
 'use server';
 
-import { db } from '@/lib/firebase';
-import { writeBatch, doc, collection, updateDoc, deleteDoc, getDoc, setDoc, getDocs } from 'firebase/firestore';
+import { writeBatch, doc, collection, updateDoc, deleteDoc, getDoc, setDoc, getDocs, Firestore } from 'firebase/firestore';
 
 const pricingData = [
   {
@@ -206,7 +205,7 @@ function sanitizeForId(text: string) {
     return text.toLowerCase().replace(/[^a-z0-9&]+/g, '-').replace(/--+/g, '-').replace(/(^-|-$)/g, '');
 }
 
-export async function uploadPricingData() {
+export async function uploadPricingData(db: Firestore) {
     const batch = writeBatch(db);
     const pricingCollection = collection(db, 'pricing');
 
@@ -244,7 +243,7 @@ export async function uploadPricingData() {
     }
 }
 
-export async function updatePricingDocStatus(docId: string, enabled: boolean) {
+export async function updatePricingDocStatus(db: Firestore, docId: string, enabled: boolean) {
     const docRef = doc(db, 'pricing', docId);
     try {
         await updateDoc(docRef, { enabled });
@@ -255,7 +254,7 @@ export async function updatePricingDocStatus(docId: string, enabled: boolean) {
     }
 }
 
-export async function deletePricingDoc(docId: string) {
+export async function deletePricingDoc(db: Firestore, docId: string) {
     const docRef = doc(db, 'pricing', docId);
     try {
         await deleteDoc(docRef);
@@ -266,7 +265,7 @@ export async function deletePricingDoc(docId: string) {
     }
 }
 
-export async function updateServiceStatus(categoryId: string, serviceName: string, enabled: boolean) {
+export async function updateServiceStatus(db: Firestore, categoryId: string, serviceName: string, enabled: boolean) {
     const categoryRef = doc(db, 'pricing', categoryId);
     try {
         const categorySnap = await getDoc(categoryRef);
@@ -285,7 +284,7 @@ export async function updateServiceStatus(categoryId: string, serviceName: strin
     }
 }
 
-export async function deleteServiceFromCategory(categoryId: string, serviceName: string) {
+export async function deleteServiceFromCategory(db: Firestore, categoryId: string, serviceName: string) {
     const categoryRef = doc(db, 'pricing', categoryId);
     try {
         const categorySnap = await getDoc(categoryRef);
@@ -302,7 +301,7 @@ export async function deleteServiceFromCategory(categoryId: string, serviceName:
     }
 }
 
-export async function updatePricingItem(path: PricingItemPath, data: PricingItemData) {
+export async function updatePricingItem(db: Firestore, path: PricingItemPath, data: PricingItemData) {
     const docRef = doc(db, 'pricing', path.categoryId);
     try {
         const docSnap = await getDoc(docRef);
@@ -377,7 +376,7 @@ export type AddItemData = {
 };
 
 // New action to add items
-export async function addPricingItem(context: AddItemContext, data: AddItemData) {
+export async function addPricingItem(db: Firestore, context: AddItemContext, data: AddItemData) {
     try {
         // Add a new Category
         if (context.type === 'category') {

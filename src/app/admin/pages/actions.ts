@@ -1,7 +1,7 @@
 'use server';
 
-import { db } from '@/lib/firebase';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { getFirestoreAdmin } from '@/firebase';
 
 export type PageVisibility = {
     showServices: boolean;
@@ -15,11 +15,14 @@ const defaultSettings: PageVisibility = {
     showPricing: true,
 };
 
-const settingsDocRef = doc(db, 'siteConfig', 'pageSettings');
+const getSettingsDocRef = () => {
+    const db = getFirestoreAdmin();
+    return doc(db, 'siteConfig', 'pageSettings');
+}
 
 export async function getPageSettings(): Promise<PageVisibility> {
     try {
-        const docSnap = await getDoc(settingsDocRef);
+        const docSnap = await getDoc(getSettingsDocRef());
         if (docSnap.exists()) {
             return { ...defaultSettings, ...docSnap.data() } as PageVisibility;
         }
@@ -32,7 +35,7 @@ export async function getPageSettings(): Promise<PageVisibility> {
 
 export async function initializePageSettings() {
     try {
-        await setDoc(settingsDocRef, defaultSettings);
+        await setDoc(getSettingsDocRef(), defaultSettings);
         return { success: true, message: 'Successfully initialized page settings.' };
     } catch (error) {
         const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -42,14 +45,14 @@ export async function initializePageSettings() {
 
 export async function updatePageVisibility(pageKey: keyof PageVisibility, isVisible: boolean) {
     try {
-        await updateDoc(settingsDocRef, { [pageKey]: isVisible });
+        await updateDoc(getSettingsDocRef(), { [pageKey]: isVisible });
         return { success: true, message: 'Page visibility updated successfully.' };
     } catch (error) {
         const message = error instanceof Error ? error.message : 'An unknown error occurred';
         // Try to set the document if it doesn't exist.
         if (message.includes('No document to update')) {
              try {
-                await setDoc(settingsDocRef, { ...defaultSettings, [pageKey]: isVisible });
+                await setDoc(getSettingsDocRef(), { ...defaultSettings, [pageKey]: isVisible });
                 return { success: true, message: 'Page visibility updated successfully.' };
             } catch (e) {
                  const setMessage = e instanceof Error ? e.message : 'An unknown error occurred';

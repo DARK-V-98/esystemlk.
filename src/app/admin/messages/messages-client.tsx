@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { db } from '@/lib/firebase';
 import { collection, query, orderBy, onSnapshot, Timestamp } from 'firebase/firestore';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { useAuthContext } from '@/hooks/use-auth';
 
 type Message = {
     id: string;
@@ -25,11 +25,12 @@ function formatTimestamp(timestamp: Timestamp | null | undefined): string {
 }
 
 export default function MessagesClient() {
+    const { firestore } = useAuthContext();
     const [messages, setMessages] = useState<Message[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        const messagesCollection = collection(db, 'messages');
+        const messagesCollection = collection(firestore, 'messages');
         const q = query(messagesCollection, orderBy('createdAt', 'desc'));
 
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -45,7 +46,7 @@ export default function MessagesClient() {
         });
 
         return () => unsubscribe();
-    }, []);
+    }, [firestore]);
 
     if (isLoading) {
         return (

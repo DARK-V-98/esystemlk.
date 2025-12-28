@@ -1,8 +1,8 @@
 
 "use client";
 
-import { useState, useEffect, useTransition, useMemo } from 'react';
-import { getUsers, updateUserRole, deleteUser, type ManagedUser, type UserRole } from './actions';
+import { useState, useTransition, useMemo } from 'react';
+import { updateUserRole, deleteUser, type ManagedUser, type UserRole } from './actions';
 import { useToast } from '@/hooks/use-toast';
 import {
   Table,
@@ -29,6 +29,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Input } from '@/components/ui/input';
 
 export default function UsersManagementClient({ initialUsers }: { initialUsers: ManagedUser[] }) {
+  const { firestore } = useAuthContext();
   const [users, setUsers] = useState<ManagedUser[]>(initialUsers);
   const [isLoading, setIsLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -53,7 +54,7 @@ export default function UsersManagementClient({ initialUsers }: { initialUsers: 
 
   const handleRoleChange = (uid: string, role: UserRole) => {
     startTransition(() => {
-      updateUserRole(uid, role).then(result => {
+      updateUserRole(firestore, uid, role).then(result => {
         if (result.success) {
           setUsers(prev => prev.map(u => u.uid === uid ? { ...u, role } : u));
         }
@@ -69,7 +70,7 @@ export default function UsersManagementClient({ initialUsers }: { initialUsers: 
   const handleDeleteUser = () => {
     if (!userToDelete) return;
     startTransition(() => {
-        deleteUser(userToDelete.uid).then(result => {
+        deleteUser(firestore, userToDelete.uid).then(result => {
             if (result.success) {
                 setUsers(prev => prev.filter(u => u.uid !== userToDelete.uid));
             }

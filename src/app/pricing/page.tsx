@@ -1,8 +1,8 @@
 
 import React from 'react';
 import PricingClient from './pricing-client';
-import { db } from '@/lib/firebase';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { getFirestoreAdmin } from '@/firebase';
 
 // Define types based on Firestore structure
 type Tier = { name: string; price: string };
@@ -24,7 +24,8 @@ type CommonAddons = {
 };
 
 async function getPricingData() {
-    const pricingCollection = collection(db, 'pricing');
+    const firestore = getFirestoreAdmin();
+    const pricingCollection = collection(firestore, 'pricing');
     const q = query(pricingCollection, orderBy('order'));
     const snapshot = await getDocs(q);
 

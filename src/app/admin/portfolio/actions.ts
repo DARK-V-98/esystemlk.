@@ -1,10 +1,10 @@
 'use server';
 
-import { db, storage } from '@/lib/firebase';
 import { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, serverTimestamp, Timestamp } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
+import { getFirestoreAdmin, getStorageAdmin } from '@/firebase';
 
 export interface PortfolioItem {
     id: string;
@@ -21,7 +21,8 @@ const portfolioSchema = z.object({
 
 // Get all portfolio items
 export async function getPortfolioItems(): Promise<PortfolioItem[]> {
-    const portfolioCollection = collection(db, 'portfolio');
+    const firestore = getFirestoreAdmin();
+    const portfolioCollection = collection(firestore, 'portfolio');
     const q = query(portfolioCollection, orderBy('createdAt', 'desc'));
     const snapshot = await getDocs(q);
     if (snapshot.empty) {
@@ -42,6 +43,9 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
 
 // Add a new portfolio item
 export async function addPortfolioItem(formData: FormData) {
+    const firestore = getFirestoreAdmin();
+    const storage = getStorageAdmin();
+
     const image = formData.get('image') as File;
     const name = formData.get('name') as string;
     const link = formData.get('link') as string;
@@ -59,7 +63,7 @@ export async function addPortfolioItem(formData: FormData) {
         const imageUrl = await getDownloadURL(storageRef);
 
         // Add item to Firestore
-        await addDoc(collection(db, 'portfolio'), {
+        await addDoc(collection(firestore, 'portfolio'), {
             name: validatedData.name,
             link: validatedData.link,
             imageUrl,
@@ -79,9 +83,11 @@ export async function addPortfolioItem(formData: FormData) {
 
 // Delete a portfolio item
 export async function deletePortfolioItem(id: string, imageUrl: string) {
+    const firestore = getFirestoreAdmin();
+    const storage = getStorageAdmin();
     try {
         // Delete from Firestore
-        await deleteDoc(doc(db, 'portfolio', id));
+        await deleteDoc(doc(firestore, 'portfolio', id));
 
         // Delete from Storage
         const imageRef = ref(storage, imageUrl);

@@ -1,8 +1,8 @@
 
 'use server';
 
-import { db } from '@/lib/firebase';
 import { collection, getDocs, doc, updateDoc, deleteDoc, query, orderBy } from 'firebase/firestore';
+import { getFirestoreAdmin } from '@/firebase';
 
 export type UserRole = 'user' | 'admin' | 'developer';
 
@@ -15,6 +15,7 @@ export interface ManagedUser {
 }
 
 export async function getUsers(): Promise<ManagedUser[]> {
+  const db = getFirestoreAdmin();
   try {
     const usersCollection = collection(db, 'users');
     const q = query(usersCollection, orderBy('displayName'));
@@ -31,6 +32,7 @@ export async function getUsers(): Promise<ManagedUser[]> {
 }
 
 export async function updateUserRole(uid: string, role: UserRole) {
+  const db = getFirestoreAdmin();
   try {
     const userRef = doc(db, 'users', uid);
     await updateDoc(userRef, { role });
@@ -42,6 +44,7 @@ export async function updateUserRole(uid: string, role: UserRole) {
 }
 
 export async function deleteUser(uid: string) {
+  const db = getFirestoreAdmin();
   try {
     const userRef = doc(db, 'users', uid);
     await deleteDoc(userRef);
