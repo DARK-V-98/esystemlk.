@@ -6,7 +6,7 @@ import Papa from 'papaparse';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { ArrowLeft, Copy, Check, RefreshCw, Braces, Pilcrow } from 'lucide-react';
+import { ArrowLeft, Copy, Check, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 
 export default function JsonCsvConverterPage() {
