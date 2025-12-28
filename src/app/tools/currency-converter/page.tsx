@@ -25,7 +25,10 @@ interface FreeApiRates {
 }
 
 interface PrimaryApiRates {
-    [key: string]: { value: number };
+    [key: string]: number;
+}
+interface PrimaryApiCurrencies {
+     [key: string]: Currency;
 }
 
 type ApiSource = 'primary' | 'free';
@@ -81,7 +84,7 @@ export default function CurrencyConverterPage() {
   
   // State for Primary API
   const [primaryRates, setPrimaryRates] = useState<PrimaryApiRates | null>(null);
-  const [primaryCurrencies, setPrimaryCurrencies] = useState<Record<string, Currency> | null>(null);
+  const [primaryCurrencies, setPrimaryCurrencies] = useState<PrimaryApiCurrencies | null>(null);
   const [isPrimaryLoading, setIsPrimaryLoading] = useState(false);
   const [primaryError, setPrimaryError] = useState<string | null>(null);
   
@@ -144,65 +147,55 @@ export default function CurrencyConverterPage() {
 
   const currencyOptions = useMemo(() => {
     if (primaryCurrencies) {
-      return Object.values(primaryCurrencies).sort((a,b) => a.name.localeCompare(b.name));
-    }
-    // Fallback for free API if primary currencies aren't available
-    if (freeRates) {
-       return Object.keys(freeRates).map(code => ({ code, name: code } as Currency)).sort((a,b) => a.name.localeCompare(b.name));
+      return Object.values(primaryCurrencies).sort((a, b) => a.name.localeCompare(b.name));
     }
     return [];
-  }, [primaryCurrencies, freeRates]);
+  }, [primaryCurrencies]);
   
   // Effect to fetch data when component mounts or API source changes
   useEffect(() => {
-    if (apiSource === 'primary' && !primaryRates) {
+    if (apiSource === 'primary' && !primaryRates && !primaryError) {
       fetchPrimaryData();
-    } else if (apiSource === 'free' && !freeRates) {
+    } else if (apiSource === 'free' && !freeRates && !freeError) {
       fetchFreeData();
     }
-  }, [apiSource, primaryRates, freeRates]);
+  }, [apiSource, primaryRates, freeRates, primaryError, freeError]);
 
   // Conversion calculation logic
   useEffect(() => {
-    if (!rates) return;
+    if (!rates || !primaryCurrencies) return;
 
-    const fromRate = apiSource === 'primary' ? (rates as PrimaryApiRates)?.[fromCurrency]?.value : (rates as FreeApiRates)?.[fromCurrency];
-    const toRate = apiSource === 'primary' ? (rates as PrimaryApiRates)?.[toCurrency]?.value : (rates as FreeApiRates)?.[toCurrency];
-
+    const fromRate = apiSource === 'primary' ? (rates as PrimaryApiRates)?.[fromCurrency] : (rates as FreeApiRates)?.[fromCurrency];
+    const toRate = apiSource === 'primary' ? (rates as PrimaryApiRates)?.[toCurrency] : (rates as FreeApiRates)?.[toCurrency];
+    
     if (fromRate === undefined || toRate === undefined) {
-      setConvertedAmount('');
-      setAmount('');
-      return;
+        if (lastChanged === 'amount') setConvertedAmount('');
+        else setAmount('');
+        return;
     }
     
-    // Determine base currency for calculations
-    const primaryBase = 'USD'; // currencyapi.com base
-    const freeBase = 'USD'; // exchangerate-api.com base
-    const baseCurrency = apiSource === 'primary' ? primaryBase : freeBase;
-    
-    const rateOfFrom = fromRate;
-    const rateOfTo = toRate;
-
     if (lastChanged === 'amount') {
         const amountNum = parseFloat(amount);
-        if (isNaN(amountNum)) return setConvertedAmount('');
-        
-        // Convert to base currency first, then to target currency
-        const amountInBase = amountNum / rateOfFrom;
-        const finalAmount = amountInBase * rateOfTo;
+        if (isNaN(amountNum)) {
+            setConvertedAmount('');
+            return;
+        }
+        const amountInBase = amountNum / fromRate;
+        const finalAmount = amountInBase * toRate;
         setConvertedAmount(finalAmount.toFixed(4));
 
     } else { // lastChanged === 'converted'
         const convertedNum = parseFloat(convertedAmount);
-        if (isNaN(convertedNum)) return setAmount('');
-        
-        // Convert to base currency first, then to target currency
-        const amountInBase = convertedNum / rateOfTo;
-        const finalAmount = amountInBase * rateOfFrom;
+        if (isNaN(convertedNum)) {
+            setAmount('');
+            return;
+        }
+        const amountInBase = convertedNum / toRate;
+        const finalAmount = amountInBase * fromRate;
         setAmount(finalAmount.toFixed(4));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [amount, convertedAmount, fromCurrency, toCurrency, rates, lastChanged, apiSource]);
+  }, [amount, convertedAmount, fromCurrency, toCurrency, rates, lastChanged, apiSource, primaryCurrencies]);
   
   const handleSwap = () => {
     setFromCurrency(toCurrency);
@@ -216,6 +209,8 @@ export default function CurrencyConverterPage() {
       fetchFreeData();
     }
   }
+
+  const isInputDisabled = isLoading || !rates || !primaryCurrencies || currencyOptions.length === 0;
 
   return (
     <div className="container mx-auto py-10 px-4 md:px-6">
@@ -254,7 +249,7 @@ export default function CurrencyConverterPage() {
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
-           {isLoading ? <LoadingState /> : error ? <ErrorState message={error} onRetry={handleRetry} /> : (
+           {isLoading && !rates ? <LoadingState /> : error ? <ErrorState message={error} onRetry={handleRetry} /> : (
             <>
                 <div className="flex flex-col sm:flex-row gap-4 items-center">
                   <CurrencyInput 
@@ -263,9 +258,9 @@ export default function CurrencyConverterPage() {
                       currency={fromCurrency}
                       onCurrencyChange={setFromCurrency}
                       currencies={currencyOptions}
-                      isDisabled={currencyOptions.length === 0}
+                      isDisabled={isInputDisabled}
                   />
-                  <Button variant="ghost" size="icon" onClick={handleSwap} className="shrink-0 mt-8">
+                  <Button variant="ghost" size="icon" onClick={handleSwap} className="shrink-0 mt-8" disabled={isInputDisabled}>
                     <Repeat className="w-5 h-5 text-primary"/>
                   </Button>
                   <CurrencyInput 
@@ -274,7 +269,7 @@ export default function CurrencyConverterPage() {
                       currency={toCurrency}
                       onCurrencyChange={setToCurrency}
                       currencies={currencyOptions}
-                      isDisabled={currencyOptions.length === 0}
+                      isDisabled={isInputDisabled}
                   />
                 </div>
                 <div className="text-center text-muted-foreground text-xs p-4 rounded-md bg-black/20 flex items-center justify-center gap-2">
