@@ -124,14 +124,14 @@ export default function AboutPage() {
               <h2 className="font-headline text-3xl font-bold mb-4">
                 Our Mission
               </h2>
-              <p className="text-muted-foreground mb-4">
+              <p className="text-white/80 mb-4">
                 Our mission is to empower businesses with transformative
                 technology solutions that drive growth, efficiency, and
                 innovation. We strive to be a trusted partner, turning complex
                 challenges into elegant, scalable, and user-centric digital
                 experiences.
               </p>
-              <p className="text-muted-foreground">
+              <p className="text-white/80">
                 We are committed to pushing the boundaries of what's possible,
                 fostering a culture of continuous learning and collaboration to
                 deliver exceptional value to our clients worldwide.
@@ -158,7 +158,7 @@ export default function AboutPage() {
             <h2 className="font-headline text-3xl font-bold mb-4">
               A Word From Our Founder
             </h2>
-            <p className="text-muted-foreground md:text-lg max-w-3xl mx-auto mb-8">
+            <p className="text-white/80 md:text-lg max-w-3xl mx-auto mb-8">
               "Knowledge is the ladder to growth. The more we learn, the further we can climb." Get to know the vision and driving force behind ESystemLk.
             </p>
             <Button asChild size="lg">
