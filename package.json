@@ -10,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@everapi/freecurrencyapi-js": "^1.0.1",
     "@genkit-ai/google-genai": "^1.0.0-rc.3",
     "@hookform/resolvers": "^3.9.0",
     "@icons-pack/react-simple-icons": "^9.5.0",

@@ -1,5 +1,6 @@
 
 import { NextResponse } from 'next/server';
+import Freecurrencyapi from '@everapi/freecurrencyapi-js';
 
 export async function GET() {
   const apiKey = process.env.CURRENCY_API_KEY;
@@ -7,30 +8,18 @@ export async function GET() {
     return NextResponse.json({ error: 'API key is not configured.' }, { status: 500 });
   }
 
-  const headers = { 'apikey': apiKey };
+  const freecurrencyapi = new Freecurrencyapi(apiKey);
 
   try {
     // Fetch both latest rates and currencies list in parallel
     const [ratesResponse, currenciesResponse] = await Promise.all([
-      fetch('https://api.currencyapi.com/v1/latest', { headers, next: { revalidate: 3600 } }),
-      fetch('https://api.currencyapi.com/v1/currencies', { headers, next: { revalidate: 86400 } }) // Currencies list doesn't change often
+      freecurrencyapi.latest(),
+      freecurrencyapi.currencies()
     ]);
-
-    if (!ratesResponse.ok) {
-      const errorData = await ratesResponse.json();
-      throw new Error(`Failed to fetch rates: ${errorData.message || ratesResponse.statusText}`);
-    }
-     if (!currenciesResponse.ok) {
-      const errorData = await currenciesResponse.json();
-      throw new Error(`Failed to fetch currencies: ${errorData.message || currenciesResponse.statusText}`);
-    }
-    
-    const ratesData = await ratesResponse.json();
-    const currenciesData = await currenciesResponse.json();
     
     return NextResponse.json({
-        rates: ratesData.data,
-        currencies: currenciesData.data
+        rates: ratesResponse.data,
+        currencies: currenciesResponse.data
     });
 
   } catch (error) {
