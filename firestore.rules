@@ -1,3 +1,4 @@
+
 /**
  * Core Philosophy: This ruleset enforces a strict user-ownership model combined with role-based access control (RBAC) for administrators.
  * Standard users can only access their own data within their personal data tree (/users/{userId}), ensuring strong data privacy. A separate
@@ -125,6 +126,25 @@ service cloud.firestore {
     match /portfolio/{docId} {
         allow read: if true;
         allow write: if isAdmin(); // Only admins can modify portfolio items
+    }
+
+    // Blog rules
+    match /blog/{postId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+
+      // Comments subcollection
+      match /comments/{commentId} {
+        allow read: if true;
+        allow create: if isSignedIn();
+        allow update, delete: if isOwner(request.resource.data.authorId) || isAdmin();
+      }
+
+      // Likes subcollection
+      match /likes/{userId} {
+        allow read: if true;
+        allow create, delete: if isOwner(userId);
+      }
     }
   }
 }

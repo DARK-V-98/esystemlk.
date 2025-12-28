@@ -63,6 +63,47 @@
         "createdAt",
         "expiresAt"
       ]
+    },
+    "BlogPost": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Blog Post",
+      "type": "object",
+      "description": "Represents a single blog post.",
+      "properties": {
+        "title": { "type": "string" },
+        "slug": { "type": "string" },
+        "content": { "type": "string" },
+        "headerImageUrl": { "type": "string", "format": "uri" },
+        "authorId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "slug", "content", "authorId", "authorName", "createdAt"]
+    },
+    "BlogComment": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Blog Comment",
+      "type": "object",
+      "description": "A comment on a blog post.",
+      "properties": {
+        "authorId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "authorPhotoUrl": { "type": "string", "format": "uri" },
+        "content": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["authorId", "authorName", "content", "createdAt"]
+    },
+    "BlogLike": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Blog Like",
+      "type": "object",
+      "description": "Represents a user's like on a blog post.",
+      "properties": {
+        "userId": { "type": "string" }
+      },
+      "required": ["userId"]
     }
   },
   "auth": {
@@ -78,7 +119,7 @@
         "definition": {
           "entityName": "User",
           "schema": {
-            "$ref": "#/backend/entities/User"
+            "$ref": "#/entities/User"
           },
           "description": "Stores user profile data. Includes the 'role' field for authorization independence.",
           "params": [
@@ -94,9 +135,9 @@
         "definition": {
           "entityName": "Session",
           "schema": {
-            "$ref": "#/backend/entities/Session"
+            "$ref": "#/entities/Session"
           },
-          "description": "Stores user session data.  Owned by the user identified by {userId}.",
+          "description": "Stores user session data. Owned by the user identified by {userId}.",
           "params": [
             {
               "name": "userId",
@@ -114,7 +155,7 @@
         "definition": {
           "entityName": "roles_admin",
           "schema": {
-            "$ref": "#/backend/entities/User"
+            "$ref": "#/entities/User"
           },
           "description": "Indicates admin role. Existence of document grants admin privileges.",
           "params": [
@@ -124,8 +165,41 @@
             }
           ]
         }
+      },
+       {
+        "path": "/blog/{postId}",
+        "definition": {
+          "entityName": "BlogPost",
+          "schema": {
+            "$ref": "#/entities/BlogPost"
+          },
+          "description": "Stores individual blog posts. Publicly readable, writable by admins.",
+          "params": [{"name": "postId"}]
+        }
+      },
+      {
+        "path": "/blog/{postId}/comments/{commentId}",
+        "definition": {
+          "entityName": "BlogComment",
+          "schema": {
+            "$ref": "#/entities/BlogComment"
+          },
+          "description": "Stores comments for a specific blog post. Readable by all, writable by signed-in users.",
+          "params": [{"name": "postId"}, {"name": "commentId"}]
+        }
+      },
+      {
+        "path": "/blog/{postId}/likes/{userId}",
+        "definition": {
+          "entityName": "BlogLike",
+          "schema": {
+            "$ref": "#/entities/BlogLike"
+          },
+          "description": "Stores likes for a specific blog post. Used to track which users have liked a post.",
+          "params": [{"name": "postId"}, {"name": "userId"}]
+        }
       }
     ],
-    "reasoning": "This Firestore data structure is designed to support the ESystemLk application, focusing on user authentication, session management, and role-based access control for an admin dashboard. The structure prioritizes security, scalability, and debuggability by adhering to the core design principles, especially Authorization Independence. \n\n*   **User Data:** User profiles are stored in `/users/{userId}`. This path-based ownership model simplifies security rules. User documents contain essential information (displayName, email, role).  Having the `role` inside the document is critical for Authorization Independence; security rules can determine authorization based solely on the contents of the `user` document and the `request.auth.uid`, without needing to perform costly and limiting `get()` operations.\n*   **Session Data:** User session data are stored in `/users/{userId}/sessions/{sessionId}`. This hierarchical path establishes clear ownership (User 1:N Session) and facilitates secure session management.\n*   **Admin Roles:** Admin roles are managed via document existence in `/roles_admin/{userId}`.  This \"existence over content\" approach simplifies admin role checks in security rules.\n\n**Authorization Independence (Denormalization):**\n\n*   User roles are stored directly within the `/users/{userId}` document. This avoids the need for security rules to perform `get()` operations on other documents to determine a user's role.  All necessary authorization data is present within the document being accessed.\n\n**QAPs (Rules are not Filters):**\n\n*   The separation of concerns is achieved by storing user data and session data in distinct collections and subcollections. This enables efficient and secure `list` operations. Access to session data is restricted based on user ownership enforced through path-based rules.\n*   Admin access is granted based on the existence of a document in the `/roles_admin/{userId}` collection, not based on the *content* of any document. This enables secure `list` operations for admin-related data by simply checking for the existence of the role.\n\nThe design supports the integrity of ownership, timestamps, and denormalized data by using atomic operations (transactions/batches) and server-side timestamps. Data clarity and predictability are enhanced through explicit state modeling, predictable schema, and radical consistency in naming conventions."
+    "reasoning": "The data structure is updated to support a full-featured blog. This includes a main 'blog' collection for posts. Each post document can have subcollections for 'comments' and 'likes' to enable social features and keep the data organized and scalable. Security rules will allow public read access for blog content while restricting write access to authenticated users (for comments/likes) or admins (for posts)."
   }
 }

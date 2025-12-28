@@ -1,9 +1,10 @@
+
 "use client";
 
 import { useAuthContext } from "@/hooks/use-auth";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Link from "next/link";
-import { Mail, Users, CreditCard, BarChart2, FileSignature } from "lucide-react";
+import { Mail, Users, CreditCard, BarChart2, FileSignature, Newspaper } from "lucide-react";
 
 export default function AdminPage() {
   const { user } = useAuthContext();
@@ -35,6 +36,17 @@ export default function AdminPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">Read and manage messages from the contact form.</p>
+              </CardContent>
+            </Card>
+        </Link>
+        <Link href="/admin/blog" className="block hover:scale-105 transition-transform duration-300">
+            <Card className="bg-card border border-border rounded-2xl shadow-lg h-full hover:border-primary transition-colors">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>Blog Management</CardTitle>
+                <Newspaper className="w-6 h-6 text-primary" />
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">Create, edit, and manage blog posts.</p>
               </CardContent>
             </Card>
         </Link>
