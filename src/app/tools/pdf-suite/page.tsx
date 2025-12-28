@@ -5,16 +5,15 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Loader2, FileImage, Image as ImageIcon, Book, Download, Split, Shrink } from 'lucide-react';
+import { ArrowLeft, Loader2, FileImage, Image as ImageIcon, Download } from 'lucide-react';
 import Link from 'next/link';
 import jsPDF from 'jspdf';
 import { PDFDocument } from 'pdf-lib';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function PdfSuitePage() {
-  const [mode, setMode] = useState<'img-to-pdf' | 'split' | 'compress'>('img-to-pdf');
+  const [mode, setMode] = useState<'img-to-pdf' | 'pdf-to-img'>('img-to-pdf');
   const [files, setFiles] = useState<File[]>([]);
-  const [splitRange, setSplitRange] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
@@ -42,8 +41,8 @@ export default function PdfSuitePage() {
         try {
             const img = new Image();
             img.src = URL.createObjectURL(file);
-            await new Promise((resolve, reject) => { 
-                img.onload = resolve;
+            await new Promise<void>((resolve, reject) => { 
+                img.onload = () => resolve();
                 img.onerror = reject;
             });
 
@@ -73,18 +72,14 @@ export default function PdfSuitePage() {
         }
     }
     
-    doc.save('converted.pdf');
+    doc.save('converted-images.pdf');
     setIsProcessing(false);
   };
-
-  const splitPdf = async () => {
-    if (files.length !== 1) {
-      setError('Please select exactly one PDF file to split.');
-      return;
-    }
-    if (!splitRange.trim()) {
-      setError('Please enter a page range to split (e.g., "1-3, 5").');
-      return;
+  
+  const convertPdfToImages = async () => {
+     if (files.length !== 1 || !files[0].type.includes('pdf')) {
+        setError('Please select a single PDF file.');
+        return;
     }
     setIsProcessing(true);
     setError(null);
@@ -92,52 +87,33 @@ export default function PdfSuitePage() {
     try {
       const pdfBytes = await files[0].arrayBuffer();
       const pdfDoc = await PDFDocument.load(pdfBytes);
-      const newPdf = await PDFDocument.create();
-      
-      const pageIndicesToCopy: number[] = [];
-      const ranges = splitRange.split(',');
-      ranges.forEach(range => {
-        if (range.includes('-')) {
-          const [start, end] = range.split('-').map(num => parseInt(num.trim(), 10) - 1);
-          if (!isNaN(start) && !isNaN(end)) {
-            for (let i = start; i <= end; i++) {
-              if (i >= 0 && i < pdfDoc.getPageCount()) {
-                pageIndicesToCopy.push(i);
-              }
-            }
-          }
-        } else {
-          const pageNum = parseInt(range.trim(), 10) - 1;
-          if (!isNaN(pageNum) && pageNum >= 0 && pageNum < pdfDoc.getPageCount()) {
-            pageIndicesToCopy.push(pageNum);
-          }
-        }
-      });
-      
-      const uniqueIndices = Array.from(new Set(pageIndicesToCopy)).sort((a,b) => a-b);
-      if (uniqueIndices.length === 0) throw new Error("Invalid page range specified.");
-      
-      const copiedPages = await newPdf.copyPages(pdfDoc, uniqueIndices);
-      copiedPages.forEach(page => newPdf.addPage(page));
+      const { default: pdfjs } = await import('pdfjs-dist/build/pdf');
+      pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
-      const newPdfBytes = await newPdf.save();
-      const blob = new Blob([new Uint8Array(newPdfBytes.buffer, newPdfBytes.byteOffset, newPdfBytes.length)], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'split.pdf';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed to split PDF. Please check the file and page range.');
+      const pdf = await pdfjs.getDocument({ data: pdfBytes }).promise;
+
+      for (let i = 0; i < pdf.numPages; i++) {
+        const page = await pdf.getPage(i + 1);
+        const viewport = page.getViewport({ scale: 2 });
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        if (context) {
+            await page.render({ canvasContext: context, viewport: viewport }).promise;
+            const dataUrl = canvas.toDataURL('image/png');
+            const a = document.createElement('a');
+            a.href = dataUrl;
+            a.download = `page_${i + 1}.png`;
+            a.click();
+        }
+      }
+    } catch(e) {
+        setError(e instanceof Error ? e.message : 'Failed to convert PDF to images.');
     }
+
     setIsProcessing(false);
-  };
-  
-  const compressPdf = async () => {
-     setError('PDF compression is a complex feature under development and will be available soon!');
   }
 
 
@@ -146,11 +122,8 @@ export default function PdfSuitePage() {
       case 'img-to-pdf':
         convertImagesToPdf();
         break;
-      case 'split':
-        splitPdf();
-        break;
-      case 'compress':
-        compressPdf();
+      case 'pdf-to-img':
+        convertPdfToImages();
         break;
     }
   };
@@ -158,8 +131,7 @@ export default function PdfSuitePage() {
   const getAcceptType = () => {
     switch(mode) {
         case 'img-to-pdf': return 'image/*';
-        case 'split':
-        case 'compress':
+        case 'pdf-to-img':
             return '.pdf';
         default: return '*/*';
     }
@@ -168,9 +140,9 @@ export default function PdfSuitePage() {
   return (
     <div className="container mx-auto py-10 px-4 md:px-6">
       <div className="bg-black/30 backdrop-blur-lg border border-white/10 shadow-2xl rounded-3xl py-8 text-center mb-10">
-        <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">PDF Suite</h1>
+        <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">PDF & Image Converter</h1>
         <p className="text-white/80 md:text-xl mt-4 max-w-3xl mx-auto">
-          A collection of tools to manage your PDF files, all within your browser.
+          A collection of tools to manage your PDF and Image files, all within your browser.
         </p>
       </div>
 
@@ -186,10 +158,9 @@ export default function PdfSuitePage() {
       <Card className="max-w-2xl mx-auto bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
         <CardHeader>
           <Tabs value={mode} onValueChange={(v) => { setMode(v as any); setFiles([]); setError(null); }} className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="img-to-pdf"><ImageIcon className="mr-2 h-4 w-4" /> Images to PDF</TabsTrigger>
-                <TabsTrigger value="split"><Split className="mr-2 h-4 w-4" /> Split</TabsTrigger>
-                <TabsTrigger value="compress"><Shrink className="mr-2 h-4 w-4" /> Compress</TabsTrigger>
+                <TabsTrigger value="pdf-to-img"><FileImage className="mr-2 h-4 w-4" /> PDF to Images</TabsTrigger>
             </TabsList>
           </Tabs>
         </CardHeader>
@@ -211,13 +182,6 @@ export default function PdfSuitePage() {
               <div className="text-sm text-muted-foreground p-2 bg-black/20 rounded-md">
                 {files.length} file(s) selected.
               </div>
-            )}
-            
-            {mode === 'split' && (
-                <div className="space-y-2">
-                    <label htmlFor="split-range" className="text-sm font-medium">Pages to Extract</label>
-                    <Input id="split-range" value={splitRange} onChange={e => setSplitRange(e.target.value)} placeholder="e.g., 1-3, 5, 8-10"/>
-                </div>
             )}
 
             <Button onClick={handleProcess} disabled={isProcessing || files.length === 0} className="w-full">
