@@ -164,7 +164,7 @@ export default function BarcodeGeneratorPage() {
               </div>
               <div>
                 <Label htmlFor="format">Format</Label>
-                <Select onValueChange={(value) => setValue('format', value)} defaultValue="CODE128">
+                <Select onValueChange={(value) => setValue('format', value as any)} defaultValue="CODE128">
                   <SelectTrigger id="format" className="mt-1">
                     <SelectValue placeholder="Select format" />
                   </SelectTrigger>

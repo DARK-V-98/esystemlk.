@@ -20,45 +20,8 @@ export default function QrCodeScannerPage() {
     const streamRef = useRef<MediaStream | null>(null);
     const boundingBoxRef = useRef<HTMLDivElement>(null);
 
-
-    const startScan = async () => {
-        setScanResult(null);
-        setError(null);
-        setIsScanning(true);
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-            streamRef.current = stream;
-            setHasCameraPermission(true);
-            if (videoRef.current) {
-                videoRef.current.srcObject = stream;
-                videoRef.current.setAttribute("playsinline", "true"); // required to tell iOS safari we don't want fullscreen
-                videoRef.current.play();
-                requestAnimationFrame(tick);
-            }
-        } catch (err) {
-            console.error("Camera access error:", err);
-            setError("Could not access camera. Please grant permission and try again.");
-            setIsScanning(false);
-            setHasCameraPermission(false);
-        }
-    };
-
-    const stopScan = () => {
-        if (streamRef.current) {
-            streamRef.current.getTracks().forEach(track => track.stop());
-            streamRef.current = null;
-        }
-        if (videoRef.current) {
-            videoRef.current.srcObject = null;
-        }
-        if (boundingBoxRef.current) {
-            boundingBoxRef.current.style.display = 'none';
-        }
-        setIsScanning(false);
-    };
-
     const tick = () => {
-        if (videoRef.current && videoRef.current.readyState === videoRef.current.HAVE_ENOUGH_DATA && canvasRef.current && boundingBoxRef.current) {
+        if (isScanning && videoRef.current && videoRef.current.readyState === videoRef.current.HAVE_ENOUGH_DATA && canvasRef.current && boundingBoxRef.current) {
             const video = videoRef.current;
             const canvas = canvasRef.current;
             const ctx = canvas.getContext('2d', { willReadFrequently: true });
@@ -106,6 +69,43 @@ export default function QrCodeScannerPage() {
             requestAnimationFrame(tick);
         }
     };
+    
+    const startScan = async () => {
+        setScanResult(null);
+        setError(null);
+        setIsScanning(true);
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+            streamRef.current = stream;
+            setHasCameraPermission(true);
+            if (videoRef.current) {
+                videoRef.current.srcObject = stream;
+                videoRef.current.setAttribute("playsinline", "true"); // required to tell iOS safari we don't want fullscreen
+                await videoRef.current.play();
+                requestAnimationFrame(tick);
+            }
+        } catch (err) {
+            console.error("Camera access error:", err);
+            setError("Could not access camera. Please grant permission and try again.");
+            setIsScanning(false);
+            setHasCameraPermission(false);
+        }
+    };
+
+    const stopScan = () => {
+        setIsScanning(false);
+        if (streamRef.current) {
+            streamRef.current.getTracks().forEach(track => track.stop());
+            streamRef.current = null;
+        }
+        if (videoRef.current) {
+            videoRef.current.srcObject = null;
+        }
+        if (boundingBoxRef.current) {
+            boundingBoxRef.current.style.display = 'none';
+        }
+    };
+
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -193,7 +193,7 @@ export default function QrCodeScannerPage() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                     <div className="bg-black/20 rounded-lg overflow-hidden relative aspect-video flex items-center justify-center">
-                        <video ref={videoRef} className="w-full h-full object-cover" hidden={!isScanning} />
+                        <video ref={videoRef} className="w-full h-full object-cover" hidden={!isScanning} playsInline/>
                         {!isScanning && <p className="text-muted-foreground">Camera is off</p>}
                         <div ref={boundingBoxRef} className="absolute border-2 border-primary bg-primary/20" style={{ display: 'none' }} />
                     </div>

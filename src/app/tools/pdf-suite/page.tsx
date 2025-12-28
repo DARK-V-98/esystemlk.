@@ -26,7 +26,7 @@ export default function PdfSuitePage() {
   };
 
   const convertImagesToPdf = async () => {
-    if (!files || files.length === 0) {
+    if (files.length === 0) {
       setError('Please select one or more image files.');
       return;
     }
@@ -34,37 +34,43 @@ export default function PdfSuitePage() {
     setError(null);
 
     const doc = new jsPDF();
-    let isFirstPage = true;
-
+    
     for (let i = 0; i < files.length; i++) {
         const file = files[i];
         if (!file.type.startsWith('image/')) continue;
         
-        const img = new Image();
-        img.src = URL.createObjectURL(file);
-        await new Promise(resolve => { img.onload = resolve; });
+        try {
+            const img = new Image();
+            img.src = URL.createObjectURL(file);
+            await new Promise((resolve, reject) => { 
+                img.onload = resolve;
+                img.onerror = reject;
+            });
 
-        const pageWidth = doc.internal.pageSize.getWidth();
-        const pageHeight = doc.internal.pageSize.getHeight();
-        const ratio = img.width / img.height;
-        let imgWidth = pageWidth - 20;
-        let imgHeight = imgWidth / ratio;
-        
-        if (imgHeight > pageHeight - 20) {
-            imgHeight = pageHeight - 20;
-            imgWidth = imgHeight * ratio;
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+            const ratio = img.width / img.height;
+            let imgWidth = pageWidth - 20;
+            let imgHeight = imgWidth / ratio;
+            
+            if (imgHeight > pageHeight - 20) {
+                imgHeight = pageHeight - 20;
+                imgWidth = imgHeight * ratio;
+            }
+            
+            const x = (pageWidth - imgWidth) / 2;
+            const y = (pageHeight - imgHeight) / 2;
+            
+            if (i > 0) {
+                doc.addPage();
+            }
+            doc.addImage(img, file.type.split('/')[1].toUpperCase(), x, y, imgWidth, imgHeight);
+            URL.revokeObjectURL(img.src);
+        } catch (e) {
+            setError(`Failed to process image: ${file.name}`);
+            setIsProcessing(false);
+            return;
         }
-        
-        const x = (pageWidth - imgWidth) / 2;
-        const y = (pageHeight - imgHeight) / 2;
-        
-        if (isFirstPage) {
-            isFirstPage = false;
-        } else {
-            doc.addPage();
-        }
-        doc.addImage(img, file.type.split('/')[1].toUpperCase(), x, y, imgWidth, imgHeight);
-        URL.revokeObjectURL(img.src);
     }
     
     doc.save('converted.pdf');
@@ -72,7 +78,7 @@ export default function PdfSuitePage() {
   };
 
   const mergePdfs = async () => {
-    if (!files || files.length < 2) {
+    if (files.length < 2) {
       setError('Please select at least two PDF files to merge.');
       return;
     }
@@ -80,8 +86,12 @@ export default function PdfSuitePage() {
     setError(null);
     try {
       const mergedPdf = await PDFDocument.create();
-      for (let i = 0; i < files.length; i++) {
-        const pdfBytes = await files[i].arrayBuffer();
+      for (const file of files) {
+        if (file.type !== 'application/pdf') {
+            console.warn(`Skipping non-PDF file: ${file.name}`);
+            continue;
+        }
+        const pdfBytes = await file.arrayBuffer();
         const pdfDoc = await PDFDocument.load(pdfBytes);
         const copiedPages = await mergedPdf.copyPages(pdfDoc, pdfDoc.getPageIndices());
         copiedPages.forEach(page => mergedPdf.addPage(page));
@@ -101,7 +111,7 @@ export default function PdfSuitePage() {
   }
 
   const splitPdf = async () => {
-    if (!files || files.length !== 1) {
+    if (files.length !== 1) {
       setError('Please select exactly one PDF file to split.');
       return;
     }

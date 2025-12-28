@@ -23,15 +23,19 @@ const timezones = [
 
 export default function TimeZoneConverterPage() {
   const [baseTime, setBaseTime] = useState(new Date());
-  const [baseTimezone, setBaseTimezone] = useState('UTC');
+  const [baseTimezone, setBaseTimezone] = useState<string | undefined>(undefined);
   const [timeInput, setTimeInput] = useState(baseTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
+  const [isClient, setIsClient] = useState(false);
   
   useEffect(() => {
-    // Only run on the client
+    // This effect runs only on the client
+    setIsClient(true);
     setBaseTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone);
   }, []);
 
   useEffect(() => {
+    if (!isClient) return;
+
     const interval = setInterval(() => {
         const now = new Date();
         const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -41,7 +45,7 @@ export default function TimeZoneConverterPage() {
         }
     }, 1000 * 60); // Update every minute if on local time
     return () => clearInterval(interval);
-  }, [baseTimezone]);
+  }, [baseTimezone, isClient]);
 
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const timeValue = e.target.value;
@@ -57,6 +61,7 @@ export default function TimeZoneConverterPage() {
   const handleTimezoneChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newTz = e.target.value;
     setBaseTimezone(newTz);
+    
     // When timezone changes, we need to recalculate the baseTime to keep the displayed time correct
     const now = new Date();
     const formatter = new Intl.DateTimeFormat('en-US', { timeZone: newTz, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
@@ -70,6 +75,7 @@ export default function TimeZoneConverterPage() {
   };
   
   const getConvertedTime = (targetTz: string) => {
+    if (!isClient) return "Loading...";
     try {
         const formatter = new Intl.DateTimeFormat('en-US', {
             timeZone: targetTz,
@@ -114,15 +120,15 @@ export default function TimeZoneConverterPage() {
                 </div>
                  <div>
                     <label htmlFor="base-timezone" className="text-sm font-medium">Base Timezone</label>
-                    <select id="base-timezone" value={baseTimezone} onChange={handleTimezoneChange} className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm mt-1">
-                        {timezones.map(tz => <option key={tz} value={tz}>{tz.replace(/_/g, ' ')}</option>)}
-                        <option value={typeof window !== 'undefined' ? Intl.DateTimeFormat().resolvedOptions().timeZone : 'UTC'}>Your Local Time</option>
+                    <select id="base-timezone" value={baseTimezone || 'UTC'} onChange={handleTimezoneChange} className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm mt-1" disabled={!isClient}>
+                        {isClient && timezones.map(tz => <option key={tz} value={tz}>{tz.replace(/_/g, ' ')}</option>)}
+                        {isClient && <option value={Intl.DateTimeFormat().resolvedOptions().timeZone}>Your Local Time</option>}
                     </select>
                 </div>
             </div>
 
             <div className="space-y-3">
-              {timezones.map(tz => (
+              {isClient && timezones.map(tz => (
                  <div key={tz} className="flex justify-between items-center bg-black/20 p-3 rounded-md">
                    <div>
                       <p className="font-semibold">{tz.replace(/_/g, ' ')}</p>
