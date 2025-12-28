@@ -13,14 +13,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function PdfSuitePage() {
   const [mode, setMode] = useState<'img-to-pdf' | 'merge' | 'split' | 'compress'>('img-to-pdf');
-  const [files, setFiles] = useState<FileList | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
   const [splitRange, setSplitRange] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFiles(e.target.files);
-    setError(null);
+    if (e.target.files) {
+      setFiles(Array.from(e.target.files));
+      setError(null);
+    }
   };
 
   const convertImagesToPdf = async () => {
@@ -62,6 +64,7 @@ export default function PdfSuitePage() {
             doc.addPage();
         }
         doc.addImage(img, file.type.split('/')[1].toUpperCase(), x, y, imgWidth, imgHeight);
+        URL.revokeObjectURL(img.src);
     }
     
     doc.save('converted.pdf');
@@ -230,7 +233,7 @@ export default function PdfSuitePage() {
                 />
             </div>
             
-            {files && (
+            {files.length > 0 && (
               <div className="text-sm text-muted-foreground p-2 bg-black/20 rounded-md">
                 {files.length} file(s) selected.
               </div>
@@ -243,7 +246,7 @@ export default function PdfSuitePage() {
                 </div>
             )}
 
-            <Button onClick={handleProcess} disabled={isProcessing || !files} className="w-full">
+            <Button onClick={handleProcess} disabled={isProcessing || files.length === 0} className="w-full">
                 {isProcessing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
                 {isProcessing ? 'Processing...' : 'Process & Download'}
             </Button>

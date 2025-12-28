@@ -23,9 +23,14 @@ const timezones = [
 
 export default function TimeZoneConverterPage() {
   const [baseTime, setBaseTime] = useState(new Date());
-  const [baseTimezone, setBaseTimezone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone);
+  const [baseTimezone, setBaseTimezone] = useState('UTC');
   const [timeInput, setTimeInput] = useState(baseTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
   
+  useEffect(() => {
+    // Only run on the client
+    setBaseTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone);
+  }, []);
+
   useEffect(() => {
     const interval = setInterval(() => {
         const now = new Date();
@@ -111,7 +116,7 @@ export default function TimeZoneConverterPage() {
                     <label htmlFor="base-timezone" className="text-sm font-medium">Base Timezone</label>
                     <select id="base-timezone" value={baseTimezone} onChange={handleTimezoneChange} className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm mt-1">
                         {timezones.map(tz => <option key={tz} value={tz}>{tz.replace(/_/g, ' ')}</option>)}
-                        <option value={Intl.DateTimeFormat().resolvedOptions().timeZone}>Your Local Time</option>
+                        <option value={typeof window !== 'undefined' ? Intl.DateTimeFormat().resolvedOptions().timeZone : 'UTC'}>Your Local Time</option>
                     </select>
                 </div>
             </div>

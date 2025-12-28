@@ -31,7 +31,7 @@ export default function ApiTesterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { register, control, handleSubmit, watch } = useForm<FormData>({
+  const { register, control, handleSubmit, watch, setValue } = useForm<FormData>({
     defaultValues: {
       method: 'GET',
       url: '',
@@ -128,7 +128,7 @@ export default function ApiTesterPage() {
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <div className="flex gap-2">
-                <Select name="method" onValueChange={(value) => control.setValue('method', value as any)} defaultValue="GET">
+                <Select name="method" onValueChange={(value) => setValue('method', value as any)} defaultValue="GET">
                   <SelectTrigger className="w-[120px]">
                     <SelectValue placeholder="Method" />
                   </SelectTrigger>
