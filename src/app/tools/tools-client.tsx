@@ -68,6 +68,9 @@ const allTools: Tool[] = [
   { icon: 'Link2', title: 'Slug Generator', description: 'Create clean, SEO-friendly URL slugs from your page or post titles.', category: 'Web', link: '/tools/slug-generator', style: 'primary' },
   { icon: 'BookOpen', title: 'Word & Character Counter', description: 'Analyze your text for word count, character count, and estimated reading time.', category: 'Text', link: '/tools/word-counter', style: 'secondary' },
   { icon: 'Code', title: 'HTML Entity Encoder/Decoder', description: 'Convert special characters to their HTML entity equivalents and back.', category: 'Text', link: '/tools/html-entity-encoder', style: 'outline' },
+  { icon: 'Tags', title: 'SEO Meta Tag Generator', description: 'Generate meta tags for title, description, and Open Graph with live previews.', category: 'Web', link: '/tools/meta-tag-generator', style: 'primary' },
+  { icon: 'Bot', title: 'robots.txt Generator', description: 'Create and download a `robots.txt` file to guide search engine crawlers.', category: 'Web', link: '/tools/robots-txt-generator', style: 'secondary' },
+  { icon: 'Sitemap', title: 'sitemap.xml Generator', description: 'Generate an XML sitemap from a list of URLs to improve your site\'s SEO.', category: 'Web', link: '/tools/sitemap-xml-generator', style: 'outline' },
 ];
 
 const categories: ('All' | ToolCategory)[] = ['All', 'Business', 'Web', 'Security', 'Converter', 'Image', 'Documents', 'Utility', 'Design', 'Text'];
