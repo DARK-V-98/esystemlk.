@@ -11,6 +11,7 @@ import TechStack from "@/components/TechStack";
 import Testimonials from "@/components/Testimonials";
 import WhyUs from "@/components/WhyUs";
 import PortfolioClient from "@/components/PortfolioClient";
+import Tools from "@/components/Tools";
 
 export default function Home() {
 
@@ -20,6 +21,7 @@ export default function Home() {
         <Services />
         <Process />
         <PortfolioClient />
+        <Tools />
         <Pricing />
         <TechStack />
         <Testimonials />

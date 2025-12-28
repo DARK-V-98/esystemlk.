@@ -121,9 +121,9 @@ const Hero = () => {
               </Link>
             </Button>
             <Button asChild variant="heroOutline" size="xl" className="gap-2">
-               <Link href="/portfolio">
+               <Link href="#tools">
                 <Globe className="w-5 h-5" />
-                View Our Work
+                Explore Our Tools
               </Link>
             </Button>
           </motion.div>
