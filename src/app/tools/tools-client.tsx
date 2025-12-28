@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
@@ -70,6 +69,7 @@ const allTools: Tool[] = [
   { icon: 'Tags', title: 'SEO Meta Tag Generator', description: 'Generate meta tags for title, description, and Open Graph with live previews.', category: 'Web', link: '/tools/meta-tag-generator', style: 'primary' },
   { icon: 'Bot', title: 'robots.txt Generator', description: 'Create and download a `robots.txt` file to guide search engine crawlers.', category: 'Web', link: '/tools/robots-txt-generator', style: 'secondary' },
   { icon: 'Network', title: 'sitemap.xml Generator', description: 'Generate an XML sitemap from a list of URLs to improve your site\'s SEO.', category: 'Web', link: '/tools/sitemap-xml-generator', style: 'outline' },
+  { icon: 'Volume2', title: 'Text to Speech', description: 'Convert text to audio using the Web Speech API with different voices and controls.', category: 'Utility', link: '/tools/text-to-speech', style: 'primary' },
 ];
 
 const categories: ToolCategory[] = ['Business', 'Web', 'Security', 'Converter', 'Image', 'Documents', 'Utility', 'Design', 'Text'];
