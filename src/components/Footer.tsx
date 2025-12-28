@@ -32,7 +32,7 @@ const XIcon = (props: React.SVGProps<SVGSVGElement>) => (
 const socialLinks = [
   { Icon: Facebook, href: "https://web.facebook.com/esystemlk/" },
   { Icon: XIcon, href: "https://x.com/esystemlk" },
-  { Icon: Linkedin, href: "https://www.linkedin.com/company/esystemlk" },
+  { Icon: Linkedin, href: "https://www.linkedin.com/in/vishwa-vidarshana-6b2608394/" },
   { Icon: Instagram, href: "https://www.instagram.com/esystemlk" }
 ];
 
