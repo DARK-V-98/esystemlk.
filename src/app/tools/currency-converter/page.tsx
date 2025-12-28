@@ -133,7 +133,7 @@ export default function CurrencyConverterPage() {
         if (!response.ok) throw new Error('Failed to fetch free rates.');
         const result = await response.json();
         setFreeRates(result.rates);
-    } catch (e) {
+    } catch (e) => {
         setFreeError(e instanceof Error ? e.message : 'An unknown error occurred.');
     } finally {
         setIsFreeLoading(false);
@@ -157,17 +157,30 @@ export default function CurrencyConverterPage() {
     if (apiSource === 'primary' && !primaryRates && !primaryError) {
       fetchPrimaryData();
     } else if (apiSource === 'free' && !freeRates && !freeError) {
+      // Always fetch primary first for the currency list if it's not there
+      if (!primaryCurrencies) {
+        fetchPrimaryData();
+      }
       fetchFreeData();
     }
-  }, [apiSource, primaryRates, freeRates, primaryError, freeError]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [apiSource]);
 
   // Conversion calculation logic
   useEffect(() => {
-    if (!rates || !primaryCurrencies) return;
+    if (!rates) return;
 
-    const fromRate = apiSource === 'primary' ? (rates as PrimaryApiRates)?.[fromCurrency] : (rates as FreeApiRates)?.[fromCurrency];
-    const toRate = apiSource === 'primary' ? (rates as PrimaryApiRates)?.[toCurrency] : (rates as FreeApiRates)?.[toCurrency];
+    let fromRate: number | undefined;
+    let toRate: number | undefined;
     
+    if (apiSource === 'primary' && primaryRates) {
+        fromRate = primaryRates[fromCurrency];
+        toRate = primaryRates[toCurrency];
+    } else if (apiSource === 'free' && freeRates) {
+        fromRate = freeRates[fromCurrency];
+        toRate = freeRates[toCurrency];
+    }
+
     if (fromRate === undefined || toRate === undefined) {
         if (lastChanged === 'amount') setConvertedAmount('');
         else setAmount('');
@@ -195,7 +208,7 @@ export default function CurrencyConverterPage() {
         setAmount(finalAmount.toFixed(4));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [amount, convertedAmount, fromCurrency, toCurrency, rates, lastChanged, apiSource, primaryCurrencies]);
+  }, [amount, convertedAmount, fromCurrency, toCurrency, rates, lastChanged, apiSource, primaryRates, freeRates]);
   
   const handleSwap = () => {
     setFromCurrency(toCurrency);
@@ -210,7 +223,8 @@ export default function CurrencyConverterPage() {
     }
   }
 
-  const isInputDisabled = isLoading || !rates || !primaryCurrencies || currencyOptions.length === 0;
+  const isInputDisabled = isLoading || !rates || currencyOptions.length === 0;
+  const isFormDisabled = isPrimaryLoading || !primaryCurrencies;
 
   return (
     <div className="container mx-auto py-10 px-4 md:px-6">
@@ -249,7 +263,7 @@ export default function CurrencyConverterPage() {
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
-           {isLoading && !rates ? <LoadingState /> : error ? <ErrorState message={error} onRetry={handleRetry} /> : (
+           {isFormDisabled ? <LoadingState /> : error ? <ErrorState message={error} onRetry={handleRetry} /> : (
             <>
                 <div className="flex flex-col sm:flex-row gap-4 items-center">
                   <CurrencyInput 
