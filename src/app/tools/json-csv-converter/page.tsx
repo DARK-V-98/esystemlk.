@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from 'react';
@@ -80,7 +79,7 @@ export default function JsonCsvConverterPage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-8 items-start">
         <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
           <CardHeader>
             <CardTitle>Input {mode === 'json-to-csv' ? 'JSON' : 'CSV'}</CardTitle>
@@ -96,45 +95,43 @@ export default function JsonCsvConverterPage() {
           </CardContent>
         </Card>
 
-        <div className="space-y-8">
-            <div className="flex justify-center items-center gap-4">
-                <Button onClick={handleConvert} size="lg">
-                    <RefreshCw className="mr-2 h-4 w-4" /> Convert
-                </Button>
-                <Button onClick={switchModes} variant="outline" size="icon" title="Switch Conversion Direction">
-                    <RefreshCw className="h-4 w-4" />
+        <div className="flex flex-col items-center justify-center gap-4 pt-10">
+            <Button onClick={handleConvert} size="lg">
+                <RefreshCw className="mr-2 h-4 w-4" /> Convert
+            </Button>
+            <Button onClick={switchModes} variant="outline" size="icon" title="Switch Conversion Direction">
+                <RefreshCw className="h-4 w-4" />
+            </Button>
+        </div>
+
+        <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
+          <CardHeader>
+            <div className="flex justify-between items-center">
+                <div>
+                    <CardTitle>Output {mode === 'json-to-csv' ? 'CSV' : 'JSON'}</CardTitle>
+                    <CardDescription>Converted data appears here.</CardDescription>
+                </div>
+                <Button variant="ghost" size="icon" onClick={handleCopy} disabled={!outputData}>
+                    {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
                 </Button>
             </div>
-
-            <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
-              <CardHeader>
-                <div className="flex justify-between items-center">
-                    <div>
-                        <CardTitle>Output {mode === 'json-to-csv' ? 'CSV' : 'JSON'}</CardTitle>
-                        <CardDescription>Converted data appears here.</CardDescription>
-                    </div>
-                    <Button variant="ghost" size="icon" onClick={handleCopy} disabled={!outputData}>
-                        {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
-                    </Button>
-                </div>
-              </CardHeader>
-              <CardContent>
-                {error && (
-                  <div className="h-[400px] flex items-center justify-center text-center text-destructive bg-black/20 rounded-md p-4">
-                    <p>{error}</p>
-                  </div>
-                )}
-                {!error && (
-                    <Textarea
-                        readOnly
-                        value={outputData}
-                        className="font-mono h-[400px] text-sm bg-black/20"
-                        placeholder="Result will be shown here..."
-                    />
-                )}
-              </CardContent>
-            </Card>
-        </div>
+          </CardHeader>
+          <CardContent>
+            {error && (
+              <div className="h-[400px] flex items-center justify-center text-center text-destructive bg-black/20 rounded-md p-4">
+                <p>{error}</p>
+              </div>
+            )}
+            {!error && (
+                <Textarea
+                    readOnly
+                    value={outputData}
+                    className="font-mono h-[400px] text-sm bg-black/20"
+                    placeholder="Result will be shown here..."
+                />
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
