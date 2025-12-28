@@ -1,11 +1,72 @@
-
 'use client';
 import { Check, Star, Zap, Crown, Rocket, Palette } from "lucide-react";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { Globe, Code2, Server } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Switch } from "./ui/switch";
+import { Label } from "./ui/label";
+import { Skeleton } from "./ui/skeleton";
 
 const Pricing = () => {
+  const [currency, setCurrency] = useState<'USD' | 'LKR'>('USD');
+  const [lkrRate, setLkrRate] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchRate() {
+      try {
+        const response = await fetch('/api/free-currency-rates');
+        if (!response.ok) {
+          throw new Error('Failed to fetch exchange rate');
+        }
+        const data = await response.json();
+        if (data.rates && data.rates.LKR) {
+          setLkrRate(data.rates.LKR);
+        } else {
+            throw new Error('LKR rate not found in API response');
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchRate();
+  }, []);
+
+  const convertPrice = (usdPrice: number) => {
+    if (currency === 'USD' || !lkrRate) {
+      return `$${usdPrice}`;
+    }
+    const lkrPrice = usdPrice * lkrRate;
+    return `Rs. ${lkrPrice.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+  };
+  
+  const getPrice = (price: string) => {
+    if (price === "Custom" || isLoading) return price;
+    const numericPrice = parseInt(price, 10);
+    if (isNaN(numericPrice)) return price;
+    
+    if (currency === 'USD' || !lkrRate) {
+      return (
+        <>
+            <span className="text-2xl font-bold text-primary">$</span>
+            <span className="text-4xl font-bold">{numericPrice}</span>
+        </>
+      )
+    }
+
+    const lkrPrice = numericPrice * lkrRate;
+    return (
+         <>
+            <span className="text-2xl font-bold text-primary">Rs.</span>
+            <span className="text-4xl font-bold">{lkrPrice.toLocaleString('en-US', { maximumFractionDigits: 0 })}</span>
+        </>
+    )
+  }
+
+
   const softwarePackages = [
     {
       icon: Globe,
@@ -166,9 +227,7 @@ const Pricing = () => {
         <div className="mb-4">
           <p className="text-sm text-primary font-medium mb-1">Starting from</p>
           <div className="flex items-baseline gap-1">
-            {pkg.price !== "Custom" && <span className="text-2xl font-bold text-primary">$</span>}
-            <span className="text-4xl font-bold">{pkg.price}</span>
-            {pkg.price !== "Custom" && <span className="text-muted-foreground">/project</span>}
+            {isLoading ? <Skeleton className="h-10 w-32" /> : getPrice(pkg.price)}
           </div>
           <p className="text-sm text-muted-foreground mt-2 h-10">{pkg.description}</p>
         </div>
@@ -211,6 +270,16 @@ const Pricing = () => {
           <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
             Quality solutions at unbeatable prices. All packages include free lifetime service warranty!
           </p>
+          <div className="flex items-center justify-center space-x-3 mt-6">
+            <Label htmlFor="currency-switch" className={currency === 'USD' ? 'text-primary font-bold' : 'text-muted-foreground'}>USD</Label>
+            <Switch
+                id="currency-switch"
+                checked={currency === 'LKR'}
+                onCheckedChange={(checked) => setCurrency(checked ? 'LKR' : 'USD')}
+                disabled={isLoading}
+            />
+            <Label htmlFor="currency-switch" className={currency === 'LKR' ? 'text-primary font-bold' : 'text-muted-foreground'}>LKR</Label>
+          </div>
         </div>
 
         <h3 className="text-2xl md:text-3xl font-bold text-center mb-10">Software & Web Development</h3>
