@@ -13,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetHeader, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Menu, X, Code, Rocket, LogIn, LayoutGrid, User as UserIcon, LogOut } from "lucide-react";
 import { useAuthContext, useAuth } from "@/hooks/use-auth";
@@ -53,6 +54,50 @@ const Navbar = () => {
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
   ];
+  
+  const MobileMenu = () => (
+    <div className="flex flex-col h-full">
+        <SheetHeader className="p-6 border-b">
+          <SheetTitle asChild>
+            <Link href="/" className="flex items-center gap-2 group" onClick={() => setIsMobileMenuOpen(false)}>
+              <Image src="/logo.png" alt="ESystemLk Logo" width={30} height={30} className="rounded-lg" />
+              <span className="text-xl font-bold">
+                <span className="text-foreground">esystem</span>
+                <span className="text-primary">lk</span>
+              </span>
+            </Link>
+          </SheetTitle>
+        </SheetHeader>
+        <div className="flex flex-col gap-4 p-6 flex-grow">
+          {navLinks.map((link) => (
+            <Link
+              key={link.name}
+              href={link.href}
+              className="text-muted-foreground hover:text-primary transition-colors duration-300 font-medium text-lg py-2 rounded-md"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              {link.name}
+            </Link>
+          ))}
+        </div>
+        <div className="p-6 border-t border-border flex flex-col gap-4">
+          <Button asChild variant="hero" size="lg" className="gap-2 w-full">
+            <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)}>
+              <Rocket className="w-5 h-5" />
+              Get Started
+            </Link>
+          </Button>
+          {!user && !loading && (
+            <Button asChild variant="outline" size="lg" className="gap-2 w-full">
+              <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                <LogIn className="w-5 h-5" />
+                Sign In
+              </Link>
+            </Button>
+          )}
+        </div>
+      </div>
+  );
 
   return (
     <nav
@@ -144,6 +189,7 @@ const Navbar = () => {
             )}
           </div>
 
+          {/* Mobile Menu */}
           <div className="md:hidden flex items-center gap-2">
              {loading ? (
               <Skeleton className="h-10 w-10 rounded-full" />
@@ -168,13 +214,13 @@ const Navbar = () => {
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                    <DropdownMenuItem asChild>
-                     <Link href="/admin">
+                     <Link href="/admin" onClick={() => setIsMobileMenuOpen(false)}>
                         <LayoutGrid className="mr-2 h-4 w-4" />
                         <span>Dashboard</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                     <Link href="/admin/users">
+                     <Link href="/admin/users" onClick={() => setIsMobileMenuOpen(false)}>
                         <UserIcon className="mr-2 h-4 w-4" />
                         <span>Profile</span>
                     </Link>
@@ -187,49 +233,19 @@ const Navbar = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : null }
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 text-foreground hover:text-primary transition-colors"
-              aria-label="Toggle mobile menu"
-            >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-        </div>
-
-        <div
-          className={cn(
-            "md:hidden overflow-hidden transition-all duration-300 bg-background",
-            isMobileMenuOpen ? "max-h-[500px] py-6" : "max-h-0"
-          )}
-        >
-          <div className="flex flex-col gap-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className="text-muted-foreground hover:text-primary transition-colors duration-300 font-medium py-2 px-4 rounded-md hover:bg-secondary"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {link.name}
-              </Link>
-            ))}
-            <div className="pt-4 border-t border-border mt-4 flex flex-col gap-4 px-4">
-              <Button asChild variant="hero" size="lg" className="gap-2">
-                <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Rocket className="w-5 h-5" />
-                  Get Started
-                </Link>
-              </Button>
-              {!user && !loading && (
-                <Button asChild variant="outline" size="lg" className="gap-2">
-                  <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                    <LogIn className="w-5 h-5" />
-                    Sign In
-                  </Link>
-                </Button>
-              )}
-            </div>
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+              <SheetTrigger asChild>
+                 <button
+                  className="p-2 text-foreground hover:text-primary transition-colors"
+                  aria-label="Toggle mobile menu"
+                >
+                  <Menu className="w-6 h-6" />
+                </button>
+              </SheetTrigger>
+              <SheetContent side="right" className="p-0">
+                <MobileMenu />
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </div>

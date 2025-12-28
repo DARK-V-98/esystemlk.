@@ -92,6 +92,10 @@ export default function QuotationClient() {
 
   useEffect(() => {
     async function getPricing() {
+        if (!firestore) {
+            setIsPricingLoading(false);
+            return;
+        }
         const pricingCollection = collection(firestore, 'pricing');
         const q = query(pricingCollection, orderBy('order'));
         const snapshot = await getDocs(q);
