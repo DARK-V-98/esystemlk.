@@ -97,13 +97,15 @@ export default function PdfSuitePage() {
         copiedPages.forEach(page => mergedPdf.addPage(page));
       }
       const mergedPdfBytes = await mergedPdf.save();
-      const blob = new Blob([mergedPdfBytes.buffer], { type: 'application/pdf' });
+      const blob = new Blob([mergedPdfBytes.buffer.slice(0)], { type: 'application/pdf' });
 
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
       a.download = 'merged.pdf';
+      document.body.appendChild(a);
       a.click();
+      document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } catch(e) {
       setError("Failed to merge PDFs. Please ensure all files are valid PDFs.");
@@ -160,7 +162,9 @@ export default function PdfSuitePage() {
       const a = document.createElement('a');
       a.href = url;
       a.download = 'split.pdf';
+      document.body.appendChild(a);
       a.click();
+      document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to split PDF. Please check the file and page range.');
