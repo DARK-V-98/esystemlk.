@@ -17,6 +17,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Menu, X, Code, Rocket, LogIn, LayoutGrid, User as UserIcon, LogOut } from "lucide-react";
 import { useAuthContext, useAuth } from "@/hooks/use-auth";
 import { Skeleton } from "./ui/skeleton";
+import { cn } from "@/lib/utils";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -55,11 +56,12 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
+      className={cn(
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300", 
+        isScrolled || isMobileMenuOpen
           ? "bg-background/95 backdrop-blur-md shadow-lg border-b border-border"
           : "bg-transparent"
-      }`}
+      )}
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
@@ -145,14 +147,15 @@ const Navbar = () => {
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="md:hidden p-2 text-foreground hover:text-primary transition-colors"
+            aria-label="Toggle mobile menu"
           >
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
 
         <div
-          className={`md:hidden overflow-hidden transition-all duration-300 ${
-            isMobileMenuOpen ? "max-h-[500px] pb-6" : "max-h-0"
+          className={`md:hidden overflow-hidden transition-all duration-300 bg-background ${
+            isMobileMenuOpen ? "max-h-[500px] py-6" : "max-h-0"
           }`}
         >
           <div className="flex flex-col gap-4">
@@ -160,7 +163,7 @@ const Navbar = () => {
               <Link
                 key={link.name}
                 href={link.href}
-                className="text-muted-foreground hover:text-primary transition-colors duration-300 font-medium py-2"
+                className="text-muted-foreground hover:text-primary transition-colors duration-300 font-medium py-2 px-4 rounded-md hover:bg-secondary"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {link.name}
@@ -173,13 +176,13 @@ const Navbar = () => {
               </Link>
             </Button>
             {user ? (
-               <Button onClick={signOut} variant="outline" size="lg" className="gap-2">
+               <Button onClick={() => { signOut(); setIsMobileMenuOpen(false); }} variant="outline" size="lg" className="gap-2">
                 <LogOut className="w-5 h-5" />
                 Sign Out
               </Button>
             ) : (
               <Button asChild variant="outline" size="lg" className="gap-2">
-                <Link href="/login">
+                <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
                   <LogIn className="w-5 h-5" />
                   Sign In
                 </Link>
