@@ -44,7 +44,8 @@ export default function ImageMetadataViewerPage() {
 
             try {
                 const buffer = await selectedFile.arrayBuffer();
-                const tags = ExifReader.load(buffer);
+                const tags = ExifReader(Buffer.from(buffer));
+
                 setMetadata(tags);
             } catch (err) {
                 setError('Could not read metadata from this file. It may be missing or corrupted.');
