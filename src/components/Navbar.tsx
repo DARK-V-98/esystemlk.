@@ -144,19 +144,64 @@ const Navbar = () => {
             )}
           </div>
 
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 text-foreground hover:text-primary transition-colors"
-            aria-label="Toggle mobile menu"
-          >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          <div className="md:hidden flex items-center gap-2">
+             {loading ? (
+              <Skeleton className="h-10 w-10 rounded-full" />
+            ) : user ? (
+               <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                    <Avatar className="h-9 w-9">
+                      <AvatarImage src={user.photoURL ?? ''} alt={user.displayName ?? ''} />
+                      <AvatarFallback>{getInitials(user.displayName, user.email)}</AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{user.displayName}</p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                   <DropdownMenuItem asChild>
+                     <Link href="/admin">
+                        <LayoutGrid className="mr-2 h-4 w-4" />
+                        <span>Dashboard</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                     <Link href="/admin/users">
+                        <UserIcon className="mr-2 h-4 w-4" />
+                        <span>Profile</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => { signOut(); setIsMobileMenuOpen(false); }}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Sign out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : null }
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 text-foreground hover:text-primary transition-colors"
+              aria-label="Toggle mobile menu"
+            >
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
 
         <div
-          className={`md:hidden overflow-hidden transition-all duration-300 bg-background ${
+          className={cn(
+            "md:hidden overflow-hidden transition-all duration-300 bg-background",
             isMobileMenuOpen ? "max-h-[500px] py-6" : "max-h-0"
-          }`}
+          )}
         >
           <div className="flex flex-col gap-4">
             {navLinks.map((link) => (
@@ -169,25 +214,22 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
-             <Button asChild variant="hero" size="lg" className="gap-2 mt-4">
-              <Link href="/contact">
-                <Rocket className="w-5 h-5" />
-                Get Started
-              </Link>
-            </Button>
-            {user ? (
-               <Button onClick={() => { signOut(); setIsMobileMenuOpen(false); }} variant="outline" size="lg" className="gap-2">
-                <LogOut className="w-5 h-5" />
-                Sign Out
-              </Button>
-            ) : (
-              <Button asChild variant="outline" size="lg" className="gap-2">
-                <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                  <LogIn className="w-5 h-5" />
-                  Sign In
+            <div className="pt-4 border-t border-border mt-4 flex flex-col gap-4 px-4">
+              <Button asChild variant="hero" size="lg" className="gap-2">
+                <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Rocket className="w-5 h-5" />
+                  Get Started
                 </Link>
               </Button>
-            )}
+              {!user && !loading && (
+                <Button asChild variant="outline" size="lg" className="gap-2">
+                  <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                    <LogIn className="w-5 h-5" />
+                    Sign In
+                  </Link>
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </div>
