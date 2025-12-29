@@ -14,6 +14,12 @@ const BootSequence = ({ onComplete }: BootSequenceProps) => {
   const [systemMessages, setSystemMessages] = useState<string[]>([]);
   const [threatLevel, setThreatLevel] = useState('SCANNING...');
   const { playStartup, playClick, playSuccess } = useSound();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
 
   const bootMessages = [
     '> Initializing quantum neural matrix...',
@@ -187,7 +193,7 @@ const BootSequence = ({ onComplete }: BootSequenceProps) => {
               >
                 {/* Waveform visualizer */}
                 <div className="flex items-end justify-center gap-1 h-20 mb-4">
-                  {[...Array(30)].map((_, i) => (
+                  {isClient && [...Array(30)].map((_, i) => (
                     <motion.div
                       key={i}
                       className="w-1 bg-gradient-to-t from-primary via-accent to-secondary rounded-full"

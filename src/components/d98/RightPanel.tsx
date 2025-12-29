@@ -25,12 +25,14 @@ const RightPanel = () => {
     { id: 'temp', label: 'Core Temp', value: '42°C', icon: Thermometer, color: 'secondary', percentage: 42 },
     { id: 'storage', label: 'Storage', value: '2.4 PB', icon: HardDrive, color: 'primary', percentage: 67 },
   ]);
-
+  
+  const [isClient, setIsClient] = useState(false);
   const [waveformData, setWaveformData] = useState<number[]>(Array(16).fill(0.5));
-  const [threatLevel, setThreatLevel] = useState(0);
   const [signalStrength, setSignalStrength] = useState<number[]>(Array(8).fill(0.5));
+  const [threatLevel, setThreatLevel] = useState(0);
 
   useEffect(() => {
+    setIsClient(true);
     const interval = setInterval(() => {
       setWaveformData(Array(16).fill(0).map(() => Math.random() * 0.8 + 0.2));
       setSignalStrength(Array(8).fill(0).map(() => Math.random() * 0.7 + 0.3));
@@ -108,50 +110,54 @@ const RightPanel = () => {
       </motion.div>
 
       {/* Waveform Visualizer */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="mb-4 glass-panel rounded-lg p-3 border border-primary/20"
-      >
-        <p className="text-[10px] text-muted-foreground tracking-wider mb-2 font-display">NEURAL ACTIVITY</p>
-        <div className="flex items-end justify-between h-10 gap-0.5">
-          {waveformData.map((height, i) => (
-            <motion.div
-              key={i}
-              className="flex-1 bg-gradient-to-t from-primary via-accent to-secondary rounded-t-sm"
-              animate={{ height: `${height * 100}%` }}
-              transition={{ duration: 0.1 }}
-              style={{ boxShadow: '0 0 5px #ff0000' }}
-            />
-          ))}
-        </div>
-      </motion.div>
+       {isClient && (
+        <>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="mb-4 glass-panel rounded-lg p-3 border border-primary/20"
+          >
+            <p className="text-[10px] text-muted-foreground tracking-wider mb-2 font-display">NEURAL ACTIVITY</p>
+            <div className="flex items-end justify-between h-10 gap-0.5">
+              {waveformData.map((height, i) => (
+                <motion.div
+                  key={i}
+                  className="flex-1 bg-gradient-to-t from-primary via-accent to-secondary rounded-t-sm"
+                  animate={{ height: `${height * 100}%` }}
+                  transition={{ duration: 0.1 }}
+                  style={{ boxShadow: '0 0 5px #ff0000' }}
+                />
+              ))}
+            </div>
+          </motion.div>
 
-      {/* Signal Strength */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.45 }}
-        className="mb-4 glass-panel rounded-lg p-3 border border-primary/20"
-      >
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2">
-            <Radio size={12} className="text-primary" />
-            <span className="text-[10px] text-muted-foreground tracking-wider font-display">SIGNAL STRENGTH</span>
-          </div>
-        </div>
-        <div className="flex items-end justify-between h-6 gap-1">
-          {signalStrength.map((height, i) => (
-            <motion.div
-              key={i}
-              className="flex-1 bg-primary rounded-sm"
-              animate={{ height: `${height * 100}%`, opacity: height }}
-              transition={{ duration: 0.15 }}
-            />
-          ))}
-        </div>
-      </motion.div>
+          {/* Signal Strength */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.45 }}
+            className="mb-4 glass-panel rounded-lg p-3 border border-primary/20"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Radio size={12} className="text-primary" />
+                <span className="text-[10px] text-muted-foreground tracking-wider font-display">SIGNAL STRENGTH</span>
+              </div>
+            </div>
+            <div className="flex items-end justify-between h-6 gap-1">
+              {signalStrength.map((height, i) => (
+                <motion.div
+                  key={i}
+                  className="flex-1 bg-primary rounded-sm"
+                  animate={{ height: `${height * 100}%`, opacity: height }}
+                  transition={{ duration: 0.15 }}
+                />
+              ))}
+            </div>
+          </motion.div>
+        </>
+      )}
 
       {/* Stats Grid */}
       <div className="space-y-2">
