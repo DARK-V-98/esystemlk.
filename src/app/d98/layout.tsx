@@ -12,11 +12,5 @@ export default function D98Layout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <html lang="en" className="dark">
-      <body>
-          {children}
-      </body>
-    </html>
-  );
+  return <>{children}</>;
 }
