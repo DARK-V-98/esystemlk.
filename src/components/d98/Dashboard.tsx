@@ -1,5 +1,6 @@
 
 "use client";
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import LeftPanel from './LeftPanel';
 import CenterPanel from './CenterPanel';
@@ -8,6 +9,12 @@ import ParticleBackground from './ParticleBackground';
 import MatrixRain from './MatrixRain';
 
 const Dashboard = () => {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -61,11 +68,13 @@ const Dashboard = () => {
       {/* Corner decorations */}
       <div className="fixed top-3 left-20 md:left-24 text-primary/30 text-[10px] font-mono z-20">
         <div className="flex items-center gap-2">
-          <motion.div 
-            className="w-1.5 h-1.5 rounded-full bg-primary"
-            animate={{ opacity: [0.3, 1, 0.3] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          />
+          {isClient && (
+            <motion.div 
+              className="w-1.5 h-1.5 rounded-full bg-primary"
+              animate={{ opacity: [0.3, 1, 0.3] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            />
+          )}
           <span>SYS.ACTIVE</span>
         </div>
       </div>
