@@ -86,32 +86,32 @@ const RightPanel = () => {
         </div>
       </div>
 
-      {/* Threat Level */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="mb-4 glass-panel rounded-lg p-3 border border-primary/20"
-      >
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2">
-            <AlertTriangle size={12} className="text-green-500" />
-            <span className="text-[10px] text-muted-foreground tracking-wider">THREAT LEVEL</span>
-          </div>
-          <span className="text-xs font-bold text-green-500">LOW</span>
-        </div>
-        <div className="h-2 bg-muted/50 rounded-full overflow-hidden">
-          <motion.div
-            className="h-full bg-gradient-to-r from-green-500 to-primary rounded-full"
-            animate={{ width: `${threatLevel}%` }}
-            transition={{ duration: 0.2 }}
-          />
-        </div>
-      </motion.div>
-
-      {/* Waveform Visualizer */}
-       {isClient && (
+      {isClient && (
         <>
+          {/* Threat Level */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="mb-4 glass-panel rounded-lg p-3 border border-primary/20"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <AlertTriangle size={12} className="text-green-500" />
+                <span className="text-[10px] text-muted-foreground tracking-wider">THREAT LEVEL</span>
+              </div>
+              <span className="text-xs font-bold text-green-500">LOW</span>
+            </div>
+            <div className="h-2 bg-muted/50 rounded-full overflow-hidden">
+              <motion.div
+                className="h-full bg-gradient-to-r from-green-500 to-primary rounded-full"
+                animate={{ width: `${threatLevel}%` }}
+                transition={{ duration: 0.2 }}
+              />
+            </div>
+          </motion.div>
+
+          {/* Waveform Visualizer */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
