@@ -17,7 +17,7 @@ const D98ChatInputSchema = z.object({
 export type D98ChatInput = z.infer<typeof D98ChatInputSchema>;
 
 const D98ChatOutputSchema = z.object({
-  response: z.string().describe("The AI's response."),
+  response: z.string().describe("The AI's response formatted as plain text, including any markdown for readability."),
 });
 export type D98ChatOutput = z.infer<typeof D98ChatOutputSchema>;
 
@@ -26,6 +26,7 @@ const d98SystemPrompt = `You are D98.AI, a Premier Intelligence System. Your per
 const d98ChatPrompt = ai.definePrompt({
   name: 'd98ChatPrompt',
   input: { schema: D98ChatInputSchema },
+  output: { schema: D98ChatOutputSchema },
   system: d98SystemPrompt,
   prompt: `User's prompt: {{{prompt}}}`,
   config: {
@@ -41,9 +42,12 @@ const d98ChatFlow = ai.defineFlow(
     outputSchema: D98ChatOutputSchema,
   },
   async (input) => {
-    const llmResponse = await d98ChatPrompt({ prompt: input.prompt });
+    const { output } = await d98ChatPrompt({ prompt: input.prompt });
+    if (!output) {
+      return { response: "ERROR: Failed to get a valid response from AI core." };
+    }
     return {
-      response: llmResponse.output as string,
+      response: output.response,
     };
   }
 );
