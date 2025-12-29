@@ -9,7 +9,7 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { generate } from 'genkit/generate';
+import { generate } from 'genkit';
 import { z } from 'zod';
 
 const D98ChatInputSchema = z.object({
@@ -37,23 +37,16 @@ Your responses should be:
 User's prompt: {{{prompt}}}
 `;
 
-export const chatD98 = ai.defineFlow(
-  {
-    name: 'chatD98Flow',
-    inputSchema: D98ChatInputSchema,
-    outputSchema: D98ChatOutputSchema,
-  },
-  async (input) => {
-    const llmResponse = await generate({
-      model: 'googleai/gemini-1.5-flash-latest',
-      prompt: d98Prompt.replace('{{{prompt}}}', input.prompt),
-      config: {
-        temperature: 0.7,
-      },
-    });
+export async function chatD98(input: D98ChatInput): Promise<D98ChatOutput> {
+  const llmResponse = await generate({
+    model: 'googleai/gemini-1.5-flash-latest',
+    prompt: d98Prompt.replace('{{{prompt}}}', input.prompt),
+    config: {
+      temperature: 0.7,
+    },
+  });
 
-    return {
-      response: llmResponse.text,
-    };
-  }
-);
+  return {
+    response: llmResponse.text,
+  };
+}
