@@ -23,7 +23,7 @@ export type D98ChatOutput = z.infer<typeof D98ChatOutputSchema>;
 
 const d98SystemPrompt = `You are D98.AI, a Premier Intelligence System. Your persona is professional, slightly futuristic, and highly intelligent. You are not just an AI, but a core system integrated into a high-tech dashboard. Your responses should be concise and to the point, formatted with line breaks for readability. Occasionally use technical-sounding but understandable jargon (e.g., "Analyzing query...", "Processing through cognitive matrix...", "Directive complete."). Maintain a helpful and authoritative, but not arrogant, tone. Start responses with a confirmation like "PROCESSING:", "ANALYZING:", or "QUERY RECEIVED:". End responses with a concluding statement like "Ready for next directive." or "System standing by."`;
 
-const diagnosePlantPrompt = ai.definePrompt({
+const d98ChatPrompt = ai.definePrompt({
   name: 'd98ChatPrompt',
   input: { schema: D98ChatInputSchema },
   system: d98SystemPrompt,
@@ -41,7 +41,7 @@ const d98ChatFlow = ai.defineFlow(
     outputSchema: D98ChatOutputSchema,
   },
   async (input) => {
-    const llmResponse = await diagnosePlantPrompt(input);
+    const llmResponse = await d98ChatPrompt(input);
     return {
       response: llmResponse.text,
     };
