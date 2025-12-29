@@ -15,7 +15,11 @@ export const useSound = () => {
     if (audioContextRef.current) return;
     try {
       const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-      audioContextRef.current = new AudioContext();
+      if (AudioContext) {
+        audioContextRef.current = new AudioContext();
+      } else {
+         console.warn("Web Audio API is not supported in this browser.");
+      }
     } catch (e) {
       console.warn("Web Audio API is not supported in this browser.");
     }
@@ -24,8 +28,6 @@ export const useSound = () => {
   useEffect(() => {
     const handleFirstInteraction = () => {
       initAudioContext();
-      window.removeEventListener('click', handleFirstInteraction);
-      window.removeEventListener('keydown', handleFirstInteraction);
     };
 
     window.addEventListener('click', handleFirstInteraction, { once: true });
@@ -46,10 +48,10 @@ export const useSound = () => {
 
   const playTone = useCallback((frequency: number, duration: number, type: OscillatorType = 'sine', options: SoundOptions = {}) => {
     const ctx = getContext();
-    if (!ctx || ctx.state === 'suspended') {
-      ctx?.resume();
-    }
     if (!ctx) return;
+    if (ctx.state === 'suspended') {
+      ctx.resume();
+    }
     
     try {
       const osc = ctx.createOscillator();
