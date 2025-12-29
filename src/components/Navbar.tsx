@@ -48,6 +48,7 @@ const Navbar = () => {
 
   const navLinks = [
     { name: "Home", href: "/" },
+    { name: "D98.AI", href: "/d98" },
     { name: "Services", href: "/services" },
     { name: "Pricing", href: "/pricing" },
     { name: "Portfolio", href: "/portfolio" },
@@ -236,7 +237,7 @@ const Navbar = () => {
                   <Menu className="w-6 h-6" />
                 </button>
               </SheetTrigger>
-              <SheetContent side="right" className="p-0 w-[80vw] sm:max-w-sm">
+              <SheetContent side="right" className="p-0 w-[80vw] sm:max-w-sm bg-background">
                 <MobileMenu />
               </SheetContent>
             </Sheet>
