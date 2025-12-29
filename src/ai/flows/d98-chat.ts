@@ -41,7 +41,7 @@ const d98ChatFlow = ai.defineFlow(
     outputSchema: D98ChatOutputSchema,
   },
   async (input) => {
-    const llmResponse = await d98ChatPrompt(input);
+    const llmResponse = await d98ChatPrompt({ prompt: input.prompt });
     return {
       response: llmResponse.text,
     };
