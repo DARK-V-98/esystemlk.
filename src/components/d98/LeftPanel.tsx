@@ -2,7 +2,7 @@
 "use client";
 import { motion, AnimatePresence } from 'framer-motion';
 import { Brain, Network, Eye, Database, Shield, Zap, Settings, Cpu, Radio, Target } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSound } from '@/hooks/d98/useSound';
 
 interface Module {
@@ -28,7 +28,12 @@ const modules: Module[] = [
 const LeftPanel = () => {
   const [activeModule, setActiveModule] = useState('core');
   const [hoveredModule, setHoveredModule] = useState<string | null>(null);
+  const [isClient, setIsClient] = useState(false);
   const { playModuleSwitch, playHover } = useSound();
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -111,7 +116,7 @@ const LeftPanel = () => {
                       ? ['0 0 4px #ff0000', '0 0 8px #ff0000', '0 0 4px #ff0000']
                       : '0 0 4px #ff6600',
                   }}
-                  transition={{ duration: 1, repeat: Infinity }}
+                  transition={isClient ? { duration: 1, repeat: Infinity } : { duration: 0 }}
                 />
 
                 {/* Active indicator line */}
