@@ -13,6 +13,12 @@ const CenterPanel = () => {
   const [messages, setMessages] = useState<{ role: 'user' | 'ai'; content: string }[]>([]);
   const { playTyping, playSend, playReceive, playClick, playHover } = useSound();
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
 
   const placeholderTexts = [
     'Command D98.AI...',
@@ -94,48 +100,52 @@ const CenterPanel = () => {
     >
       {/* Animated background core */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        {/* Outer rings */}
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 120, repeat: Infinity, ease: 'linear' }}
-          className="absolute w-[800px] h-[800px] border border-primary/10 rounded-full"
-        />
-        <motion.div
-          animate={{ rotate: -360 }}
-          transition={{ duration: 90, repeat: Infinity, ease: 'linear' }}
-          className="absolute w-[600px] h-[600px] border border-primary/15 rounded-full"
-          style={{ borderStyle: 'dashed' }}
-        />
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
-          className="absolute w-[400px] h-[400px] border-2 border-primary/20 rounded-full"
-        />
-        <motion.div
-          animate={{ rotate: -360 }}
-          transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-          className="absolute w-[250px] h-[250px] border border-primary/30 rounded-full"
-          style={{ borderStyle: 'dashed' }}
-        />
-        
-        {/* Core glow */}
-        <motion.div
-          className="absolute w-32 h-32 rounded-full"
-          animate={{
-            boxShadow: [
-              '0 0 60px #ff000040, 0 0 120px #ff000020',
-              '0 0 100px #ff000060, 0 0 200px #ff000030',
-              '0 0 60px #ff000040, 0 0 120px #ff000020',
-            ],
-          }}
-          transition={{ duration: 2, repeat: Infinity }}
-        />
-        <motion.div
-          className="absolute w-8 h-8 bg-primary rounded-full"
-          animate={{ scale: [1, 1.2, 1] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-          style={{ boxShadow: '0 0 30px #ff0000, 0 0 60px #ff0000' }}
-        />
+        {isClient && (
+          <>
+            {/* Outer rings */}
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 120, repeat: Infinity, ease: 'linear' }}
+              className="absolute w-[800px] h-[800px] border border-primary/10 rounded-full"
+            />
+            <motion.div
+              animate={{ rotate: -360 }}
+              transition={{ duration: 90, repeat: Infinity, ease: 'linear' }}
+              className="absolute w-[600px] h-[600px] border border-primary/15 rounded-full"
+              style={{ borderStyle: 'dashed' }}
+            />
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
+              className="absolute w-[400px] h-[400px] border-2 border-primary/20 rounded-full"
+            />
+            <motion.div
+              animate={{ rotate: -360 }}
+              transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+              className="absolute w-[250px] h-[250px] border border-primary/30 rounded-full"
+              style={{ borderStyle: 'dashed' }}
+            />
+            
+            {/* Core glow */}
+            <motion.div
+              className="absolute w-32 h-32 rounded-full"
+              animate={{
+                boxShadow: [
+                  '0 0 60px #ff000040, 0 0 120px #ff000020',
+                  '0 0 100px #ff000060, 0 0 200px #ff000030',
+                  '0 0 60px #ff000040, 0 0 120px #ff000020',
+                ],
+              }}
+              transition={{ duration: 2, repeat: Infinity }}
+            />
+            <motion.div
+              className="absolute w-8 h-8 bg-primary rounded-full"
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+              style={{ boxShadow: '0 0 30px #ff0000, 0 0 60px #ff0000' }}
+            />
+          </>
+        )}
       </div>
 
       {/* Main Content */}
