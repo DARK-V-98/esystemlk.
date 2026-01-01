@@ -9,6 +9,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Clock, User } from 'lucide-react';
 import BlogInteractions from './blog-interactions';
+import Link from 'next/link';
+
 
 export interface Post {
     id: string;
@@ -45,16 +47,21 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         notFound();
     }
 
+    const postInfo = {
+        title: post.title,
+        slug: post.slug,
+    };
+
     return (
         <div className="container mx-auto px-4 md:px-6 py-12 md:py-20">
             <article className="max-w-4xl mx-auto">
                 <header className="mb-12">
                     <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tight mb-4">{post.title}</h1>
                     <div className="flex items-center text-muted-foreground text-sm space-x-4">
-                        <div className="flex items-center gap-2">
+                        <Link href={`/profile/${post.authorId}`} className="flex items-center gap-2 hover:text-primary">
                             <User className="w-4 h-4" />
                             <span>{post.authorName}</span>
-                        </div>
+                        </Link>
                         <div className="flex items-center gap-2">
                             <Clock className="w-4 h-4" />
                             <time dateTime={post.createdAt.toDate().toISOString()}>
@@ -81,7 +88,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                    <ReactMarkdown>{post.content}</ReactMarkdown>
                 </div>
                 
-                <BlogInteractions postId={post.id} />
+                <BlogInteractions postId={post.id} postInfo={postInfo} />
                 
             </article>
         </div>

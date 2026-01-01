@@ -4,7 +4,7 @@
 import { useAuthContext } from "@/hooks/use-auth";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Link from "next/link";
-import { Mail, Users, CreditCard, BarChart2, FileSignature, Newspaper } from "lucide-react";
+import { Mail, Users, CreditCard, BarChart2, FileSignature, Newspaper, User } from "lucide-react";
 
 export default function AdminPage() {
   const { user } = useAuthContext();
@@ -17,6 +17,17 @@ export default function AdminPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <Link href="/admin/profile" className="block hover:scale-105 transition-transform duration-300">
+            <Card className="bg-card border border-border rounded-2xl shadow-lg h-full hover:border-primary transition-colors">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>My Profile</CardTitle>
+                 <User className="w-6 h-6 text-primary" />
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">Update your public profile information.</p>
+              </CardContent>
+            </Card>
+        </Link>
         <Link href="/admin/users" className="block hover:scale-105 transition-transform duration-300">
             <Card className="bg-card border border-border rounded-2xl shadow-lg h-full hover:border-primary transition-colors">
               <CardHeader className="flex flex-row items-center justify-between">

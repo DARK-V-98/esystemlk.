@@ -8,6 +8,7 @@
  * Data Structure:
  * - /users/{userId}: A user's primary profile document, which includes their role information for application-level logic.
  * - /users/{userId}/sessions/{sessionId}: A subcollection containing private session data, strictly owned by the parent user.
+ * - /users/{userId}/bookmarks/{postId}: A subcollection for storing a user's saved blog posts.
  * - /roles_admin/{userId}: A dedicated lookup collection. The existence of a document here grants a user admin privileges across the system.
  *
  * Key Security Decisions:
@@ -62,7 +63,7 @@ service cloud.firestore {
 
     /**
      * @description Manages user profile documents. Users can manage their own profile.
-     * Admins are granted read-only access to view profiles for a dashboard.
+     * Admins are granted read-only access to view profiles for a dashboard. Public read access is also allowed.
      * @path /users/{userId}
      * @allow (create) A new user signing up: `create /users/user_abc` if auth.uid is `user_abc`.
      * @allow (get) An admin viewing another user's profile: `get /users/user_xyz` if auth.uid has an admin role.
@@ -71,7 +72,7 @@ service cloud.firestore {
      * @principle Enforces document ownership for writes and role-based access for reads.
      */
     match /users/{userId} {
-      allow get: if isOwner(userId) || isAdmin();
+      allow get: if true; // Allow public read access to profiles
       allow list: if isAdmin();
       allow create: if isOwner(userId) && isUserDocumentValidOnCreate(userId);
       allow update: if isExistingOwner(userId) && isUserDocumentValidOnUpdate();
@@ -90,6 +91,15 @@ service cloud.firestore {
         allow create: if isOwner(userId) && isSessionDocumentValidOnCreate(userId);
         allow update: if isExistingOwner(userId) && isSessionDocumentValidOnUpdate();
         allow delete: if isExistingOwner(userId);
+      }
+      
+      match /bookmarks/{postId} {
+        allow read, write: if isOwner(userId);
+      }
+      
+      match /badges/{badgeId} {
+        allow read: if true;
+        allow write: if false; // Badges should be awarded server-side
       }
     }
 

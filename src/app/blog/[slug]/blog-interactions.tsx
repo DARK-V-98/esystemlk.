@@ -7,7 +7,8 @@ import {
   MessageCircle,
   Share2,
   Send,
-  Loader2
+  Loader2,
+  Bookmark
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -34,15 +35,23 @@ interface Comment {
     createdAt: any;
 }
 
-export default function BlogInteractions({ postId }: { postId: string }) {
+interface BlogPostInfo {
+    title: string;
+    slug: string;
+}
+
+export default function BlogInteractions({ postId, postInfo }: { postId: string, postInfo: BlogPostInfo }) {
   const { firestore, user } = useAuthContext();
   const { toast } = useToast();
   const [likes, setLikes] = useState(0);
   const [hasLiked, setHasLiked] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
+  const [isBookmarked, setIsBookmarked] = useState(false);
   const [isLiking, setIsLiking] = useTransition();
   const [isCommenting, setIsCommenting] = useTransition();
+  const [isBookmarking, setIsBookmarking] = useTransition();
+
 
   // Fetch likes and check if user has liked
   useEffect(() => {
@@ -77,6 +86,16 @@ export default function BlogInteractions({ postId }: { postId: string }) {
 
     return () => unsubscribe();
   }, [firestore, postId]);
+
+  // Check if post is bookmarked
+   useEffect(() => {
+    if (!user || !firestore) return;
+    const bookmarkRef = doc(firestore, 'users', user.uid, 'bookmarks', postId);
+    const unsubscribe = onSnapshot(bookmarkRef, (doc) => {
+      setIsBookmarked(doc.exists());
+    });
+    return () => unsubscribe();
+  }, [firestore, postId, user]);
   
   const handleLike = () => {
     if (!user) {
@@ -89,6 +108,28 @@ export default function BlogInteractions({ postId }: { postId: string }) {
             await deleteDoc(likeRef);
         } else {
             await setDoc(likeRef, { userId: user.uid });
+        }
+    });
+  }
+  
+  const handleBookmark = () => {
+    if (!user) {
+        toast({ title: 'Please sign in to bookmark posts.', variant: 'destructive'});
+        return;
+    }
+    setIsBookmarking(async () => {
+        const bookmarkRef = doc(firestore, 'users', user.uid, 'bookmarks', postId);
+        if (isBookmarked) {
+            await deleteDoc(bookmarkRef);
+            toast({ title: "Bookmark removed." });
+        } else {
+            await setDoc(bookmarkRef, { 
+                postId: postId,
+                title: postInfo.title,
+                slug: postInfo.slug,
+                createdAt: serverTimestamp() 
+            });
+            toast({ title: "Post bookmarked!" });
         }
     });
   }
@@ -149,19 +190,29 @@ export default function BlogInteractions({ postId }: { postId: string }) {
                     <span>{comments.length} Comment{comments.length !== 1 && 's'}</span>
                 </div>
             </div>
-             <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="flex items-center gap-2 text-muted-foreground">
-                        <Share2 className="w-5 h-5" />
-                        <span>Share</span>
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                    <DropdownMenuItem onClick={() => handleShare('facebook')}>Facebook</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleShare('twitter')}>Twitter</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleShare('linkedin')}>LinkedIn</DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
+             <div className="flex items-center gap-2">
+                <Button variant="ghost" onClick={handleBookmark} disabled={isBookmarking} className="flex items-center gap-2 text-muted-foreground">
+                    {isBookmarking ? (
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                        <Bookmark className={`w-5 h-5 ${isBookmarked ? 'text-primary fill-current' : ''}`} />
+                    )}
+                    <span>{isBookmarked ? 'Saved' : 'Save'}</span>
+                </Button>
+                 <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="flex items-center gap-2 text-muted-foreground">
+                            <Share2 className="w-5 h-5" />
+                            <span>Share</span>
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuItem onClick={() => handleShare('facebook')}>Facebook</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleShare('twitter')}>Twitter</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleShare('linkedin')}>LinkedIn</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
         </div>
 
         {/* Comments Section */}

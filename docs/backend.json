@@ -23,6 +23,27 @@
         "role": {
           "type": "string",
           "description": "The role of the user in the system (e.g., 'admin', 'user')."
+        },
+        "bio": {
+          "type": "string",
+          "description": "A short biography of the user."
+        },
+        "photoURL": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the user's profile picture."
+        },
+        "twitter": {
+            "type": "string",
+            "description": "The user's Twitter profile handle."
+        },
+        "github": {
+            "type": "string",
+            "description": "The user's GitHub profile username."
+        },
+        "linkedin": {
+            "type": "string",
+            "description": "The user's LinkedIn profile URL."
         }
       },
       "required": [
@@ -104,6 +125,32 @@
         "userId": { "type": "string" }
       },
       "required": ["userId"]
+    },
+    "Bookmark": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Bookmark",
+      "type": "object",
+      "description": "Represents a user's bookmark on a blog post.",
+      "properties": {
+        "postId": { "type": "string" },
+        "title": { "type": "string" },
+        "slug": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["postId", "title", "slug", "createdAt"]
+    },
+    "Badge": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "Badge",
+        "type": "object",
+        "description": "Represents an achievement or badge awarded to a user.",
+        "properties": {
+            "name": { "type": "string" },
+            "description": { "type": "string" },
+            "icon": { "type": "string" },
+            "awardedAt": { "type": "string", "format": "date-time" }
+        },
+        "required": ["name", "icon", "awardedAt"]
     }
   },
   "auth": {
@@ -148,6 +195,24 @@
               "description": "The unique identifier of the session."
             }
           ]
+        }
+      },
+      {
+        "path": "/users/{userId}/bookmarks/{postId}",
+        "definition": {
+            "entityName": "Bookmark",
+            "schema": { "$ref": "#/entities/Bookmark" },
+            "description": "Stores a user's bookmarked blog posts.",
+            "params": [{"name": "userId"}, {"name": "postId"}]
+        }
+      },
+      {
+        "path": "/users/{userId}/badges/{badgeId}",
+        "definition": {
+            "entityName": "Badge",
+            "schema": { "$ref": "#/entities/Badge" },
+            "description": "Stores badges awarded to a user.",
+            "params": [{"name": "userId"}, {"name": "badgeId"}]
         }
       },
       {
@@ -200,6 +265,6 @@
         }
       }
     ],
-    "reasoning": "The data structure is updated to support a full-featured blog. This includes a main 'blog' collection for posts. Each post document can have subcollections for 'comments' and 'likes' to enable social features and keep the data organized and scalable. Security rules will allow public read access for blog content while restricting write access to authenticated users (for comments/likes) or admins (for posts)."
+    "reasoning": "The data structure is updated to support a full-featured blog. This includes a main 'blog' collection for posts. Each post document can have subcollections for 'comments' and 'likes' to enable social features and keep the data organized and scalable. User profiles are expanded with social links and bios. Bookmarks and Badges are added as subcollections under each user."
   }
 }
