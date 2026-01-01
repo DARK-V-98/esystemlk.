@@ -7,6 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Github, Twitter, Linkedin, Bookmark, Award } from 'lucide-react';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
+import * as Icons from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+
 
 interface UserProfile {
     uid: string;
@@ -26,6 +29,22 @@ interface Bookmark {
     slug: string;
     createdAt: Timestamp;
 }
+
+interface Badge {
+    id: string;
+    name: string;
+    description: string;
+    icon: keyof typeof Icons;
+    awardedAt: Timestamp;
+}
+
+// Generic Icon component
+const Icon = ({ name, className }: { name: keyof typeof Icons, className?: string }) => {
+    const LucideIcon = Icons[name] as React.ElementType;
+    if (!LucideIcon) return <Award className={className} />; // Fallback icon
+    return <LucideIcon className={className} />;
+};
+
 
 async function getUserProfile(id: string): Promise<UserProfile | null> {
     const firestore = getFirestoreAdmin();
@@ -50,10 +69,23 @@ async function getBookmarks(userId: string): Promise<Bookmark[]> {
     } as Bookmark));
 }
 
+async function getBadges(userId: string): Promise<Badge[]> {
+    const firestore = getFirestoreAdmin();
+    const badgesRef = collection(firestore, 'users', userId, 'badges');
+    const q = query(badgesRef, orderBy('awardedAt', 'desc'));
+    const snapshot = await getDocs(q);
+
+    return snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+    } as Badge));
+}
+
 
 export default async function ProfilePage({ params }: { params: { id: string } }) {
     const user = await getUserProfile(params.id);
     const bookmarks = await getBookmarks(params.id);
+    const badges = await getBadges(params.id);
 
     if (!user) {
         notFound();
@@ -144,7 +176,28 @@ export default async function ProfilePage({ params }: { params: { id: string } }
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                           <p className="text-muted-foreground text-center py-8">No badges earned yet.</p>
+                            {badges.length > 0 ? (
+                                <TooltipProvider>
+                                    <div className="flex flex-wrap gap-4">
+                                        {badges.map(badge => (
+                                            <Tooltip key={badge.id}>
+                                                <TooltipTrigger>
+                                                    <div className="w-16 h-16 bg-secondary rounded-lg flex items-center justify-center border-2 border-transparent hover:border-primary transition-colors">
+                                                        <Icon name={badge.icon} className="w-8 h-8 text-muted-foreground" />
+                                                    </div>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p className="font-bold">{badge.name}</p>
+                                                    <p className="text-sm">{badge.description}</p>
+                                                    <p className="text-xs text-muted-foreground mt-1">Awarded {formatDistanceToNow(badge.awardedAt.toDate(), { addSuffix: true })}</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        ))}
+                                    </div>
+                                </TooltipProvider>
+                            ) : (
+                               <p className="text-muted-foreground text-center py-8">No badges earned yet.</p>
+                            )}
                         </CardContent>
                     </Card>
                 </div>
@@ -152,3 +205,4 @@ export default async function ProfilePage({ params }: { params: { id: string } }
         </div>
     );
 }
+

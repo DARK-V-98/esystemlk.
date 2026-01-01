@@ -8,13 +8,14 @@ import {
   Share2,
   Send,
   Loader2,
-  Bookmark
+  Bookmark,
+  MessageSquarePlus
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { useAuthContext } from '@/hooks/use-auth';
-import { collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, doc, setDoc, deleteDoc, getDoc, getCountFromServer } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, doc, setDoc, deleteDoc, getDoc, getDocs, where, limit } from 'firebase/firestore';
 import { formatDistanceToNow } from 'date-fns';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
@@ -25,6 +26,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Link from 'next/link';
+import badgeData from '@/app/lib/badges.json';
 
 interface Comment {
     id: string;
@@ -135,7 +137,7 @@ export default function BlogInteractions({ postId, postInfo }: { postId: string,
   }
 
   const handleComment = async () => {
-      if (!user) {
+      if (!user || !firestore) {
         toast({ title: 'Please sign in to comment.', variant: 'destructive'});
         return;
       }
@@ -154,6 +156,29 @@ export default function BlogInteractions({ postId, postInfo }: { postId: string,
               createdAt: serverTimestamp(),
           });
           setNewComment('');
+          
+          // Check for and award "First Commenter" badge
+          const allCommentsQuery = query(collection(firestore, 'blog'), where('authorId', '==', user.uid));
+          const userCommentsSnapshot = await getDocs(allCommentsQuery);
+          
+          if(userCommentsSnapshot.size === 1) { // This is their first comment ever
+            const badgeId = 'first-commenter';
+            const badgeRef = doc(firestore, 'users', user.uid, 'badges', badgeId);
+            const badgeSnap = await getDoc(badgeRef);
+            if (!badgeSnap.exists()) {
+                const firstCommenterBadge = (badgeData as any)[badgeId];
+                await setDoc(badgeRef, {
+                    name: firstCommenterBadge.name,
+                    description: firstCommenterBadge.description,
+                    icon: firstCommenterBadge.icon,
+                    awardedAt: serverTimestamp(),
+                });
+                toast({
+                    title: "Badge Unlocked!",
+                    description: `You've earned the "${firstCommenterBadge.name}" badge.`,
+                });
+            }
+          }
       });
   }
   
