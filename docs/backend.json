@@ -1,4 +1,3 @@
-
 {
   "entities": {
     "User": {
@@ -151,6 +150,54 @@
             "awardedAt": { "type": "string", "format": "date-time" }
         },
         "required": ["name", "icon", "awardedAt"]
+    },
+    "Conversation": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Conversation",
+      "type": "object",
+      "description": "A private messaging thread between two users.",
+      "properties": {
+        "participants": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "An array containing the UIDs of the two participants."
+        },
+        "participantInfo": {
+            "type": "object",
+            "patternProperties": {
+                ".*": {
+                    "type": "object",
+                    "properties": {
+                        "displayName": { "type": "string" },
+                        "photoURL": { "type": "string", "format": "uri" }
+                    }
+                }
+            }
+        },
+        "lastMessage": {
+          "type": "object",
+          "properties": {
+            "text": { "type": "string" },
+            "senderId": { "type": "string" },
+            "createdAt": { "type": "string", "format": "date-time" }
+          }
+        },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["participants", "participantInfo", "updatedAt"]
+    },
+    "Message": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "Message",
+        "type": "object",
+        "description": "A single message within a conversation.",
+        "properties": {
+            "senderId": { "type": "string" },
+            "senderName": { "type": "string" },
+            "text": { "type": "string" },
+            "createdAt": { "type": "string", "format": "date-time" }
+        },
+        "required": ["senderId", "senderName", "text", "createdAt"]
     }
   },
   "auth": {
@@ -263,8 +310,26 @@
           "description": "Stores likes for a specific blog post. Used to track which users have liked a post.",
           "params": [{"name": "postId"}, {"name": "userId"}]
         }
+      },
+      {
+        "path": "/conversations/{conversationId}",
+        "definition": {
+            "entityName": "Conversation",
+            "schema": { "$ref": "#/entities/Conversation" },
+            "description": "Stores metadata for a private conversation between two users.",
+            "params": [{"name": "conversationId"}]
+        }
+      },
+      {
+        "path": "/conversations/{conversationId}/messages/{messageId}",
+        "definition": {
+            "entityName": "Message",
+            "schema": { "$ref": "#/entities/Message" },
+            "description": "Stores messages within a specific private conversation.",
+            "params": [{"name": "conversationId"}, {"name": "messageId"}]
+        }
       }
     ],
-    "reasoning": "The data structure is updated to support a full-featured blog. This includes a main 'blog' collection for posts. Each post document can have subcollections for 'comments' and 'likes' to enable social features and keep the data organized and scalable. User profiles are expanded with social links and bios. Bookmarks and Badges are added as subcollections under each user."
+    "reasoning": "The data structure is updated to support a full-featured blog. This includes a main 'blog' collection for posts. Each post document can have subcollections for 'comments' and 'likes' to enable social features and keep the data organized and scalable. User profiles are expanded with social links and bios. Bookmarks and Badges are added as subcollections under each user. A 'conversations' collection is added for private messaging."
   }
 }

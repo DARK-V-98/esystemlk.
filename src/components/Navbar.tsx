@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Menu, X, Code, Rocket, LogIn, LayoutGrid, User as UserIcon, LogOut } from "lucide-react";
+import { Menu, X, Code, Rocket, LogIn, LayoutGrid, User as UserIcon, LogOut, MessageCircle } from "lucide-react";
 import { useAuthContext, useAuth } from "@/hooks/use-auth";
 import { Skeleton } from "./ui/skeleton";
 import { cn } from "@/lib/utils";
@@ -93,9 +93,15 @@ const Navbar = () => {
                       </Link>
                   </Button>
                    <Button asChild variant="ghost" className="justify-start">
-                      <Link href="/admin/users" onClick={() => setIsMobileMenuOpen(false)}>
+                      <Link href={`/profile/${user.uid}`} onClick={() => setIsMobileMenuOpen(false)}>
                         <UserIcon className="mr-2 h-4 w-4" />
                         <span>Profile</span>
+                      </Link>
+                  </Button>
+                   <Button asChild variant="ghost" className="justify-start">
+                      <Link href="/messages" onClick={() => setIsMobileMenuOpen(false)}>
+                        <MessageCircle className="mr-2 h-4 w-4" />
+                        <span>Messages</span>
                       </Link>
                   </Button>
                 </div>
@@ -203,9 +209,15 @@ const Navbar = () => {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                     <Link href="/admin/users">
+                     <Link href={`/profile/${user.uid}`}>
                         <UserIcon className="mr-2 h-4 w-4" />
                         <span>Profile</span>
+                    </Link>
+                  </DropdownMenuItem>
+                   <DropdownMenuItem asChild>
+                     <Link href="/messages">
+                        <MessageCircle className="mr-2 h-4 w-4" />
+                        <span>Messages</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />

@@ -156,5 +156,20 @@ service cloud.firestore {
         allow create, delete: if isOwner(userId);
       }
     }
+
+     // Messaging rules
+    match /conversations/{conversationId} {
+      // Only participants can read or write to a conversation document
+      allow read, write: if isSignedIn() && request.auth.uid in resource.data.participants;
+      
+      match /messages/{messageId} {
+        // Only participants can list or read messages
+        allow read: if isSignedIn() && get(/databases/$(database)/documents/conversations/$(conversationId)).data.participants.hasAny([request.auth.uid]);
+        // A participant can create a message if they are the sender
+        allow create: if isSignedIn() && get(/databases/$(database)/documents/conversations/$(conversationId)).data.participants.hasAny([request.auth.uid]) && request.resource.data.senderId == request.auth.uid;
+        // Nobody can update or delete messages from the client
+        allow update, delete: if false;
+      }
+    }
   }
 }

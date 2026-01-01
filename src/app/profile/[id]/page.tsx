@@ -4,11 +4,12 @@ import { collection, doc, getDoc, getDocs, orderBy, query, Timestamp } from 'fir
 import { notFound } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Github, Twitter, Linkedin, Bookmark, Award } from 'lucide-react';
+import { Github, Twitter, Linkedin, Bookmark, Award, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
 import * as Icons from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { StartConversationButton } from './start-conversation-button';
 
 
 interface UserProfile {
@@ -126,6 +127,7 @@ export default async function ProfilePage({ params }: { params: { id: string } }
                                     </a>
                                 )}
                             </div>
+                            <StartConversationButton targetUser={{uid: user.uid, displayName: user.displayName, photoURL: user.photoURL || ''}} />
                         </CardContent>
                     </Card>
 
@@ -205,4 +207,3 @@ export default async function ProfilePage({ params }: { params: { id: string } }
         </div>
     );
 }
-
