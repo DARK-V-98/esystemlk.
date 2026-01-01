@@ -7,12 +7,19 @@ import {
   ShieldCheck,
   Wrench,
   ArrowRight,
+  Gauge,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
 const featuredTools = [
+  {
+    icon: Gauge,
+    title: "Speed Tester",
+    description: "Measure your internet download, upload, and latency.",
+    link: "/tools/speed-tester",
+  },
   {
     icon: FileSignature,
     title: "Invoice Generator",
@@ -42,12 +49,6 @@ const featuredTools = [
     title: "SSL Checker",
     description: "Check a domain's SSL certificate for expiry and issuer details.",
     link: "/tools/ssl-checker",
-  },
-  {
-    icon: Wrench,
-    title: "More Tools",
-    description: "Explore over 25 free, secure, and browser-based utilities.",
-    link: "/tools",
   },
 ];
 

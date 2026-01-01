@@ -1,4 +1,3 @@
-
 'use client';
 import { useState, useMemo, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
@@ -26,6 +25,7 @@ interface Tool {
 }
 
 const allTools: Tool[] = [
+  { icon: 'Gauge', title: 'Speed Tester', description: 'Measure your internet download, upload, and latency.', category: 'Web', link: '/tools/speed-tester', style: 'primary' },
   { icon: 'FileSignature', title: 'Invoice Generator', description: 'Create and download professional PDF invoices for your clients.', category: 'Business', link: '/tools/invoice-generator', style: 'primary' },
   { icon: 'Landmark', title: 'GST/VAT Calculator', description: 'Quickly add or remove GST/VAT from prices for your business calculations.', category: 'Business', link: '/tools/gst-vat-calculator', style: 'primary' },
   { icon: 'CandlestickChart', title: 'Currency Converter', description: 'Convert between major currencies using live exchange rates.', category: 'Business', link: '/tools/currency-converter', style: 'primary' },
