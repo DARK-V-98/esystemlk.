@@ -10,9 +10,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { useTransition } from 'react';
+import { useTransition, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import { updateProfile } from './actions';
+import { useAuthContext } from '@/hooks/use-auth';
 import type { ManagedUser } from '../users/actions';
 
 const profileSchema = z.object({
@@ -25,20 +26,33 @@ const profileSchema = z.object({
 
 type ProfileFormValues = z.infer<typeof profileSchema>;
 
-export default function ProfileClient({ user }: { user: ManagedUser | null }) {
+export default function ProfileClient() {
+  const { user } = useAuthContext();
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      displayName: user?.displayName || '',
-      bio: user?.bio || '',
-      twitter: user?.twitter || '',
-      github: user?.github || '',
-      linkedin: user?.linkedin || '',
+      displayName: '',
+      bio: '',
+      twitter: '',
+      github: '',
+      linkedin: '',
     },
   });
+
+  useEffect(() => {
+    if (user) {
+      form.reset({
+        displayName: user.displayName || '',
+        bio: (user as any).bio || '',
+        twitter: (user as any).twitter || '',
+        github: (user as any).github || '',
+        linkedin: (user as any).linkedin || '',
+      });
+    }
+  }, [user, form]);
 
   const onSubmit = (values: ProfileFormValues) => {
     startTransition(async () => {
@@ -52,7 +66,7 @@ export default function ProfileClient({ user }: { user: ManagedUser | null }) {
   };
 
   if (!user) {
-    return <Card><CardContent>Could not load user profile. Please try again.</CardContent></Card>;
+    return <Card><CardContent className="pt-6">Could not load user profile. Please try refreshing the page.</CardContent></Card>;
   }
 
   return (
