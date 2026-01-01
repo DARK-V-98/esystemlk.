@@ -10,56 +10,82 @@ import { motion, AnimatePresence } from "framer-motion";
 
 type TestStatus = 'idle' | 'testing-ping' | 'testing-download' | 'testing-upload' | 'finished';
 
-const SpeedGauge = ({ speed, status }: { speed: number; status: TestStatus }) => {
+const SpeedGauge = ({ speed, status, ping }: { speed: number; status: TestStatus; ping: number }) => {
     const getRotation = (s: number) => {
-        // Map speed (0-100+) to rotation (-90 to 90 degrees)
-        const logSpeed = Math.log10(s + 1); // Use log scale for better visualization
+        // Map speed (0-200 Mbps) to an angle from 0 to 270 degrees
+        const logSpeed = Math.log10(s + 1);
         const maxLogSpeed = Math.log10(201); // 200 Mbps
-        const rotation = (logSpeed / maxLogSpeed) * 180 - 90;
-        return Math.min(Math.max(rotation, -90), 90);
+        const angle = (logSpeed / maxLogSpeed) * 270;
+        return Math.min(Math.max(angle, 0), 270);
     };
 
-    const speedRotation = getRotation(speed);
+    const speedAngle = getRotation(speed);
+
+    const getStatusText = () => {
+        switch (status) {
+            case 'testing-ping': return 'Pinging...';
+            case 'testing-download': return 'Download';
+            case 'testing-upload': return 'Upload';
+            case 'finished': return 'Finished';
+            default: return 'Idle';
+        }
+    }
 
     return (
-        <div className="relative w-64 h-32 mx-auto mb-8">
-            {/* Gauge background arc */}
-            <div
-                className="absolute w-full h-full bg-gradient-to-b from-primary/10 to-transparent rounded-t-full"
-                style={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)' }}
-            />
-             <div className="absolute w-full h-full border-t-2 border-l-2 border-r-2 border-primary/20 rounded-t-full" />
+        <div className="relative w-64 h-64 sm:w-80 sm:h-80 mx-auto mb-8">
+            {/* Background Arcs */}
+            <svg viewBox="0 0 200 200" className="w-full h-full transform -rotate-[135deg]">
+                <defs>
+                    <filter id="glow">
+                        <feGaussianBlur stdDeviation="3.5" result="coloredBlur" />
+                        <feMerge>
+                            <feMergeNode in="coloredBlur" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                    </filter>
+                </defs>
+                 <path
+                    d="M 50 150 A 100 100 0 1 1 150 150"
+                    fill="none"
+                    stroke="hsl(var(--primary) / 0.1)"
+                    strokeWidth="12"
+                    strokeLinecap="round"
+                />
+                <motion.path
+                    d="M 50 150 A 100 100 0 1 1 150 150"
+                    fill="none"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth="12"
+                    strokeLinecap="round"
+                    strokeDasharray="471" // Circumference of the arc
+                    strokeDashoffset={471 - (speedAngle / 270) * 471}
+                    transition={{ type: "spring", stiffness: 50, damping: 20 }}
+                    style={{ filter: "url(#glow)" }}
+                />
+            </svg>
             
-            {/* Needle */}
-            <motion.div 
-                className="absolute bottom-0 left-1/2 w-0.5 h-[110px] bg-primary rounded-full shadow-[0_0_10px] shadow-primary/50 transition-transform duration-300 ease-out origin-bottom"
-                style={{
-                    transform: `translateX(-50%) rotate(${speedRotation}deg)`
-                }}
-                initial={{ transform: `translateX(-50%) rotate(-90deg)` }}
-                animate={{ transform: `translateX(-50%) rotate(${speedRotation}deg)` }}
-                transition={{ type: "spring", stiffness: 100, damping: 20 }}
-            />
-            
-            {/* Needle base */}
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-6 bg-background rounded-full border-4 border-primary" />
-            
-            {/* Speed Text */}
-            <div className="absolute bottom-0 w-full text-center">
-                 <motion.p 
-                    className="text-5xl font-bold text-primary"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    key={speed.toFixed(2)}
-                 >
-                    {speed.toFixed(2)}
-                </motion.p>
-                <p className="text-sm text-muted-foreground uppercase tracking-wider">
-                    {status === 'testing-download' && 'Mbps Download'}
-                    {status === 'testing-upload' && 'Mbps Upload'}
-                    {status === 'testing-ping' && 'Pinging...'}
-                    {(status === 'finished' || status === 'idle') && 'Mbps'}
-                </p>
+            {/* Central Display */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={status}
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 20 }}
+                        transition={{ duration: 0.3 }}
+                        className="text-center"
+                    >
+                        {status === 'testing-ping' || (status === 'idle' && ping === 0) ? (
+                            <p className="text-5xl sm:text-6xl font-bold text-primary">{ping > 0 ? ping : '...'}</p>
+                        ) : (
+                            <p className="text-5xl sm:text-6xl font-bold text-primary">{speed.toFixed(1)}</p>
+                        )}
+                        <p className="text-sm text-muted-foreground uppercase tracking-wider mt-1">
+                            {status === 'testing-ping' || (status === 'idle' && ping === 0 && status !== 'finished') ? 'ms' : 'Mbps'}
+                        </p>
+                         <p className="text-md font-semibold text-primary/80 mt-4">{getStatusText()}</p>
+                    </motion.div>
+                </AnimatePresence>
             </div>
         </div>
     );
@@ -75,6 +101,7 @@ export default function SpeedTesterPage() {
     const [error, setError] = useState<string | null>(null);
 
     const startTest = async () => {
+        if (status !== 'idle' && status !== 'finished') return;
         setStatus('testing-ping');
         setCurrentSpeed(0);
         setDownloadSpeed(0);
@@ -85,7 +112,7 @@ export default function SpeedTesterPage() {
         try {
             // 1. Test Ping
             const startTime = Date.now();
-            await fetch('/favicon.ico', { cache: 'no-store', mode: 'no-cors' }); // Small file, no-cors to avoid some errors
+            await fetch('/favicon.ico', { cache: 'no-store', mode: 'no-cors' });
             const endTime = Date.now();
             const currentPing = endTime - startTime;
             setPing(currentPing);
@@ -93,9 +120,8 @@ export default function SpeedTesterPage() {
             // 2. Test Download
             setStatus('testing-download');
             let totalSize = 0;
-            const testDuration = 8000; // 8 seconds for a more stable reading
+            const testDuration = 8000;
             const downloadStartTime = Date.now();
-            // Larger image for more accurate high-speed tests
             const imageUrl = 'https://images.unsplash.com/photo-1501854140801-50d01698950b?q=80&w=2100';
 
             const downloadController = new AbortController();
@@ -118,9 +144,7 @@ export default function SpeedTesterPage() {
                         const speedMbps = speedBps / 1_000_000;
                         setCurrentSpeed(speedMbps);
                     }
-                } catch (e) {
-                    break;
-                }
+                } catch (e) { break; }
             }
             clearTimeout(timeoutId);
 
@@ -133,11 +157,11 @@ export default function SpeedTesterPage() {
             setCurrentSpeed(0);
             totalSize = 0;
             const uploadStartTime = Date.now();
-            const data = new Blob([new Uint8Array(1024 * 1024)], { type: 'application/octet-stream' }); // 1MB chunk
+            const data = new Blob([new Uint8Array(1024 * 1024)], { type: 'application/octet-stream' });
 
             while (Date.now() - uploadStartTime < testDuration) {
                 try {
-                     await fetch('/api/uptime-check', { method: 'POST', body: data }); // Re-using an existing API route
+                     await fetch('/api/uptime-check', { method: 'POST', body: data });
                     totalSize += data.size;
                     const duration = (Date.now() - uploadStartTime) / 1000;
                      if(duration > 0) {
@@ -145,10 +169,7 @@ export default function SpeedTesterPage() {
                         const speedMbps = speedBps / 1_000_000;
                         setCurrentSpeed(speedMbps);
                     }
-                } catch(e) {
-                    // This might fail if the server doesn't accept the POST, but we can still estimate based on attempts
-                    break;
-                }
+                } catch(e) { break; }
             }
             
             const finalUploadDuration = (Date.now() - uploadStartTime) / 1000;
@@ -192,43 +213,27 @@ export default function SpeedTesterPage() {
             </div>
 
             <Card className="max-w-4xl mx-auto bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
-                <CardHeader className="text-center">
-                    <CardTitle className="text-2xl">Your Connection Speed</CardTitle>
-                    <CardDescription>Click "GO" to start the analysis.</CardDescription>
-                </CardHeader>
                 <CardContent className="text-center space-y-8 py-10">
-                    <SpeedGauge speed={currentSpeed} status={status} />
+                    <SpeedGauge speed={currentSpeed} status={status} ping={ping} />
 
                     <AnimatePresence mode="wait">
-                    {status === 'idle' || status === 'finished' ? (
-                         <motion.div
-                            key="start"
+                        <motion.div
+                            key={status === 'idle' || status === 'finished' ? 'start' : 'testing'}
                             initial={{ scale: 0.5, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.5, opacity: 0 }}
-                          >
+                        >
                             <Button 
-                                onClick={status === 'idle' ? startTest : resetTest} 
-                                className="w-40 h-40 rounded-full text-2xl font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-shadow duration-300"
+                                onClick={status === 'idle' ? startTest : (status === 'finished' ? resetTest : undefined)} 
+                                className="w-40 h-40 rounded-full text-2xl font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all duration-300 disabled:opacity-50"
+                                disabled={status !== 'idle' && status !== 'finished'}
+                                variant="hero"
                             >
-                                {status === 'idle' ? 'GO' : <RotateCw className="w-10 h-10" />}
+                                {status === 'idle' && <Play className="w-10 h-10" />}
+                                {status === 'finished' && <RotateCw className="w-10 h-10" />}
+                                {status.startsWith('testing') && <div className="w-10 h-10 border-4 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"/>}
                             </Button>
                         </motion.div>
-                    ) : (
-                         <motion.div
-                            key="testing"
-                            initial={{ scale: 0.5, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.5, opacity: 0 }}
-                         >
-                            <Button 
-                                disabled 
-                                className="w-40 h-40 rounded-full text-2xl font-bold opacity-70"
-                            >
-                                <div className="w-10 h-10 border-4 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"/>
-                            </Button>
-                        </motion.div>
-                    )}
                     </AnimatePresence>
 
                     {error && (
@@ -236,33 +241,27 @@ export default function SpeedTesterPage() {
                     )}
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-8">
-                        <Card className="bg-black/20 p-4">
-                            <CardHeader className="p-2 flex-row items-center gap-2">
-                                <Zap className="w-5 h-5 text-primary" />
-                                <CardTitle className="text-lg">Ping</CardTitle>
-                            </CardHeader>
-                            <CardContent className="p-2">
-                                <p className="text-3xl font-bold">{ping.toFixed(0)} <span className="text-lg font-normal text-muted-foreground">ms</span></p>
-                            </CardContent>
-                        </Card>
-                        <Card className="bg-black/20 p-4">
-                             <CardHeader className="p-2 flex-row items-center gap-2">
-                                <Download className="w-5 h-5 text-primary" />
-                                <CardTitle className="text-lg">Download</CardTitle>
-                            </CardHeader>
-                            <CardContent className="p-2">
-                                <p className="text-3xl font-bold">{downloadSpeed.toFixed(2)} <span className="text-lg font-normal text-muted-foreground">Mbps</span></p>
-                            </CardContent>
-                        </Card>
-                         <Card className="bg-black/20 p-4">
-                             <CardHeader className="p-2 flex-row items-center gap-2">
-                                <Upload className="w-5 h-5 text-primary" />
-                                <CardTitle className="text-lg">Upload</CardTitle>
-                            </CardHeader>
-                            <CardContent className="p-2">
-                                <p className="text-3xl font-bold">{uploadSpeed.toFixed(2)} <span className="text-lg font-normal text-muted-foreground">Mbps</span></p>
-                            </CardContent>
-                        </Card>
+                        <div className="bg-black/20 p-4 rounded-lg flex items-center justify-between transition-all duration-300" style={{boxShadow: status.startsWith('testing') || status === 'finished' ? '0 0 15px hsl(var(--primary)/0.3)' : 'none', border: `1px solid ${status.startsWith('testing') || status === 'finished' ? 'hsl(var(--primary)/0.5)' : 'hsl(var(--border))'}`}}>
+                           <div className="flex items-center gap-3">
+                             <Zap className={`w-6 h-6 transition-colors duration-300 ${status.startsWith('testing') || status === 'finished' ? 'text-primary' : 'text-muted-foreground'}`} />
+                             <span className="font-semibold text-lg">Ping</span>
+                           </div>
+                           <p className="text-2xl font-bold">{ping.toFixed(0)} <span className="text-base font-normal text-muted-foreground">ms</span></p>
+                        </div>
+                         <div className="bg-black/20 p-4 rounded-lg flex items-center justify-between transition-all duration-300" style={{boxShadow: status === 'testing-download' || status === 'finished' ? '0 0 15px hsl(var(--primary)/0.3)' : 'none', border: `1px solid ${status === 'testing-download' || status === 'finished' ? 'hsl(var(--primary)/0.5)' : 'hsl(var(--border))'}`}}>
+                           <div className="flex items-center gap-3">
+                             <Download className={`w-6 h-6 transition-colors duration-300 ${status === 'testing-download' || status === 'finished' ? 'text-primary' : 'text-muted-foreground'}`} />
+                             <span className="font-semibold text-lg">Download</span>
+                           </div>
+                           <p className="text-2xl font-bold">{downloadSpeed.toFixed(2)} <span className="text-base font-normal text-muted-foreground">Mbps</span></p>
+                        </div>
+                         <div className="bg-black/20 p-4 rounded-lg flex items-center justify-between transition-all duration-300" style={{boxShadow: status === 'testing-upload' || status === 'finished' ? '0 0 15px hsl(var(--primary)/0.3)' : 'none', border: `1px solid ${status === 'testing-upload' || status === 'finished' ? 'hsl(var(--primary)/0.5)' : 'hsl(var(--border))'}`}}>
+                           <div className="flex items-center gap-3">
+                             <Upload className={`w-6 h-6 transition-colors duration-300 ${status === 'testing-upload' || status === 'finished' ? 'text-primary' : 'text-muted-foreground'}`} />
+                             <span className="font-semibold text-lg">Upload</span>
+                           </div>
+                           <p className="text-2xl font-bold">{uploadSpeed.toFixed(2)} <span className="text-base font-normal text-muted-foreground">Mbps</span></p>
+                        </div>
                     </div>
                 </CardContent>
             </Card>
