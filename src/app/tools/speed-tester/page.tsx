@@ -13,12 +13,13 @@ type TestStatus = 'idle' | 'testing-ping' | 'testing-download' | 'testing-upload
 const SpeedGauge = ({ speed, status, ping }: { speed: number; status: TestStatus; ping: number }) => {
     const getRotation = (s: number) => {
         const logSpeed = Math.log10(s + 1);
-        const maxLogSpeed = Math.log10(201);
-        const angle = (logSpeed / maxLogSpeed) * 270;
-        return Math.min(Math.max(angle, 0), 270);
+        const maxLogSpeed = Math.log10(201); // Max speed of 200Mbps for scaling
+        return Math.min((logSpeed / maxLogSpeed) * 360, 360);
     };
 
     const speedAngle = getRotation(speed);
+    const radius = 85;
+    const circumference = 2 * Math.PI * radius;
 
     const getStatusText = () => {
         switch (status) {
@@ -32,7 +33,7 @@ const SpeedGauge = ({ speed, status, ping }: { speed: number; status: TestStatus
 
     return (
         <div className="relative w-64 h-64 sm:w-80 sm:h-80 mx-auto mb-8">
-            <svg viewBox="0 0 200 200" className="w-full h-full transform -rotate-[135deg]">
+            <svg viewBox="0 0 200 200" className="w-full h-full transform -rotate-90">
                 <defs>
                     <filter id="glow">
                         <feGaussianBlur stdDeviation="3.5" result="coloredBlur" />
@@ -42,21 +43,24 @@ const SpeedGauge = ({ speed, status, ping }: { speed: number; status: TestStatus
                         </feMerge>
                     </filter>
                 </defs>
-                 <path
-                    d="M 50 150 A 100 100 0 1 1 150 150"
+                 <circle
+                    cx="100"
+                    cy="100"
+                    r={radius}
                     fill="none"
                     stroke="hsl(var(--primary) / 0.1)"
                     strokeWidth="12"
-                    strokeLinecap="round"
                 />
-                <motion.path
-                    d="M 50 150 A 100 100 0 1 1 150 150"
+                <motion.circle
+                    cx="100"
+                    cy="100"
+                    r={radius}
                     fill="none"
                     stroke="hsl(var(--primary))"
                     strokeWidth="12"
                     strokeLinecap="round"
-                    strokeDasharray="471"
-                    strokeDashoffset={471 - (speedAngle / 270) * 471}
+                    strokeDasharray={circumference}
+                    strokeDashoffset={circumference - (speedAngle / 360) * circumference}
                     transition={{ type: "spring", stiffness: 50, damping: 20 }}
                     style={{ filter: "url(#glow)" }}
                 />
@@ -266,5 +270,3 @@ export default function SpeedTesterPage() {
     );
 }
 
-
-    
