@@ -12,9 +12,8 @@ type TestStatus = 'idle' | 'testing-ping' | 'testing-download' | 'testing-upload
 
 const SpeedGauge = ({ speed, status, ping }: { speed: number; status: TestStatus; ping: number }) => {
     const getRotation = (s: number) => {
-        // Map speed (0-200 Mbps) to an angle from 0 to 270 degrees
         const logSpeed = Math.log10(s + 1);
-        const maxLogSpeed = Math.log10(201); // 200 Mbps
+        const maxLogSpeed = Math.log10(201);
         const angle = (logSpeed / maxLogSpeed) * 270;
         return Math.min(Math.max(angle, 0), 270);
     };
@@ -33,7 +32,6 @@ const SpeedGauge = ({ speed, status, ping }: { speed: number; status: TestStatus
 
     return (
         <div className="relative w-64 h-64 sm:w-80 sm:h-80 mx-auto mb-8">
-            {/* Background Arcs */}
             <svg viewBox="0 0 200 200" className="w-full h-full transform -rotate-[135deg]">
                 <defs>
                     <filter id="glow">
@@ -57,14 +55,13 @@ const SpeedGauge = ({ speed, status, ping }: { speed: number; status: TestStatus
                     stroke="hsl(var(--primary))"
                     strokeWidth="12"
                     strokeLinecap="round"
-                    strokeDasharray="471" // Circumference of the arc
+                    strokeDasharray="471"
                     strokeDashoffset={471 - (speedAngle / 270) * 471}
                     transition={{ type: "spring", stiffness: 50, damping: 20 }}
                     style={{ filter: "url(#glow)" }}
                 />
             </svg>
             
-            {/* Central Display */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <AnimatePresence mode="wait">
                     <motion.div
@@ -268,5 +265,6 @@ export default function SpeedTesterPage() {
         </div>
     );
 }
+
 
     
