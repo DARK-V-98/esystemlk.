@@ -1,13 +1,13 @@
 
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
-import { ArrowLeft, Download, Loader2, FileType } from 'lucide-react';
+import { ArrowLeft, Download, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
@@ -19,7 +19,6 @@ export default function PdfWatermarkerPage() {
   const [color, setColor] = useState('#ff0000');
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -27,55 +26,12 @@ export default function PdfWatermarkerPage() {
       if (selectedFile.type !== 'application/pdf') {
         setError('Please select a valid PDF file.');
         setFile(null);
-        setPreviewUrl(null);
         return;
       }
       setFile(selectedFile);
       setError(null);
     }
   };
-
-  const generatePreview = useCallback(async () => {
-    if (!file) return;
-
-    try {
-        const existingPdfBytes = await file.arrayBuffer();
-        const pdfDoc = await PDFDocument.load(existingPdfBytes);
-        const firstPage = pdfDoc.getPages()[0];
-        if (!firstPage) return;
-
-        const { width, height } = firstPage.getSize();
-
-        const helveticaFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-        const textWidth = helveticaFont.widthOfTextAtSize(watermarkText, fontSize);
-
-        const colorRgb = hexToRgb(color);
-
-        firstPage.drawText(watermarkText, {
-          x: (width - textWidth) / 2,
-          y: height / 2,
-          font: helveticaFont,
-          size: fontSize,
-          color: rgb(colorRgb.r, colorRgb.g, colorRgb.b),
-          opacity: opacity,
-          rotate: {
-            type: 'degrees',
-            angle: -45,
-          },
-        });
-
-        const pdfBytes = await pdfDoc.save();
-        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-        
-        if (previewUrl) {
-            URL.revokeObjectURL(previewUrl);
-        }
-        setPreviewUrl(URL.createObjectURL(blob));
-    } catch (err) {
-        console.error("Preview generation failed:", err);
-        setError("Could not generate a preview for this PDF.");
-    }
-  }, [file, watermarkText, fontSize, opacity, color, previewUrl]);
 
   const processAndDownload = async () => {
     if (!file) {
@@ -125,10 +81,6 @@ export default function PdfWatermarkerPage() {
     }
   };
 
-  useEffect(() => {
-    generatePreview();
-  }, [generatePreview]);
-
   function hexToRgb(hex: string): { r: number, g: number, b: number } {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     if (!result) return { r: 0, g: 0, b: 0 };
@@ -157,8 +109,7 @@ export default function PdfWatermarkerPage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
+      <Card className="max-w-2xl mx-auto bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
           <CardHeader>
             <CardTitle>Configuration</CardTitle>
             <CardDescription>Upload your PDF and customize the watermark.</CardDescription>
@@ -202,26 +153,6 @@ export default function PdfWatermarkerPage() {
             {error && <p className="text-sm text-destructive text-center">{error}</p>}
           </CardContent>
         </Card>
-
-        <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-2xl shadow-lg">
-          <CardHeader>
-            <CardTitle>Preview</CardTitle>
-            <CardDescription>A preview of the watermark on the first page of your PDF.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="aspect-a4 w-full bg-black/20 rounded-lg flex items-center justify-center border border-dashed">
-              {previewUrl ? (
-                <iframe src={`${previewUrl}#toolbar=0&navpanes=0`} className="w-full h-full rounded-lg" title="PDF Preview"></iframe>
-              ) : (
-                <div className="text-center text-muted-foreground">
-                  <FileType className="mx-auto h-12 w-12" />
-                  <p>Upload a PDF to see a preview</p>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
     </div>
   );
 }
