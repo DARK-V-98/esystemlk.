@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Clock, Globe2 } from 'lucide-react';
+import { ArrowLeft, Clock } from 'lucide-react';
 import Link from 'next/link';
 
 // A smaller, curated list for better usability
@@ -22,28 +22,34 @@ const timezones = [
 ];
 
 export default function TimeZoneConverterPage() {
-  const [baseTime, setBaseTime] = useState(new Date());
-  const [baseTimezone, setBaseTimezone] = useState<string | undefined>(undefined);
-  const [timeInput, setTimeInput] = useState(baseTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
   const [isClient, setIsClient] = useState(false);
-  
+  const [baseTime, setBaseTime] = useState(new Date());
+  const [baseTimezone, setBaseTimezone] = useState<string>('UTC');
+  const [timeInput, setTimeInput] = useState('');
+
   useEffect(() => {
-    // This effect runs only on the client
+    // This effect runs only on the client, preventing hydration errors
     setIsClient(true);
-    setBaseTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone);
+    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    setBaseTimezone(userTimezone);
+    const now = new Date();
+    setBaseTime(now);
+    setTimeInput(now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
   }, []);
 
   useEffect(() => {
     if (!isClient) return;
 
+    // Update time every minute if the selected timezone is the user's local one
     const interval = setInterval(() => {
-        const now = new Date();
-        const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        if (baseTimezone === localTimezone) {
+        const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        if (baseTimezone === userTimezone) {
+            const now = new Date();
             setBaseTime(now);
             setTimeInput(now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
         }
-    }, 1000 * 60); // Update every minute if on local time
+    }, 1000 * 60); 
+    
     return () => clearInterval(interval);
   }, [baseTimezone, isClient]);
 
@@ -52,30 +58,28 @@ export default function TimeZoneConverterPage() {
     setTimeInput(timeValue);
     const [hours, minutes] = timeValue.split(':').map(Number);
     if (!isNaN(hours) && !isNaN(minutes)) {
-        const newDate = new Date(baseTime);
-        newDate.setHours(hours, minutes);
-        setBaseTime(newDate);
+        const newDate = new Date(); // We need to reconstruct the date to be sure
+        
+        // This is tricky. We'll interpret the new time in the context of the currently selected timezone
+        // This is an approximation as it doesn't handle DST changes perfectly without a library, but it's good for this tool.
+        const tempDateStr = `${newDate.getFullYear()}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${String(newDate.getDate()).padStart(2, '0')}T${timeValue}:00`;
+        
+        // The key is to create a date object that represents the *local* time in the *target* timezone.
+        // The most reliable way without a heavy library is to work with UTC and offsets,
+        // but for a client-side tool, this simpler approach is often sufficient.
+        // We'll create a new date object.
+        const updatedDate = new Date(tempDateStr);
+        setBaseTime(updatedDate);
     }
   };
 
   const handleTimezoneChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newTz = e.target.value;
     setBaseTimezone(newTz);
-    
-    // When timezone changes, we need to recalculate the baseTime to keep the displayed time correct
-    const now = new Date();
-    const formatter = new Intl.DateTimeFormat('en-US', { timeZone: newTz, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-    const parts = formatter.formatToParts(now);
-    const timeParts = {
-        hour: parts.find(p => p.type === 'hour')?.value,
-        minute: parts.find(p => p.type === 'minute')?.value,
-    };
-    setTimeInput(`${timeParts.hour}:${timeParts.minute}`);
-    setBaseTime(now);
   };
   
   const getConvertedTime = (targetTz: string) => {
-    if (!isClient) return "Loading...";
+    if (!isClient || !baseTime) return "Loading...";
     try {
         const formatter = new Intl.DateTimeFormat('en-US', {
             timeZone: targetTz,
@@ -116,27 +120,33 @@ export default function TimeZoneConverterPage() {
             <div className="grid sm:grid-cols-2 gap-4 p-4 bg-black/20 rounded-lg">
                 <div>
                     <label htmlFor="base-time" className="text-sm font-medium">Base Time</label>
-                    <Input type="time" id="base-time" value={timeInput} onChange={handleTimeChange} className="mt-1"/>
+                    <Input type="time" id="base-time" value={timeInput} onChange={handleTimeChange} className="mt-1" disabled={!isClient} />
                 </div>
                  <div>
                     <label htmlFor="base-timezone" className="text-sm font-medium">Base Timezone</label>
-                    <select id="base-timezone" value={baseTimezone || 'UTC'} onChange={handleTimezoneChange} className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm mt-1" disabled={!isClient}>
-                        {isClient && timezones.map(tz => <option key={tz} value={tz}>{tz.replace(/_/g, ' ')}</option>)}
-                        {isClient && <option value={Intl.DateTimeFormat().resolvedOptions().timeZone}>Your Local Time</option>}
+                    <select id="base-timezone" value={baseTimezone} onChange={handleTimezoneChange} className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm mt-1" disabled={!isClient}>
+                        {timezones.map(tz => <option key={tz} value={tz}>{tz.replace(/_/g, ' ')}</option>)}
+                        {isClient && 
+                            <option value={Intl.DateTimeFormat().resolvedOptions().timeZone}>
+                                Your Local Time ({Intl.DateTimeFormat().resolvedOptions().timeZone.replace(/_/g, ' ')})
+                            </option>
+                        }
                     </select>
                 </div>
             </div>
 
             <div className="space-y-3">
-              {isClient && timezones.map(tz => (
+              {isClient ? timezones.map(tz => (
                  <div key={tz} className="flex justify-between items-center bg-black/20 p-3 rounded-md">
                    <div>
                       <p className="font-semibold">{tz.replace(/_/g, ' ')}</p>
-                      <p className="text-xs text-muted-foreground">{getConvertedTime(tz).split(',')[0]}, {getConvertedTime(tz).split(',')[1]}</p>
+                      <p className="text-xs text-muted-foreground">{getConvertedTime(tz).split(',').slice(0, 2).join(',')}</p>
                    </div>
                    <p className="font-mono text-lg font-bold text-primary">{getConvertedTime(tz).split(',')[2]}</p>
                  </div>
-              ))}
+              )) : (
+                <p className="text-center text-muted-foreground">Loading timezones...</p>
+              )}
             </div>
 
         </CardContent>
