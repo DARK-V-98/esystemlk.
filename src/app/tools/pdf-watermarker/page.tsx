@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -27,6 +27,7 @@ export default function PdfWatermarkerPage() {
       if (selectedFile.type !== 'application/pdf') {
         setError('Please select a valid PDF file.');
         setFile(null);
+        setPreviewUrl(null);
         return;
       }
       setFile(selectedFile);
@@ -34,38 +35,47 @@ export default function PdfWatermarkerPage() {
     }
   };
 
-  const generatePreview = async () => {
+  const generatePreview = useCallback(async () => {
     if (!file) return;
 
-    const existingPdfBytes = await file.arrayBuffer();
-    const pdfDoc = await PDFDocument.load(existingPdfBytes);
-    const firstPage = pdfDoc.getPages()[0];
-    const { width, height } = firstPage.getSize();
+    try {
+        const existingPdfBytes = await file.arrayBuffer();
+        const pdfDoc = await PDFDocument.load(existingPdfBytes);
+        const firstPage = pdfDoc.getPages()[0];
+        if (!firstPage) return;
 
-    const helveticaFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-    const textWidth = helveticaFont.widthOfTextAtSize(watermarkText, fontSize);
-    const textHeight = helveticaFont.heightAtSize(fontSize);
+        const { width, height } = firstPage.getSize();
 
-    const colorRgb = hexToRgb(color);
+        const helveticaFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+        const textWidth = helveticaFont.widthOfTextAtSize(watermarkText, fontSize);
 
-    firstPage.drawText(watermarkText, {
-      x: (width - textWidth) / 2,
-      y: (height - textHeight) / 2,
-      font: helveticaFont,
-      size: fontSize,
-      color: rgb(colorRgb.r, colorRgb.g, colorRgb.b),
-      opacity: opacity,
-      rotate: {
-        type: 'degrees',
-        angle: -45,
-      },
-    });
+        const colorRgb = hexToRgb(color);
 
-    const pdfBytes = await pdfDoc.save();
-    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
-    setPreviewUrl(URL.createObjectURL(blob));
-  };
+        firstPage.drawText(watermarkText, {
+          x: (width - textWidth) / 2,
+          y: height / 2,
+          font: helveticaFont,
+          size: fontSize,
+          color: rgb(colorRgb.r, colorRgb.g, colorRgb.b),
+          opacity: opacity,
+          rotate: {
+            type: 'degrees',
+            angle: -45,
+          },
+        });
+
+        const pdfBytes = await pdfDoc.save();
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        
+        if (previewUrl) {
+            URL.revokeObjectURL(previewUrl);
+        }
+        setPreviewUrl(URL.createObjectURL(blob));
+    } catch (err) {
+        console.error("Preview generation failed:", err);
+        setError("Could not generate a preview for this PDF.");
+    }
+  }, [file, watermarkText, fontSize, opacity, color, previewUrl]);
 
   const processAndDownload = async () => {
     if (!file) {
@@ -116,11 +126,8 @@ export default function PdfWatermarkerPage() {
   };
 
   useEffect(() => {
-    if (file) {
-      generatePreview();
-    }
-     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [file, watermarkText, fontSize, opacity, color]);
+    generatePreview();
+  }, [generatePreview]);
 
   function hexToRgb(hex: string): { r: number, g: number, b: number } {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -182,8 +189,8 @@ export default function PdfWatermarkerPage() {
 
             <div className="space-y-4">
               <div className="flex justify-between">
-                <Label htmlFor="opacity">Transparency</Label>
-                 <span className="text-sm font-medium text-primary">{Math.round((1 - opacity) * 100)}%</span>
+                <Label htmlFor="opacity">Opacity</Label>
+                 <span className="text-sm font-medium text-primary">{Math.round(opacity * 100)}%</span>
               </div>
               <Slider id="opacity" value={[opacity]} onValueChange={(val) => setOpacity(val[0])} min={0.05} max={1} step={0.05} />
             </div>
@@ -218,4 +225,3 @@ export default function PdfWatermarkerPage() {
     </div>
   );
 }
-
