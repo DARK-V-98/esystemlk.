@@ -1,3 +1,4 @@
+
 'use client';
 import {
   FileSignature,
@@ -7,19 +8,12 @@ import {
   ShieldCheck,
   Wrench,
   ArrowRight,
-  Gauge,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
 const featuredTools = [
-  {
-    icon: Gauge,
-    title: "Speed Tester",
-    description: "Measure your internet download, upload, and latency.",
-    link: "/tools/speed-tester",
-  },
   {
     icon: FileSignature,
     title: "Invoice Generator",
