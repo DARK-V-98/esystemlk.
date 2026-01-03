@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { ArrowLeft, Download, Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import { PDFDocument, rgb, StandardFonts, RotationTypes } from 'pdf-lib';
 
 export default function PdfWatermarkerPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -60,7 +60,7 @@ export default function PdfWatermarkerPage() {
           color: rgb(colorRgb.r, colorRgb.g, colorRgb.b),
           opacity: opacity,
            rotate: {
-            type: 'degrees',
+            type: RotationTypes.Degrees,
             angle: -45,
           },
         });
