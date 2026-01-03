@@ -12,12 +12,23 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
-async function getConversation(conversationId: string) {
+interface Conversation {
+    id: string;
+    participants: string[];
+    participantInfo: {
+        [key: string]: {
+            displayName: string;
+            photoURL: string;
+        };
+    };
+}
+
+async function getConversation(conversationId: string): Promise<Conversation | null> {
     const firestore = getFirestoreAdmin();
     const conversationRef = doc(firestore, 'conversations', conversationId);
     const snap = await getDoc(conversationRef);
     if (!snap.exists()) return null;
-    return { id: snap.id, ...snap.data() };
+    return { id: snap.id, ...snap.data() } as Conversation;
 }
 
 async function getCurrentUserId() {
@@ -40,6 +51,9 @@ export default async function ConversationPage({ params }: { params: { conversat
     }
     
     const otherUserId = conversation.participants.find((p: string) => p !== currentUserId);
+    if (!otherUserId) {
+        notFound();
+    }
     const otherUserInfo = conversation.participantInfo[otherUserId];
 
     return (
