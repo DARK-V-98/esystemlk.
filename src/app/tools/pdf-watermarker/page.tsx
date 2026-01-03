@@ -67,7 +67,10 @@ export default function PdfWatermarkerPage() {
       }
 
       const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const blob = new Blob(
+        [pdfBytes.buffer.slice(pdfBytes.byteOffset, pdfBytes.byteOffset + pdfBytes.byteLength)],
+        { type: 'application/pdf' }
+      );
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
       link.download = `${file.name.replace('.pdf', '')}-watermarked.pdf`;
