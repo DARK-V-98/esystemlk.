@@ -65,7 +65,7 @@ const NextJsCoursePage = () => {
         <div className="container mx-auto px-4 md:px-6 py-20 md:py-28">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
                 <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">Next.js Foundations</h1>
-                <p className="max-w-[700px] text-white/80 md:text-xl mt-4">
+                <p className="max-w-[700px] text-muted-foreground md:text-xl mt-4">
                     Learn how to build a full-stack web application with the free, Next.js Foundations course.
                 </p>
             </motion.div>
@@ -101,7 +101,7 @@ const NextJsCoursePage = () => {
                             viewport={{ once: true, amount: 0.2 }}
                             transition={{ duration: 0.5 }}
                         >
-                            <Card className="bg-black/30 backdrop-blur-lg border border-white/10 rounded-3xl shadow-xl">
+                            <Card className="bg-card border-border rounded-3xl shadow-xl">
                                 <CardHeader>
                                     <div className="flex items-center gap-4 mb-2">
                                         <div className="w-12 h-12 rounded-full bg-primary/10 border-2 border-primary/20 flex items-center justify-center font-bold text-primary text-lg">
@@ -111,7 +111,7 @@ const NextJsCoursePage = () => {
                                     </div>
                                     <p className="text-muted-foreground">{module.description}</p>
                                 </CardHeader>
-                                <CardContent className="prose prose-invert prose-lg max-w-none text-muted-foreground space-y-4">
+                                <CardContent className="prose prose-neutral dark:prose-invert prose-lg max-w-none text-foreground space-y-4">
                                    <CourseContent module={module.id} />
                                 </CardContent>
                             </Card>
@@ -128,11 +128,11 @@ const CourseContent = ({ module }: { module: string }) => {
         case 'getting-started':
             return (
                 <>
-                    <p>Welcome! To begin, open your terminal and run the following command to create a new Next.js app using the official dashboard starter template.</p>
+                    <p>Welcome! This course will guide you through building a full-stack Next.js application. We'll start from scratch and cover all the essential features. To begin, open your terminal and run the following command to create a new Next.js app using the official dashboard starter template.</p>
                     <CodeBlock code={`npx create-next-app@latest nextjs-dashboard --use-npm --example "https://github.com/vercel/next-learn/tree/main/dashboard/starter-example"`} />
                     <p>Once the installation is complete, navigate into your new project directory and start the development server:</p>
                     <CodeBlock code={`cd nextjs-dashboard\nnpm run dev`} />
-                    <p>Open <a href="http://localhost:3000" target="_blank" rel="noopener noreferrer">http://localhost:3000</a> in your browser. You should see the starter homepage. The project structure includes key folders like `app` for routing and `public` for static assets.</p>
+                    <p>Open <a href="http://localhost:3000" target="_blank" rel="noopener noreferrer">http://localhost:3000</a> in your browser. You should see the starter homepage. The project structure includes key folders like `app` for routing, `public` for static assets, and `ui` for our user interface components.</p>
                 </>
             );
         case 'css-styling':
@@ -172,7 +172,7 @@ const CourseContent = ({ module }: { module: string }) => {
                     <p>The `&lt;Link&gt;` component from `next/link` is used for client-side navigation between routes. It enables seamless transitions without a full page reload.</p>
                     <CodeBlock code={`import Link from 'next/link';\n \nexport default function Page() {\n  return (\n    <Link href="/dashboard">\n      Dashboard\n    </Link>\n  );\n}`} />
                     <p>The `usePathname()` hook can be used to check the current URL path and apply active styles to links.</p>
-                     <CodeBlock code={`'use client';\n \nimport { usePathname } from 'next/navigation';\n \nconst pathname = usePathname(); // e.g., '/dashboard/invoices'\n \n<Link\n  className={clsx(\n    'p-2 rounded-md',\n    { 'bg-blue-500 text-white': pathname === '/dashboard' },\n  )}\n  href="/dashboard"\n>\n  Home\n</Link>`} />
+                     <CodeBlock code={`'use client';\n \nimport { usePathname } from 'next/navigation';\nimport clsx from 'clsx';\n \nconst pathname = usePathname(); // e.g., '/dashboard/invoices'\n \n<Link\n  className={clsx(\n    'p-2 rounded-md',\n    { 'bg-blue-500 text-white': pathname === '/dashboard' },\n  )}\n  href="/dashboard"\n>\n  Home\n</Link>`} />
                 </>
             );
         case 'setting-up-your-database':
@@ -289,5 +289,6 @@ const CourseContent = ({ module }: { module: string }) => {
 
 
 export default NextJsCoursePage;
+
 
 
