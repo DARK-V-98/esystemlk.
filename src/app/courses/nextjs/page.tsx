@@ -2,7 +2,7 @@
 'use client';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Code, CheckCircle2 } from 'lucide-react';
+import { Code } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const courseModules = [
@@ -131,7 +131,7 @@ const CourseContent = ({ module }: { module: string }) => {
                     <p>Welcome! This course will guide you through building a full-stack Next.js application. We'll start from scratch and cover all the essential features. To begin, open your terminal and run the following command to create a new Next.js app using the official dashboard starter template.</p>
                     <CodeBlock code={`npx create-next-app@latest nextjs-dashboard --use-npm --example "https://github.com/vercel/next-learn/tree/main/dashboard/starter-example"`} />
                     <h4 className="text-black">Code Breakdown:</h4>
-                    <ul className="list-disc pl-6 text-black">
+                     <ul className="list-disc pl-6 text-black">
                         <li><strong>npx create-next-app@latest</strong>: This is the command that runs the Next.js app creation tool. `npx` allows you to run package executables without installing them globally.</li>
                         <li><strong>nextjs-dashboard</strong>: This is the name of the directory that will be created for your new project.</li>
                         <li><strong>--use-npm</strong>: This flag tells the tool to use `npm` as the package manager instead of the default `yarn`.</li>
@@ -268,7 +268,7 @@ export default function Page() {
     </Link>
   );
 }`} />
-                    <h4 className="text-black">Code Breakdown:</h4>
+                     <h4 className="text-black">Code Breakdown:</h4>
                      <ul className="list-disc pl-6 text-black">
                         <li><strong>import Link from 'next/link'</strong>: Imports the necessary component.</li>
                         <li><strong>&lt;Link href="/dashboard"&gt;</strong>: The `href` prop specifies the destination route. Next.js will automatically pre-fetch this page in the background for faster navigation.</li>
@@ -281,7 +281,7 @@ import Link from 'next/link';
 import { clsx } from 'clsx';
  
 export function NavLinks() {
-  const pathname = usePathname(); // e.g., '/dashboard/invoices'
+  const pathname = usePathname();
  
   return (
     <Link
@@ -298,7 +298,7 @@ export function NavLinks() {
                      <h4 className="text-black">Code Breakdown:</h4>
                      <ul className="list-disc pl-6 text-black">
                         <li><strong>'use client'</strong>: This directive is required because `usePathname` is a client-side hook.</li>
-                        <li><strong>const pathname = usePathname()</strong>: This hook returns the current URL path as a string.</li>
+                        <li><strong>const pathname = usePathname()</strong>: This hook returns the current URL path as a string (e.g., '/dashboard/invoices').</li>
                          <li><strong>className=&#123;clsx(...)&#125;</strong>: `clsx` is a utility for conditionally applying class names. Here, it applies the active style (`bg-blue-500 text-white`) only if the `pathname` matches the link's `href`.</li>
                     </ul>
                 </>
@@ -622,5 +622,3 @@ export const metadata: Metadata = {
 
 
 export default NextJsCoursePage;
-
-    
