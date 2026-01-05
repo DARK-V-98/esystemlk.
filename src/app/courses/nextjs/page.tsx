@@ -169,7 +169,7 @@ const CourseContent = ({ module }: { module: string }) => {
         case 'navigating-between-pages':
             return (
                 <>
-                    <p>The `<Link>` component from `next/link` is used for client-side navigation between routes. It enables seamless transitions without a full page reload.</p>
+                    <p>The `&lt;Link&gt;` component from `next/link` is used for client-side navigation between routes. It enables seamless transitions without a full page reload.</p>
                     <CodeBlock code={`import Link from 'next/link';\n \nexport default function Page() {\n  return (\n    <Link href="/dashboard">\n      Dashboard\n    </Link>\n  );\n}`} />
                     <p>The `usePathname()` hook can be used to check the current URL path and apply active styles to links.</p>
                      <CodeBlock code={`'use client';\n \nimport { usePathname } from 'next/navigation';\n \nconst pathname = usePathname(); // e.g., '/dashboard/invoices'\n \n<Link\n  className={clsx(\n    'p-2 rounded-md',\n    { 'bg-blue-500 text-white': pathname === '/dashboard' },\n  )}\n  href="/dashboard"\n>\n  Home\n</Link>`} />
@@ -209,7 +209,7 @@ const CourseContent = ({ module }: { module: string }) => {
             return (
                 <>
                     <p>Streaming allows you to break down the page into smaller chunks and progressively send them from the server to the client.</p>
-                    <p>You can use React's `<Suspense>` boundary to stream a component. You provide a fallback UI (like a skeleton) to show while the component is loading.</p>
+                    <p>You can use React's `&lt;Suspense&gt;` boundary to stream a component. You provide a fallback UI (like a skeleton) to show while the component is loading.</p>
                     <CodeBlock code={`import { Suspense } from 'react';\nimport { RevenueChart } from '@/app/ui/dashboard/revenue-chart';\nimport { RevenueChartSkeleton } from '@/app/ui/skeletons';\n\n<Suspense fallback={<RevenueChartSkeleton />}>\n  <RevenueChart />\n</Suspense>`} />
                     <p>This improves user experience by showing content sooner, even if some parts of the page take longer to fetch or render.</p>
                 </>
@@ -289,4 +289,5 @@ const CourseContent = ({ module }: { module: string }) => {
 
 
 export default NextJsCoursePage;
+
 
