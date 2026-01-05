@@ -153,7 +153,9 @@ const CourseContent = ({ module }: { module: string }) => {
                 <>
                     <p>Next.js offers multiple ways to style your application. This project uses Tailwind CSS, a utility-first CSS framework for rapid UI development.</p>
                     <p>You can style elements by adding Tailwind classes directly in your JSX. For example, to create a blue button:</p>
-                    <CodeBlock code={`<button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">\n  Click me\n</button>`} />
+                    <CodeBlock code={`<button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+  Click me
+</button>`} />
                     <h4 className="text-black">Code Breakdown:</h4>
                      <ul className="list-disc pl-6 text-black">
                         <li><strong>className="..."</strong>: In React, you use `className` instead of `class` to apply CSS classes.</li>
@@ -162,12 +164,22 @@ const CourseContent = ({ module }: { module: string }) => {
                          <li><strong>text-white, font-bold, py-2, px-4, rounded</strong>: These are other utility classes for text color, font weight, padding, and border radius.</li>
                     </ul>
                     <p>For component-specific styles that don't leak into the global scope, you can use CSS Modules. Create a file named `MyComponent.module.css` and import it into your component:</p>
-                    <CodeBlock code={`/* In MyComponent.module.css */\n.error {\n  color: red;\n}\n\n// In your component\nimport styles from './MyComponent.module.css';\n\n<p className={styles.error}>This is an error.</p>`} />
+                    <CodeBlock code={`/* In MyComponent.module.css */
+.error {
+  color: red;
+}
+
+// In your component
+import styles from './MyComponent.module.css';
+
+function MyComponent() {
+  return <p className={styles.error}>This is an error.</p>;
+}`} />
                      <h4 className="text-black">Code Breakdown:</h4>
                      <ul className="list-disc pl-6 text-black">
                         <li><strong>*.module.css</strong>: The `.module.css` extension tells Next.js to treat this as a CSS Module.</li>
                         <li><strong>import styles from ...</strong>: When imported, the CSS Module exports an object (`styles`) where keys correspond to your class names.</li>
-                         <li><strong>className={styles.error}</strong>: Next.js automatically generates a unique class name (e.g., `MyComponent_error__12345`) to prevent style conflicts with other components.</li>
+                         <li><strong>className=&#123;styles.error&#125;</strong>: Next.js automatically generates a unique class name (e.g., `MyComponent_error__12345`) to prevent style conflicts with other components.</li>
                     </ul>
                 </>
             );
@@ -177,7 +189,17 @@ const CourseContent = ({ module }: { module: string }) => {
                     <p>Next.js provides built-in components for optimizing fonts and images, which are crucial for good performance and Core Web Vitals.</p>
                     <h4 className="text-black">Fonts</h4>
                     <p>Use `next/font` to automatically host font files, preventing layout shifts and ensuring privacy.</p>
-                    <CodeBlock code={`import { Inter } from 'next/font/google';\n\nconst inter = Inter({ subsets: ['latin'] });\n\nexport default function Layout({ children }) {\n  return (\n    <html lang="en" className={inter.className}>\n      <body>{children}</body>\n    </html>\n  );\n}`} />
+                    <CodeBlock code={`import { Inter } from 'next/font/google';
+
+const inter = Inter({ subsets: ['latin'] });
+
+export default function Layout({ children }) {
+  return (
+    <html lang="en" className={inter.className}>
+      <body>{children}</body>
+    </html>
+  );
+}`} />
                     <h4 className="text-black">Code Breakdown:</h4>
                     <ul className="list-disc pl-6 text-black">
                         <li><strong>import &#123; Inter &#125; from 'next/font/google'</strong>: Imports the desired font function from Google Fonts.</li>
@@ -186,7 +208,18 @@ const CourseContent = ({ module }: { module: string }) => {
                     </ul>
                     <h4 className="text-black">Images</h4>
                     <p>The `<Image>` component from `next/image` optimizes images by resizing, lazy-loading, and serving them in modern formats like WebP.</p>
-                    <CodeBlock code={`import Image from 'next/image';\n\n<Image\n  src="/profile.png"\n  alt="My Profile Picture"\n  width={500}\n  height={500}\n/>`} />
+                    <CodeBlock code={`import Image from 'next/image';
+
+function Profile() {
+  return (
+    <Image
+      src="/profile.png"
+      alt="My Profile Picture"
+      width={500}
+      height={500}
+    />
+  );
+}`} />
                     <h4 className="text-black">Code Breakdown:</h4>
                     <ul className="list-disc pl-6 text-black">
                         <li><strong>src="/profile.png"</strong>: The path to your image file, located in the `public` directory.</li>
@@ -200,7 +233,19 @@ const CourseContent = ({ module }: { module: string }) => {
                 <>
                     <p>In the App Router, a **page** is UI that is unique to a route. You can create a page by exporting a component from a `page.tsx` file.</p>
                     <p>A **layout** is UI that is shared between multiple pages. Create a `layout.tsx` file to define a shared layout. It must accept a `children` prop that will be populated with a child layout or page.</p>
-                    <CodeBlock code={`// app/dashboard/layout.tsx\n\nexport default function DashboardLayout({\n  children,\n}: { children: React.ReactNode }) {\n  return (\n    <section>\n      {/* Include shared UI here, e.g., a sidebar */}\n      <nav>Dashboard Sidebar</nav>\n      {children}\n    </section>\n  );\n}`} />
+                    <CodeBlock code={`// app/dashboard/layout.tsx
+
+export default function DashboardLayout({
+  children,
+}: { children: React.ReactNode }) {
+  return (
+    <section>
+      {/* Include shared UI here, e.g., a sidebar */}
+      <nav>Dashboard Sidebar</nav>
+      {children}
+    </section>
+  );
+}`} />
                     <h4 className="text-black">Code Breakdown:</h4>
                      <ul className="list-disc pl-6 text-black">
                         <li><strong>app/dashboard/layout.tsx</strong>: The file path defines the route segment (`/dashboard`) that this layout applies to.</li>
@@ -214,14 +259,42 @@ const CourseContent = ({ module }: { module: string }) => {
             return (
                 <>
                     <p>The `&lt;Link&gt;` component from `next/link` is used for client-side navigation between routes. It enables seamless transitions without a full page reload.</p>
-                    <CodeBlock code={`import Link from 'next/link';\n \nexport default function Page() {\n  return (\n    <Link href="/dashboard">\n      Dashboard\n    </Link>\n  );\n}`} />
+                    <CodeBlock code={`import Link from 'next/link';
+ 
+export default function Page() {
+  return (
+    <Link href="/dashboard">
+      Dashboard
+    </Link>
+  );
+}`} />
                     <h4 className="text-black">Code Breakdown:</h4>
                      <ul className="list-disc pl-6 text-black">
                         <li><strong>import Link from 'next/link'</strong>: Imports the necessary component.</li>
                         <li><strong>&lt;Link href="/dashboard"&gt;</strong>: The `href` prop specifies the destination route. Next.js will automatically pre-fetch this page in the background for faster navigation.</li>
                     </ul>
                     <p>The `usePathname()` hook can be used to check the current URL path and apply active styles to links.</p>
-                     <CodeBlock code={`'use client';\n \nimport { usePathname } from 'next/navigation';\nimport clsx from 'clsx';\n \nconst pathname = usePathname(); // e.g., '/dashboard/invoices'\n \n<Link\n  className={clsx(\n    'p-2 rounded-md',\n    { 'bg-blue-500 text-white': pathname === '/dashboard' },\n  )}\n  href="/dashboard"\n>\n  Home\n</Link>`} />
+                     <CodeBlock code={`'use client';
+ 
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
+import { clsx } from 'clsx';
+ 
+export function NavLinks() {
+  const pathname = usePathname(); // e.g., '/dashboard/invoices'
+ 
+  return (
+    <Link
+      className={clsx(
+        'p-2 rounded-md',
+        { 'bg-blue-500 text-white': pathname === '/dashboard' },
+      )}
+      href="/dashboard"
+    >
+      Home
+    </Link>
+  )
+}`} />
                      <h4 className="text-black">Code Breakdown:</h4>
                      <ul className="list-disc pl-6 text-black">
                         <li><strong>'use client'</strong>: This directive is required because `usePathname` is a client-side hook.</li>
@@ -243,7 +316,16 @@ const CourseContent = ({ module }: { module: string }) => {
                     </ul>
                     <p>Next, install the Vercel Postgres SDK: `npm install @vercel/postgres`.</p>
                     <p>To seed your database with initial data, you can create a script. For example, `scripts/seed.js`:</p>
-                    <CodeBlock code={`// scripts/seed.js\nconst { db } = require('@vercel/postgres');\n\nasync function main() {\n  const client = await db.connect();\n  // ... (CREATE TABLE and INSERT statements)\n  await client.end();\n}\n\nmain().catch((err) => console.error(err));`} />
+                    <CodeBlock code={`// scripts/seed.js
+const { db } = require('@vercel/postgres');
+
+async function main() {
+  const client = await db.connect();
+  // ... (CREATE TABLE and INSERT statements)
+  await client.end();
+}
+
+main().catch((err) => console.error(err));`} />
                     <h4 className="text-black">Code Breakdown:</h4>
                      <ul className="list-disc pl-6 text-black">
                         <li><strong>const &#123; db &#125; = require('@vercel/postgres')</strong>: Imports the database client from the SDK.</li>
@@ -259,7 +341,24 @@ const CourseContent = ({ module }: { module: string }) => {
                 <>
                     <p>In the App Router, React Server Components are the default. This allows you to fetch data directly within your components on the server.</p>
                     <p>You can fetch data at the component level, which is great for co-locating data fetching logic with the UI that uses it.</p>
-                    <CodeBlock code={`// app/dashboard/page.tsx\n\nimport { fetchCardData } from '@/app/lib/data';\n \nexport default async function Page() {\n  const { \n    numberOfInvoices, \n    numberOfCustomers, \n    totalPaidInvoices, \n    totalPendingInvoices \n  } = await fetchCardData();\n \n  return (\n    <main>\n      {/* ... use the fetched data ... */}\n    </main>\n  );\n}`} />
+                    <CodeBlock code={`// app/dashboard/page.tsx
+
+import { fetchCardData } from '@/app/lib/data';
+ 
+export default async function Page() {
+  const { 
+    numberOfInvoices, 
+    numberOfCustomers, 
+    totalPaidInvoices, 
+    totalPendingInvoices 
+  } = await fetchCardData();
+ 
+  return (
+    <main>
+      {/* ... use the fetched data ... */}
+    </main>
+  );
+}`} />
                     <h4 className="text-black">Code Breakdown:</h4>
                      <ul className="list-disc pl-6 text-black">
                         <li><strong>async function Page()</strong>: By making the Page component `async`, you can use `await` inside it to fetch data before rendering.</li>
@@ -275,7 +374,12 @@ const CourseContent = ({ module }: { module: string }) => {
                     <p>By default, Next.js will use **Static Rendering**. Routes are rendered at build time, making them fast, always available, and cachable.</p>
                     <p>You can opt into **Dynamic Rendering** when you have data that changes frequently. This renders the route for each user at request time.</p>
                     <p>Dynamic rendering is triggered by using dynamic functions like `cookies()`, `headers()`, or by using the `unstable_noStore` API.</p>
-                     <CodeBlock code={`import { unstable_noStore as noStore } from 'next/cache';\n\nexport async function fetchInvoices() {\n  noStore(); // This opts the component into dynamic rendering\n  // ... data fetching logic ...\n}`} />
+                     <CodeBlock code={`import { unstable_noStore as noStore } from 'next/cache';
+
+export async function fetchInvoices() {
+  noStore(); // This opts the component into dynamic rendering
+  // ... data fetching logic ...
+}`} />
                      <h4 className="text-black">Code Breakdown:</h4>
                      <ul className="list-disc pl-6 text-black">
                         <li><strong>import &#123; unstable_noStore &#125;</strong>: Imports the specific API from Next.js to control caching behavior.</li>
@@ -288,7 +392,19 @@ const CourseContent = ({ module }: { module: string }) => {
                 <>
                     <p>Streaming allows you to break down the page into smaller chunks and progressively send them from the server to the client.</p>
                     <p>You can use React's `&lt;Suspense&gt;` boundary to stream a component. You provide a fallback UI (like a skeleton) to show while the component is loading.</p>
-                    <CodeBlock code={`import { Suspense } from 'react';\nimport { RevenueChart } from '@/app/ui/dashboard/revenue-chart';\nimport { RevenueChartSkeleton } from '@/app/ui/skeletons';\n\n<Suspense fallback={<RevenueChartSkeleton />}>\n  <RevenueChart />\n</Suspense>`} />
+                    <CodeBlock code={`import { Suspense } from 'react';
+import { RevenueChart } from '@/app/ui/dashboard/revenue-chart';
+import { RevenueChartSkeleton } from '@/app/ui/skeletons';
+
+export default function Page() {
+  return (
+    //...
+    <Suspense fallback={<RevenueChartSkeleton />}>
+      <RevenueChart />
+    </Suspense>
+    //...
+  )
+}`} />
                      <h4 className="text-black">Code Breakdown:</h4>
                      <ul className="list-disc pl-6 text-black">
                         <li><strong>&lt;Suspense&gt;</strong>: A built-in React component that lets you display a fallback while its children are loading.</li>
@@ -303,17 +419,45 @@ const CourseContent = ({ module }: { module: string }) => {
                 <>
                     <p>To implement search and pagination, you'll use URL search parameters to manage the state.</p>
                     <p>First, capture the user's input in a client component. Use the `useRouter` and `usePathname` hooks to update the URL with the search query.</p>
-                    <CodeBlock code={`'use client';\n \nconst { replace } = useRouter();\nconst pathname = usePathname();\n \nfunction handleSearch(term: string) {\n  const params = new URLSearchParams(window.location.search);\n  if (term) {\n    params.set('query', term);\n  } else {\n    params.delete('query');\n  }\n  replace(\`$\{pathname\}?$\{params.toString()\}\`);\n}`} />
+                    <CodeBlock code={`'use client';
+ 
+import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+ 
+export default function Search({ placeholder }: { placeholder: string }) {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
+ 
+  function handleSearch(term: string) {
+    const params = new URLSearchParams(searchParams);
+    if (term) {
+      params.set('query', term);
+    } else {
+      params.delete('query');
+    }
+    replace(\`\${pathname\}?\${params.toString()}\`);
+  }
+}
+`} />
                      <h4 className="text-black">Code Breakdown:</h4>
                      <ul className="list-disc pl-6 text-black">
                         <li><strong>'use client'</strong>: Required as we're using client-side hooks.</li>
-                        <li><strong>useRouter() and usePathname()</strong>: Hooks from `next/navigation` to interact with the URL.</li>
+                        <li><strong>useRouter(), usePathname(), useSearchParams()</strong>: Hooks from `next/navigation` to interact with the URL.</li>
                         <li><strong>URLSearchParams</strong>: A standard browser API to easily manipulate URL query parameters.</li>
                         <li><strong>params.set('query', term)</strong>: Adds or updates the `query` parameter in the URL.</li>
                         <li><strong>replace(...)</strong>: Updates the URL in the browser without reloading the page. This triggers a new server render with the updated search parameters.</li>
                     </ul>
                     <p>On the server, in your page component, read the search params from the `searchParams` prop and pass them to your data fetching function.</p>
-                    <CodeBlock code={`export default async function Page({ \n  searchParams \n}: { \n  searchParams?: { query?: string; page?: string; } \n}) {\n  const query = searchParams?.query || '';\n  const currentPage = Number(searchParams?.page) || 1;\n  const invoices = await fetchFilteredInvoices(query, currentPage);\n  // ...\n}`} />
+                    <CodeBlock code={`export default async function Page({ 
+  searchParams 
+}: { 
+  searchParams?: { query?: string; page?: string; } 
+}) {
+  const query = searchParams?.query || '';
+  const currentPage = Number(searchParams?.page) || 1;
+  const invoices = await fetchFilteredInvoices(query, currentPage);
+  // ...
+}`} />
                      <h4 className="text-black">Code Breakdown:</h4>
                      <ul className="list-disc pl-6 text-black">
                         <li><strong>&#123; searchParams &#125;</strong>: Next.js automatically passes the URL's search parameters as a prop to server-side Page components.</li>
@@ -327,7 +471,20 @@ const CourseContent = ({ module }: { module: string }) => {
                 <>
                     <p>React **Server Actions** allow you to run asynchronous code directly on the server, triggered from client-side events. They eliminate the need to create separate API endpoints for data mutations.</p>
                     <p>Define a Server Action by adding the `'use server';` directive at the top of a function.</p>
-                     <CodeBlock code={`'use server';\n \nimport { z } from 'zod';\nimport { sql } from '@vercel/postgres';\nimport { revalidatePath } from 'next/cache';\n \nexport async function createInvoice(formData: FormData) {\n  // ... (validate and process formData)\n \n  await sql\`INSERT INTO invoices ...\`;\n \n  revalidatePath('/dashboard/invoices'); // Revalidate the cache and show new data\n}`} />
+                     <CodeBlock code={`// In a file like 'app/lib/actions.ts'
+'use server';
+ 
+import { z } from 'zod';
+import { sql } from '@vercel/postgres';
+import { revalidatePath } from 'next/cache';
+ 
+export async function createInvoice(formData: FormData) {
+  // ... (validate and process formData)
+ 
+  await sql\`INSERT INTO invoices ...\`;
+ 
+  revalidatePath('/dashboard/invoices'); // Revalidate the cache and show new data
+}`} />
                      <h4 className="text-black">Code Breakdown:</h4>
                      <ul className="list-disc pl-6 text-black">
                         <li><strong>'use server'</strong>: This directive marks the function as a Server Action, which can be called from client components but executes on the server.</li>
@@ -342,7 +499,19 @@ const CourseContent = ({ module }: { module: string }) => {
             return (
                 <>
                     <p>The `error.tsx` file convention allows you to gracefully handle unexpected runtime errors in nested routes. It automatically wraps a page or child layout in a React Error Boundary.</p>
-                    <CodeBlock code={`'use client';\n \nexport default function Error({ error, reset }: {\n  error: Error & { digest?: string };\n  reset: () => void;\n}) {\n  return (\n    <main>\n      <h2>Something went wrong!</h2>\n      <button onClick={() => reset()}>Try again</button>\n    </main>\n  );\n}`} />
+                    <CodeBlock code={`'use client';
+ 
+export default function Error({ error, reset }: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  return (
+    <main>
+      <h2>Something went wrong!</h2>
+      <button onClick={() => reset()}>Try again</button>
+    </main>
+  );
+}`} />
                      <h4 className="text-black">Code Breakdown:</h4>
                      <ul className="list-disc pl-6 text-black">
                         <li><strong>'use client'</strong>: Error boundaries must be Client Components.</li>
@@ -350,7 +519,15 @@ const CourseContent = ({ module }: { module: string }) => {
                         <li><strong>reset: () => void</strong>: A function prop that, when called, attempts to re-render the segment where the error occurred.</li>
                     </ul>
                     <p>The `notFound()` function can be used to handle "not found" states. If called inside a route segment, it will render the closest `not-found.tsx` file.</p>
-                    <CodeBlock code={`import { notFound } from 'next/navigation';\n \nexport default async function Page({ params }: { params: { id: string } }) {\n  const invoice = await fetchInvoiceById(params.id);\n  if (!invoice) {\n    notFound();\n  }\n  // ...\n}`} />
+                    <CodeBlock code={`import { notFound } from 'next/navigation';
+ 
+export default async function Page({ params }: { params: { id: string } }) {
+  const invoice = await fetchInvoiceById(params.id);
+  if (!invoice) {
+    notFound();
+  }
+  // ...
+}`} />
                      <h4 className="text-black">Code Breakdown:</h4>
                      <ul className="list-disc pl-6 text-black">
                         <li><strong>if (!invoice)</strong>: Checks if the data for a dynamic route (e.g., a specific blog post) exists.</li>
@@ -363,7 +540,8 @@ const CourseContent = ({ module }: { module: string }) => {
                 <>
                     <p>Web accessibility (a11y) is crucial for creating inclusive applications. Key practices include using semantic HTML, ensuring proper color contrast, and managing focus.</p>
                     <p>For forms, always associate labels with inputs using the `htmlFor` attribute. This helps screen readers announce what the input is for.</p>
-                    <CodeBlock code={`<label htmlFor="amount">Choose an amount</label>\n<input id="amount" name="amount" type="number" />`} />
+                    <CodeBlock code={`<label htmlFor="amount">Choose an amount</label>
+<input id="amount" name="amount" type="number" />`} />
                      <h4 className="text-black">Code Breakdown:</h4>
                      <ul className="list-disc pl-6 text-black">
                         <li><strong>&lt;label htmlFor="amount"&gt;</strong>: The `htmlFor` attribute points to the `id` of the input it describes.</li>
@@ -377,7 +555,16 @@ const CourseContent = ({ module }: { module: string }) => {
                 <>
                     <p>NextAuth.js is a complete open-source authentication solution for Next.js applications. To add it, install `next-auth`.</p>
                     <p>Configure your authentication providers (e.g., Google, GitHub, Credentials) in an API route at `app/api/auth/[...nextauth]/route.ts`.</p>
-                    <CodeBlock code={`import NextAuth from 'next-auth';\nimport Credentials from 'next-auth/providers/credentials';\n\nexport const { auth, signIn, signOut } = NextAuth({\n  providers: [\n    Credentials({\n      // ... configure credentials provider\n    }),\n  ],\n});`} />
+                    <CodeBlock code={`import NextAuth from 'next-auth';
+import Credentials from 'next-auth/providers/credentials';
+
+export const { auth, signIn, signOut } = NextAuth({
+  providers: [
+    Credentials({
+      // ... configure credentials provider
+    }),
+  ],
+});`} />
                      <h4 className="text-black">Code Breakdown:</h4>
                      <ul className="list-disc pl-6 text-black">
                         <li><strong>[...nextauth]/route.ts</strong>: This is a "catch-all" API route that handles all authentication-related requests (e.g., `/api/auth/signin`, `/api/auth/callback`).</li>
@@ -393,14 +580,21 @@ const CourseContent = ({ module }: { module: string }) => {
                 <>
                     <p>Next.js has a Metadata API that allows you to define metadata (e.g., `title`, `description`) for each page, which is important for SEO.</p>
                     <p>You can export a static `metadata` object from a `layout.tsx` or `page.tsx` file.</p>
-                    <CodeBlock code={`import { Metadata } from 'next';\n \nexport const metadata: Metadata = {\n  title: 'Invoices | Acme Dashboard',\n};`} />
+                    <CodeBlock code={`import { Metadata } from 'next';
+ 
+export const metadata: Metadata = {
+  title: 'Invoices | Acme Dashboard',
+};`} />
                      <h4 className="text-black">Code Breakdown:</h4>
                      <ul className="list-disc pl-6 text-black">
                         <li><strong>export const metadata</strong>: By exporting an object with this specific name, Next.js will automatically use it to generate the `<head>` tags for the page.</li>
                         <li><strong>title: '...'</strong>: This will set the `<title>` tag for the browser tab and search results.</li>
                     </ul>
                     <p>For dynamic routes, you can use the `generateMetadata` function to create metadata based on the current route parameters.</p>
-                    <CodeBlock code={`export async function generateMetadata({ params }): Promise<Metadata> {\n  const invoice = await fetchInvoiceById(params.id);\n  return { title: \`Invoice # $\{invoice.id}\` };\n}`} />
+                    <CodeBlock code={`export async function generateMetadata({ params }): Promise<Metadata> {
+  const invoice = await fetchInvoiceById(params.id);
+  return { title: \`Invoice #\${invoice.id}\` };
+}`} />
                      <h4 className="text-black">Code Breakdown:</h4>
                      <ul className="list-disc pl-6 text-black">
                         <li><strong>export async function generateMetadata()</strong>: By exporting an `async` function with this name, you can fetch data to dynamically create metadata.</li>
