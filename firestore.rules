@@ -94,7 +94,8 @@ service cloud.firestore {
       }
       
       match /bookmarks/{postId} {
-        allow read, write: if isOwner(userId);
+        allow read: if true;
+        allow write: if isOwner(userId);
       }
       
       match /badges/{badgeId} {
