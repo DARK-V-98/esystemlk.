@@ -12,7 +12,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Image as ImageIcon, Plus, Trash2, Link as LinkIcon, Loader2 } from 'lucide-react';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import Image from 'next/image';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 
 const portfolioSchema = z.object({
@@ -139,7 +138,7 @@ export default function PortfolioManagementClient({ initialItems }: { initialIte
                {preview && (
                 <div className="mt-4">
                   <p className="text-sm font-medium mb-2">Image Preview:</p>
-                  <Image src={preview} alt="Image preview" width={200} height={150} className="rounded-lg border border-border" />
+                  <img src={preview} alt="Image preview" width={200} height={150} className="rounded-lg border border-border" />
                 </div>
               )}
               <Button type="submit" disabled={isPending}>
@@ -162,7 +161,7 @@ export default function PortfolioManagementClient({ initialItems }: { initialIte
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {items.map((item) => (
                     <Card key={item.id} className="overflow-hidden">
-                       <Image src={item.imageUrl} alt={item.name} width={400} height={300} className="w-full h-40 object-cover" />
+                       <img src={item.imageUrl} alt={item.name} width={400} height={300} className="w-full h-40 object-cover" />
                        <CardContent className="p-4">
                            <h3 className="font-semibold truncate">{item.name}</h3>
                            <a href={item.link} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline break-all flex items-center gap-1">

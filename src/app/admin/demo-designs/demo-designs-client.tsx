@@ -12,7 +12,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Image as ImageIcon, Plus, Trash2, Link as LinkIcon, Loader2, ChevronsUpDown, Check, X } from 'lucide-react';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import Image from 'next/image';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -170,7 +169,7 @@ export default function DemoDesignsManagementClient({ initialDesigns }: { initia
                   <FormItem><FormLabel>Project Image</FormLabel><FormControl><Input type="file" accept="image/*" onChange={(e) => field.onChange(e.target.files?.[0])} /></FormControl><FormMessage /></FormItem>
                 )} />
                {preview && (
-                <div className="mt-4"><p className="text-sm font-medium mb-2">Image Preview:</p><Image src={preview} alt="Image preview" width={200} height={150} className="rounded-lg border border-border" /></div>
+                <div className="mt-4"><p className="text-sm font-medium mb-2">Image Preview:</p><img src={preview} alt="Image preview" width={200} height={150} className="rounded-lg border border-border" /></div>
               )}
               <Button type="submit" disabled={isPending}>{isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Adding...</> : <><Plus className="mr-2 h-4 w-4" /> Add Demo Design</>}</Button>
             </form>
@@ -185,7 +184,7 @@ export default function DemoDesignsManagementClient({ initialDesigns }: { initia
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {designs.map((item) => (
                     <Card key={item.id} className="overflow-hidden">
-                       <Image src={item.imageUrl} alt={item.name} width={400} height={300} className="w-full h-40 object-cover" />
+                       <img src={item.imageUrl} alt={item.name} width={400} height={300} className="w-full h-40 object-cover" />
                        <CardContent className="p-4">
                            <h3 className="font-semibold truncate">{item.name}</h3>
                            <a href={item.demoUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline break-all flex items-center gap-1">

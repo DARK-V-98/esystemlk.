@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { getFirestoreAdmin } from '@/firebase/admin';
 import { collection, getDocs, orderBy, query, Timestamp } from 'firebase/firestore';
 import { Card, CardContent } from "@/components/ui/card";
-import Image from "next/image";
 import { formatDistanceToNow } from 'date-fns';
 
 export interface Post {
@@ -56,7 +55,7 @@ export default async function BlogPage() {
                            <Card className="overflow-hidden h-full flex flex-col transition-all duration-300 hover:shadow-xl hover:-translate-y-2 bg-card border-border hover:border-primary rounded-2xl shadow-lg">
                                 {post.headerImageUrl && (
                                     <div className="overflow-hidden">
-                                        <Image
+                                        <img
                                             src={post.headerImageUrl}
                                             alt={post.title}
                                             width={600}

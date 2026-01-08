@@ -3,7 +3,6 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowUpRight } from 'lucide-react';
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getPortfolioItems } from "@/app/admin/portfolio/actions";
 import { Skeleton } from "./ui/skeleton";
@@ -86,7 +85,7 @@ export default function PortfolioClient() {
                 <Card className="overflow-hidden h-full flex flex-col transition-all duration-300 hover:shadow-xl hover:-translate-y-2 bg-black/30 backdrop-blur-lg border border-white/10 hover:border-white/30 rounded-2xl shadow-lg">
                     {project.imageUrl && (
                     <div className="overflow-hidden relative">
-                        <Image
+                        <img
                             src={project.imageUrl}
                             alt={project.name}
                             width={600}

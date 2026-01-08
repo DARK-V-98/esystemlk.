@@ -2,7 +2,6 @@
 import { getFirestoreAdmin } from '@/firebase/admin';
 import { collection, getDocs, query, where, Timestamp } from 'firebase/firestore';
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
 import { format } from 'date-fns';
 import ReactMarkdown from 'react-markdown';
 import { Card, CardContent } from '@/components/ui/card';
@@ -73,13 +72,12 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
                 {post.headerImageUrl && (
                     <div className="mb-12">
-                        <Image
+                        <img
                             src={post.headerImageUrl}
                             alt={post.title}
                             width={1200}
                             height={630}
                             className="w-full h-auto rounded-2xl shadow-lg"
-                            priority
                         />
                     </div>
                 )}

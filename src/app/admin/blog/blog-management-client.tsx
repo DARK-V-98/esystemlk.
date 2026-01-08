@@ -24,7 +24,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import NextImage from 'next/image';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -185,7 +184,7 @@ export default function BlogManagementClient({ initialPosts }: { initialPosts: P
                     {posts.map(post => (
                         <Card key={post.id} className="flex flex-col md:flex-row items-start gap-6 p-4">
                            {post.headerImageUrl && (
-                                <NextImage src={post.headerImageUrl} alt={post.title} width={200} height={120} className="rounded-lg object-cover w-full md:w-48 h-auto"/>
+                                <img src={post.headerImageUrl} alt={post.title} width={200} height={120} className="rounded-lg object-cover w-full md:w-48 h-auto"/>
                            )}
                            <div className="flex-1">
                                <Link href={`/blog/${post.slug}`} target="_blank">
