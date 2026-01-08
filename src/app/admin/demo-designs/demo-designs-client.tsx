@@ -132,7 +132,7 @@ export default function DemoDesignsManagementClient({ initialDesigns }: { initia
                         <Popover open={techPopoverOpen} onOpenChange={setTechPopoverOpen}>
                             <PopoverTrigger asChild>
                                 <FormControl>
-                                    <Button variant="outline" role="combobox" className={cn("w-full justify-between", !field.value.length && "text-muted-foreground")}>
+                                    <Button variant="outline" role="combobox" className={cn("w-full justify-between h-auto", !field.value.length && "text-muted-foreground")}>
                                         <div className="flex gap-1 flex-wrap">
                                             {field.value.length > 0 ? field.value.map(tech => (
                                                 <Badge key={tech} variant="secondary">{tech}</Badge>
@@ -191,6 +191,11 @@ export default function DemoDesignsManagementClient({ initialDesigns }: { initia
                            <a href={item.demoUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline break-all flex items-center gap-1">
                                <LinkIcon size={12}/>{item.demoUrl}
                            </a>
+                            <div className="flex flex-wrap gap-1 mt-2">
+                                {item.technologies.map(tech => (
+                                    <Badge key={tech} variant="secondary" className="text-xs">{tech}</Badge>
+                                ))}
+                            </div>
                            <AlertDialogTrigger asChild>
                              <Button variant="destructive" size="sm" className="w-full mt-4" onClick={() => setItemToDelete(item)}><Trash2 className="mr-2 h-4 w-4" /> Delete</Button>
                            </AlertDialogTrigger>
