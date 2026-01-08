@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "User": {
@@ -198,6 +199,21 @@
             "createdAt": { "type": "string", "format": "date-time" }
         },
         "required": ["senderId", "senderName", "text", "createdAt"]
+    },
+    "DemoDesign": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Demo Design",
+      "type": "object",
+      "description": "Represents a demo website design for showcasing.",
+      "properties": {
+        "name": { "type": "string" },
+        "demoUrl": { "type": "string", "format": "uri" },
+        "imageUrl": { "type": "string", "format": "uri" },
+        "category": { "type": "string" },
+        "technologies": { "type": "array", "items": { "type": "string" } },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "demoUrl", "imageUrl", "category", "technologies", "createdAt"]
     }
   },
   "auth": {
@@ -328,8 +344,17 @@
             "description": "Stores messages within a specific private conversation.",
             "params": [{"name": "conversationId"}, {"name": "messageId"}]
         }
+      },
+      {
+        "path": "/demoDesigns/{designId}",
+        "definition": {
+          "entityName": "DemoDesign",
+          "schema": { "$ref": "#/entities/DemoDesign" },
+          "description": "Stores demo website designs for client showcase.",
+          "params": [{"name": "designId"}]
+        }
       }
     ],
-    "reasoning": "The data structure is updated to support a full-featured blog. This includes a main 'blog' collection for posts. Each post document can have subcollections for 'comments' and 'likes' to enable social features and keep the data organized and scalable. User profiles are expanded with social links and bios. Bookmarks and Badges are added as subcollections under each user. A 'conversations' collection is added for private messaging."
+    "reasoning": "The data structure is updated to support a full-featured blog. This includes a main 'blog' collection for posts. Each post document can have subcollections for 'comments' and 'likes' to enable social features and keep the data organized and scalable. User profiles are expanded with social links and bios. Bookmarks and Badges are added as subcollections under each user. A 'conversations' collection is added for private messaging. A 'demoDesigns' collection is added to manage the new demo design showcase feature."
   }
 }

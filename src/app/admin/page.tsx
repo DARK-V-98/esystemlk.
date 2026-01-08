@@ -4,7 +4,7 @@
 import { useAuthContext } from "@/hooks/use-auth";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Link from "next/link";
-import { Mail, Users, CreditCard, BarChart2, FileSignature, Newspaper, User } from "lucide-react";
+import { Mail, Users, CreditCard, BarChart2, FileSignature, Newspaper, User, Layers } from "lucide-react";
 
 export default function AdminPage() {
   const { user } = useAuthContext();
@@ -80,6 +80,17 @@ export default function AdminPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">Update and manage service pricing tiers and add-ons.</p>
+              </CardContent>
+            </Card>
+        </Link>
+        <Link href="/admin/demo-designs" className="block hover:scale-105 transition-transform duration-300">
+            <Card className="bg-card border border-border rounded-2xl shadow-lg h-full hover:border-primary transition-colors">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>Demo Designs</CardTitle>
+                <Layers className="w-6 h-6 text-primary" />
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">Manage the demo websites gallery.</p>
               </CardContent>
             </Card>
         </Link>

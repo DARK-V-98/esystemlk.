@@ -139,6 +139,11 @@ service cloud.firestore {
         allow write: if isAdmin(); // Only admins can modify portfolio items
     }
 
+    match /demoDesigns/{designId} {
+        allow read: if true;
+        allow write: if isAdmin(); // Only admins can modify demo designs
+    }
+
     // Blog rules
     match /blog/{postId} {
       allow read: if true;
