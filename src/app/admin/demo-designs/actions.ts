@@ -1,7 +1,7 @@
 
 'use server';
 
-import { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, serverTimestamp, Timestamp } from 'firebase/firestore';
+import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc, query, orderBy, serverTimestamp, Timestamp, getDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
@@ -85,6 +85,61 @@ export async function addDemoDesign(formData: FormData) {
         revalidatePath('/demo-designs');
         
         return { success: true, message: 'Demo design added successfully.' };
+    } catch (error) {
+        const message = error instanceof Error ? error.message : 'An unknown error occurred';
+        return { success: false, message };
+    }
+}
+
+// Update an existing demo design
+export async function updateDemoDesign(formData: FormData) {
+    const firestore = getFirestoreAdmin();
+    const storage = getStorageAdmin();
+
+    const id = formData.get('id') as string;
+    const name = formData.get('name') as string;
+    const demoUrl = formData.get('demoUrl') as string;
+    const category = formData.get('category') as string;
+    const technologies = JSON.parse(formData.get('technologies') as string) as string[];
+    const newImage = formData.get('image') as File | null;
+
+    if (!id) {
+        return { success: false, message: 'Design ID is missing.' };
+    }
+
+    try {
+        const validatedData = designSchema.parse({ name, demoUrl, category, technologies });
+        const designRef = doc(firestore, 'demoDesigns', id);
+        
+        const updateData: any = {
+            ...validatedData,
+        };
+
+        if (newImage && newImage.size > 0) {
+            // Upload new image
+            const newStorageRef = ref(storage, `demoDesigns/${Date.now()}_${newImage.name}`);
+            await uploadBytes(newStorageRef, newImage);
+            updateData.imageUrl = await getDownloadURL(newStorageRef);
+            
+            // Delete old image
+            const oldImageUrl = formData.get('oldImageUrl') as string;
+            if (oldImageUrl) {
+                 try {
+                    const oldImageRef = ref(storage, oldImageUrl);
+                    await deleteObject(oldImageRef);
+                } catch (imgError) {
+                    console.warn("Old image deletion failed, it might have already been removed:", imgError);
+                }
+            }
+        }
+
+        await updateDoc(designRef, updateData);
+
+        revalidatePath('/admin/demo-designs');
+        revalidatePath('/demo-designs');
+        
+        return { success: true, message: 'Demo design updated successfully.' };
+
     } catch (error) {
         const message = error instanceof Error ? error.message : 'An unknown error occurred';
         return { success: false, message };
