@@ -1,4 +1,3 @@
-
 'use client';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -154,7 +153,7 @@ const CourseContent = ({ module }: { module: string }) => {
                     <p>Next.js offers multiple ways to style your application. This project uses Tailwind CSS, a utility-first CSS framework for rapid UI development.</p>
                     <p>You can style elements by adding Tailwind classes directly in your JSX. For example, to create a blue button:</p>
                     <CodeBlock code={`<button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-  Click me
+    Click me
 </button>`} />
                     <h4 className="text-black">Code Breakdown:</h4>
                      <ul className="list-disc pl-6 text-black">
@@ -188,7 +187,7 @@ function MyComponent() {
                 <>
                     <p>Next.js provides built-in components for optimizing fonts and images, which are crucial for good performance and Core Web Vitals.</p>
                     <h4 className="text-black">Fonts</h4>
-                    <p>Use <code>next/font</code> to automatically host font files, preventing layout shifts and ensuring privacy.</p>
+                    <p>Use `next/font` to automatically host font files, preventing layout shifts and ensuring privacy.</p>
                     <CodeBlock code={`import { Inter } from 'next/font/google';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -623,4 +622,5 @@ export const metadata: Metadata = {
 
 export default NextJsCoursePage;
 
+    
     
