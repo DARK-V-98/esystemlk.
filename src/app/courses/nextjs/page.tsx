@@ -515,7 +515,7 @@ export default function Error({ error, reset }: {
                      <ul className="list-disc pl-6 text-black">
                         <li><strong><code>'use client'</code></strong>: Error boundaries must be Client Components.</li>
                         <li><strong><code>error: Error</code></strong>: A prop that contains the caught error instance.</li>
-                        <li><strong><code>reset: () => void</code></strong>: A function prop that, when called, attempts to re-render the segment where the error occurred.</li>
+                        <li><strong><code>reset: () =&gt; void</code></strong>: A function prop that, when called, attempts to re-render the segment where the error occurred.</li>
                     </ul>
                     <p>The <code>notFound()</code> function can be used to handle "not found" states. If called inside a route segment, it will render the closest <code>not-found.tsx</code> file.</p>
                     <CodeBlock code={`import { notFound } from 'next/navigation';
