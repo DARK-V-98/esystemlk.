@@ -44,7 +44,9 @@ service cloud.firestore {
       return isOwner(userId) && resource != null;
     }
     function isAdmin() {
-      return isSignedIn() && exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
+      // Check for a role field in the user's own profile document.
+      // This is more direct than checking a separate collection.
+      return isSignedIn() && (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'developer');
     }
     // Functions for validating relational data integrity on create
     function isUserDocumentValidOnCreate(userId) {
