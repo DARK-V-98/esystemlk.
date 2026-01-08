@@ -11,7 +11,7 @@ const courses = [
     title: "Next.js Foundations",
     description: "Learn how to build a full-stack web application from the ground up with the Next.js App Router.",
     link: "/courses/nextjs",
-    image: "https://placehold.co/600x400.png",
+    image: "/nj.jpg",
     hint: "Next.js logo",
   },
 ];
